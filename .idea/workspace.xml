@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="81467523-819e-42c5-b4a6-136274da4687" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/CapstoneProject.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/static/forms/FM-QMS-010-RFA-Form-1.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/base.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/announcements.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/confirm_delete.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/dashboard.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/forms.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/guidelines.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/manage_users.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/settings.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/user_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/static/css/dashboard.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/static/main/img.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/static/main/img_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/static/main/styles.css" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2ixi6zNHRYrinq95ezmvpNUDJvi" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.manage.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/John Carlo/PycharmProjects/CapstoneProject/corrective_action_system/main/static/forms&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\main\static\forms" />
+      <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\static\main" />
+      <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\main\templates" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\main\templates" />
+      <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\main\templates\main" />
+      <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\main" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="manage" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="CapstoneProject" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/corrective_action_system" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/corrective_action_system/manage.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.manage" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-975db3bf15a3-31b6be0877a2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.18034.82" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="81467523-819e-42c5-b4a6-136274da4687" name="Changes" comment="" />
+      <created>1720438459048</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1720438459048</updated>
+    </task>
+    <servers />
+  </component>
+</project>

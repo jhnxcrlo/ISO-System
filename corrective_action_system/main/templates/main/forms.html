@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Forms{% endblock %}
+
+{% block content %}
+<h1>Forms</h1>
+<p>Here you can access and manage forms related to the ISO 9001:2015 Corrective Action Management System.</p>
+
+<!-- Internal Quality Audit (IQA) Forms -->
+<h2>Internal Quality Audit (IQA) Forms</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-light">
+                <strong>Request for Action Form (FM-QMS-010)</strong>
+            </div>
+            <div class="card-body">
+                <p>Use this form to request actions for quality management.</p>
+                <a href="{% url 'main:generate_report' report_type='request_for_action_form' %}" class="btn btn-primary">Generate Report</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-light">
+                <strong>Request for Action Monitoring Log (FM-IQA-006)</strong>
+            </div>
+            <div class="card-body">
+                <p>Use this form to monitor actions requested.</p>
+                <a href="{% url 'main:generate_report' report_type='request_for_action_monitoring_log' %}" class="btn btn-primary">Generate Report</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-light">
+                <strong>Root Cause Analysis Form (FM-IQA-014)</strong>
+            </div>
+            <div class="card-body">
+                <p>Use this form for root cause analysis.</p>
+                <a href="{% url 'main:generate_report' report_type='root_cause_analysis_form' %}" class="btn btn-primary">Generate Report</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-light">
+                <strong>Audit Report Summary (FM-IQA-005)</strong>
+            </div>
+            <div class="card-body">
+                <p>Use this form to summarize audit reports.</p>
+                <a href="{% url 'main:generate_report' report_type='audit_report_summary' %}" class="btn btn-primary">Generate Report</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-light">
+                <strong>Audit Report (FM-IQA-004)</strong>
+            </div>
+            <div class="card-body">
+                <p>Use this form for detailed audit reports.</p>
+                <a href="{% url 'main:generate_report' report_type='audit_report' %}" class="btn btn-primary">Generate Report</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

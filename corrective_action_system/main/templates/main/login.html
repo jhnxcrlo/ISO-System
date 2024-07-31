@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'main/styles.css' %}">
+    <style>
+        .highlighted-option {
+            font-weight: bold;
+            color: blue;
+        }
+    </style>
+</head>
+<body style="background-image: url('{% static 'main/img.png' %}'); background-size: cover; background-position: center;">
+    <div class="container">
+        <div class="row justify-content-center align-items-center vh-100">
+            <div class="col-md-6">
+                <div class="login-container">
+                    <h3 class="login-title">SorSU</h3>
+                    <form method="post" action="{% url 'main:login' %}" onsubmit="return validateForm()">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <select id="role" name="role" class="form-control" required onchange="highlightRole()">
+                                <option value="" disabled selected>Select your role</option>
+                                <option value="lead_auditor">Lead Auditor</option>
+                                <option value="process_owner">Process Owner</option>
+                                <option value="internal_auditor">Internal Auditor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input id="username" type="text" placeholder="Username" name="username" required autofocus class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input id="password" type="password" placeholder="Password" name="password" required class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+                        <div class="forgot-password">
+                            <a href="#" class="font-italic text-muted">Forgotten password?</a>
+                        </div>
+                        {% if error %}
+                            <div class="alert alert-danger mt-3">{{ error }}</div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function validateForm() {
+            var role = document.getElementById('role').value;
+            if (role === "") {
+                alert("Please select a role");
+                return false;
+            }
+            return true;
+        }
+
+        function highlightRole() {
+            var roleSelect = document.getElementById('role');
+            var options = roleSelect.options;
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].selected) {
+                    options[i].classList.add('highlighted-option');
+                } else {
+                    options[i].classList.remove('highlighted-option');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

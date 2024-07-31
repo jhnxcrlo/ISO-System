@@ -1,0 +1,73 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5; /* Fallback color for browsers that do not support background-image */
+    background-image: url('{% static 'main/img.png' %}');
+    background-size: cover; /* Cover the entire background */
+    background-position: center; /* Center the image */
+}
+
+.container {
+    height: 100vh;
+}
+
+.row.justify-content-center {
+    height: 100vh;
+}
+
+.login-container {
+    max-width: 400px;
+    width: 100%;
+    padding: 40px;
+    background: lightgray;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.login-title {
+    font-size: 2.5rem;
+    color: red;
+    margin-bottom: 20px;
+}
+
+.form-label {
+    text-align: left;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.form-control {
+    border-radius: 50px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ced4da;
+}
+
+.btn {
+    background: #3a77ff;
+    border: none;
+    border-radius: 50px;
+    padding: 15px 0;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background: #265bb7;
+}
+
+.forgot-password {
+    margin-top: 10px;
+}
+
+.forgot-password a {
+    color: #6c757d;
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+

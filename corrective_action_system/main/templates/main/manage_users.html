@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Users{% endblock %}
+
+{% block content %}
+
+<style>
+    .superuser {
+        background-color: gray; /* Highlight color for superuser */
+    }
+    .highlight-role {
+        background-color: yellow;
+    }
+</style>
+
+<div class="container">
+    <h1 class="mt-4">Manage Users</h1>
+    <p>Logged in as: {{ user.username }} - Role: <span class="highlight-role">{{ user_role }}</span></p>
+    <table class="table table-bordered mt-4">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr class="{% if user.id == superuser_id %}superuser{% endif %}">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user_profiles.user.id.role }}</td>
+                    <td>
+                        <a href="{% url 'main:update_user' user.id %}" class="btn btn-sm btn-warning {% if user.id == superuser_id %}disabled{% endif %}">Edit</a>
+                        <form method="post" action="{% url 'main:delete_user' user.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger {% if user.id == superuser_id %}disabled{% endif %}" {% if user.id == superuser_id %}disabled{% endif %}>Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'main:add_user' %}" class="btn btn-primary mt-2">Add User</a>
+</div>
+
+{% endblock %}

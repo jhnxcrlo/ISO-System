@@ -1,0 +1,147 @@
+/* General styles */
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+/* Sidebar styles */
+.sidenav {
+    background-color: #343a40;
+    height: 100vh;
+    color: white;
+    padding-top: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px;
+}
+
+.sidenav h5 {
+    color: #ffc107;
+}
+
+.sidenav .nav-link {
+    color: #adb5bd;
+}
+
+.sidenav .nav-link.active {
+    color: white;
+    background-color: #495057;
+}
+
+.sidenav .nav-link:hover {
+    color: white;
+    background-color: #495057;
+}
+
+/* Main content styles */
+.main-content {
+    margin-left: 210px;
+    padding: 20px;
+}
+
+/* Navbar styles */
+.navbar {
+    margin-bottom: 20px;
+    background-color: #dc3545;
+}
+
+.navbar-brand {
+    color: white;
+}
+
+.navbar .form-inline input {
+    border-radius: 50px;
+}
+
+.navbar .form-inline button {
+    border-radius: 50px;
+}
+
+/* Card styles */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card .card-body {
+    padding: 20px;
+}
+
+.card.text-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.card.text-center .card-body h2, .card.text-center .card-body h4 {
+    margin-bottom: 10px;
+}
+
+.card.text-center .card-body h1 {
+    font-size: 3rem;
+}
+
+/* Status icon colors */
+.status-icon.in-queue {
+    color: #ffc107;
+}
+
+.status-icon.on-progress {
+    color: #17a2b8;
+}
+
+.status-icon.done {
+    color: #28a745;
+}
+
+/* Table styles */
+.table-container {
+    margin-top: 20px;
+}
+
+.table-container h4 small {
+    color: #6c757d;
+}
+
+.table thead th {
+    background-color: #e9ecef;
+}
+
+.table tbody td {
+    vertical-align: middle;
+}
+
+.table .img-circle {
+    border-radius: 50%;
+}
+
+/* Feedback section styles */
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: none;
+    font-weight: bold;
+}
+
+.card-body p {
+    margin-bottom: 15px;
+}
+
+.card-link {
+    color: #dc3545;
+    text-decoration: none;
+}
+
+.card-link:hover {
+    text-decoration: underline;
+}
+
+.progress {
+    height: 10px;
+    border-radius: 5px;
+}
+
+.progress-bar {
+    border-radius: 5px;
+}
