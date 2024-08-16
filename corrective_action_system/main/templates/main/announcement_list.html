@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}Announcements{% endblock %}
+
+{% block content %}
+<h1>Announcements</h1>
+<p>Here you can view and manage announcements related to the ISO 9001:2015 Corrective Action Management System.</p>
+
+<!-- Button to trigger modal for creating announcement -->
+<button type="button" class="btn btn-primary mb-4" data-toggle="modal" data-target="#createAnnouncementModal">
+    + Create New Announcement
+</button>
+
+<!-- Create Announcement Modal -->
+<div class="modal fade" id="createAnnouncementModal" tabindex="-1" role="dialog" aria-labelledby="createAnnouncementModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createAnnouncementModalLabel">Create New Announcement</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'main:announcement_create' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="id_title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_content" class="form-label">Content</label>
+                        <textarea class="form-control" id="id_content" name="content" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Announcement</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Announcement Modal -->
+<div class="modal fade" id="updateAnnouncementModal" tabindex="-1" role="dialog" aria-labelledby="updateAnnouncementModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateAnnouncementModalLabel">Update Announcement</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="updateAnnouncementForm" method="post" action="">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="update_id_title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="update_id_title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_id_content" class="form-label">Content</label>
+                        <textarea class="form-control" id="update_id_content" name="content" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Announcement</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteAnnouncementModal" tabindex="-1" role="dialog" aria-labelledby="deleteAnnouncementModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteAnnouncementModalLabel">Delete Announcement</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this announcement?</p>
+                <form id="deleteAnnouncementForm" method="post" action="">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for announcement in announcements %}
+<div class="card mb-4">
+    <div class="card-header bg-primary text-light d-flex justify-content-between align-items-center">
+        <strong>{{ announcement.title }}</strong>
+        <div>
+            <!-- Trigger Update Modal -->
+            <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#updateAnnouncementModal"
+                    onclick="loadUpdateForm('{{ announcement.pk }}', '{{ announcement.title }}', '{{ announcement.content|escapejs }}')">
+                Edit
+            </button>
+            <!-- Trigger Delete Modal -->
+            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteAnnouncementModal"
+                    onclick="loadDeleteForm('{{ announcement.pk }}')">
+                Delete
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <p>{{ announcement.content }}</p>
+        <small>Created on {{ announcement.created_at|date:"F j, Y, g:i a" }}</small>
+    </div>
+</div>
+{% endfor %}
+
+<!-- Ensure jQuery and Bootstrap JS are included -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Handle the form actions for update and delete modals -->
+<script>
+    function loadUpdateForm(id, title, content) {
+        var formAction = "{% url 'main:announcement_update' 0 %}".replace('0', id);
+        document.getElementById('updateAnnouncementForm').action = formAction;
+        document.getElementById('update_id_title').value = title;
+        document.getElementById('update_id_content').value = content;
+    }
+
+    function loadDeleteForm(id) {
+        var formAction = "{% url 'main:announcement_delete' 0 %}".replace('0', id);
+        document.getElementById('deleteAnnouncementForm').action = formAction;
+    }
+
+    // Directly Trigger Success Modal
+    $(document).ready(function() {
+        {% if messages %}
+            $('#successModal').modal('show');
+        {% endif %}
+    });
+</script>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Success</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#testButton').click(function() {
+            $('#successModal').modal('show');
+        });
+    });
+</script>
+{% endblock %}
