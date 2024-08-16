@@ -4,66 +4,101 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="81467523-819e-42c5-b4a6-136274da4687" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/CapstoneProject.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/static/forms/FM-QMS-010-RFA-Form-1.docx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/base.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/announcements.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/confirm_delete.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/dashboard.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/forms.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/guidelines.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/manage_users.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/settings.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/user_form.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/static/css/dashboard.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/static/main/img.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/static/main/img_1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/corrective_action_system/static/main/styles.css" afterDir="false" />
+    <list default="true" id="81467523-819e-42c5-b4a6-136274da4687" name="Changes" comment="first commit">
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/email/confirmation_email.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/internal_auditor_dashboard.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/process_owner_dashboard.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templatetags/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/main/templatetags/custom_tags.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/corrective_action_system/static/css/dashboards.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/corrective_action_system/main/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/corrective_action_system/main/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/corrective_action_system/main/static/forms/FM-QMS-010-RFA-Form-1.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/corrective_action_system/main/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/corrective_action_system/main/templates/main/announcements.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/corrective_action_system/main/templates/main/confirm_delete.html" beforeDir="false" afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/confirm_delete.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/corrective_action_system/main/templates/main/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/corrective_action_system/main/templates/main/forms.html" beforeDir="false" afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/forms.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/corrective_action_system/main/templates/main/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/corrective_action_system/main/templates/main/manage_users.html" beforeDir="false" afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/manage_users.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/corrective_action_system/main/templates/main/user_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/corrective_action_system/main/templates/main/user_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/corrective_action_system/main/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/corrective_action_system/main/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/corrective_action_system/static/css/dashboard.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/corrective_action_system/static/main/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/corrective_action_system/static/main/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;jhnxcrlo&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/jhnxcrlo/CapstoneProject.git&quot;,
+    &quot;accountId&quot;: &quot;7ec03aa9-dabf-4ed5-b66f-a42ff63dc030&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/corrective_action_system/main/templates/main/manage_users.html" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="2ixi6zNHRYrinq95ezmvpNUDJvi" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;Python.manage.executor&quot;: &quot;Run&quot;,
+    &quot;Python.manage.executor&quot;: &quot;Debug&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/John Carlo/PycharmProjects/CapstoneProject/corrective_action_system/main/static/forms&quot;
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/John Carlo/PycharmProjects/CapstoneProject/corrective_action_system/static&quot;
   }
 }</component>
+  <component name="QodanaReportsService">
+    <option name="descriptions">
+      <ReportDescription localRun="true" path="C:\Users\JOHNCA~1\AppData\Local\Temp\qodana_output\qodana.sarif.json" reportGuid="5d831e9a-9318-43eb-9e8c-dde2576e18ad" reportId="CapstoneProject/qodana/2024-08-01" />
+    </option>
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\main\static\forms" />
+      <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\static" />
       <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\static\main" />
+      <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\main\static" />
+      <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\main\static\forms" />
       <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\main\templates" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\main\templates" />
+      <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\static\main" />
       <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\main\templates\main" />
+      <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\main\templates\announcements" />
       <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\main" />
+      <recent name="C:\Users\John Carlo\PycharmProjects\CapstoneProject\corrective_action_system\main\templates" />
     </key>
   </component>
   <component name="RunManager">
@@ -111,6 +146,19 @@
       <option name="presentableId" value="Default" />
       <updated>1720438459048</updated>
     </task>
+    <task id="LOCAL-00001" summary="first commit">
+      <option name="closed" value="true" />
+      <created>1722391721254</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1722391721254</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="first commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="first commit" />
   </component>
 </project>

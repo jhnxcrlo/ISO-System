@@ -1,0 +1,284 @@
+/* General styles */
+body {
+    background-color: #f0f4f7;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Sidebar styles */
+.sidenav {
+    background-color: #203040;
+    height: 100vh;
+    color: white;
+    padding-top: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 230px;
+}
+
+.sidebar-header {
+    padding: 10px;
+    text-align: center;
+}
+
+.sidebar-header img {
+    max-width: 60px;
+    margin-bottom: 10px;
+}
+
+.sidebar-header h5 {
+    font-size: 18px;
+    color: #fff;
+    font-weight: 600;
+}
+
+.sidenav .nav-link {
+    color: #b0c4de;
+    padding: 12px 15px;
+    font-size: 16px;
+}
+
+.sidenav .nav-link.active {
+    background-color: #1c2833;
+    color: white;
+    border-radius: 5px;
+}
+
+.sidenav .nav-link:hover {
+    color: white;
+    background-color: #1c2833;
+    border-radius: 5px;
+}
+
+/* Main content styles */
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: #eaecef;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.navbar-brand {
+    color: #333;
+    font-size: 18px;
+}
+
+.notification-icon {
+     margin-left: 1100px;
+    display: flex;
+    align-items: center;
+}
+
+.notification-icon a {
+    color: black;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+    margin-right: 20px;
+}
+
+.notification-icon a:hover {
+    color: blue;
+}
+
+.divider {
+    height: 24px;
+    border-right: 1px solid #ccc;
+    margin-right: 10px;
+}
+
+.navbar .dropdown-toggle {
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.navbar .dropdown-menu {
+    font-size: 14px;
+    padding: 10px;
+}
+
+.dropdown-header {
+    font-size: 16px;
+    color: #333;
+    text-align: left;
+    padding: 10px 20px;
+}
+
+.dropdown-header strong {
+    font-weight: 600;
+}
+
+.navbar .rounded-circle {
+    border: 2px solid #ffffff;
+}
+
+/* Logout Button */
+.logout-btn i {
+    margin-right: 5px;
+    margin-top: 20px;
+}
+
+/* Card styles */
+.card {
+    border-radius: 15px;
+    background-color: #ffffff;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card h4, .card h5 {
+    color: #333;
+    font-weight: 700;
+}
+
+.card-body h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+.table thead th {
+    background-color: #f0f0f0;
+    color: #333;
+    border-bottom: 2px solid #ddd;
+}
+
+.table tbody tr td {
+    vertical-align: middle;
+}
+
+
+
+.img-circle {
+    border-radius: 50%;
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+    }
+
+    .sidenav {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .logout-btn {
+        bottom: 100px;
+        right: 10px;
+        top: 5000px;
+    }
+}
+/* FullCalendar Custom Styles */
+
+/* Container styling */
+#calendar {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Header styling */
+.fc-toolbar {
+    background-color: #203040;
+    color: #ffffff;
+    border-radius: 8px 8px 0 0;
+    padding: 10px;
+    text-align: center;
+}
+
+.fc-toolbar h2 {
+    font-size: 1.5rem;
+    margin: 0;
+    color: #ffffff;
+}
+
+.fc-button {
+    background-color: #1c2833;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    margin: 0 5px;
+    font-size: 0.9rem;
+}
+
+.fc-button:hover {
+    background-color: #34495e;
+}
+
+.fc-button:focus {
+    box-shadow: none;
+}
+
+/* Day cells styling */
+.fc-daygrid-day {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    transition: background-color 0.3s ease;
+}
+
+.fc-daygrid-day:hover {
+    background-color: #e9ecef;
+}
+
+/* Event styling */
+.fc-event {
+    background-color: #17a2b8;
+    color: #ffffff;
+    border: none;
+    padding: 2px 5px;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.fc-event:hover {
+    background-color: #138496;
+}
+
+/* Today's date styling */
+.fc-day-today {
+    background-color: #ffeeba;
+    border-color: #ffc107;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #calendar {
+        padding: 10px;
+    }
+
+    .fc-toolbar h2 {
+        font-size: 1.2rem;
+    }
+
+    .fc-button {
+        padding: 3px 7px;
+        font-size: 0.8rem;
+    }
+}

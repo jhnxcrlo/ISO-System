@@ -1,73 +1,66 @@
-body {
+body, html {
+    height: 100%;
+    margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f2f5; /* Fallback color for browsers that do not support background-image */
-    background-image: url('{% static 'main/img.png' %}');
-    background-size: cover; /* Cover the entire background */
-    background-position: center; /* Center the image */
+    background-color: #5C0915; /* Adjust the background color if needed */
 }
 
 .container {
-    height: 100vh;
-}
-
-.row.justify-content-center {
-    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .login-container {
-    max-width: 400px;
     width: 100%;
-    padding: 40px;
-    background: lightgray;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    max-width: 400px; /* Increased max-width for a larger form */
+    background: #ffffff;
     border-radius: 10px;
-    text-align: center;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Adjusted shadow for better depth */
+    padding: 40px; /* Increased padding for better spacing */
+    animation: fadeIn 0.5s ease-out;
 }
 
-.login-title {
-    font-size: 2.5rem;
-    color: red;
-    margin-bottom: 20px;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.form-label {
-    text-align: left;
+.logo img {
+    width: 90px; /* Adjust size based on your preference */
+}
+
+.form-control, .btn-primary {
+    border-radius: 5px;
+}
+
+.btn-primary {
     width: 100%;
-    margin-bottom: 5px;
-}
-
-.form-control {
-    border-radius: 50px;
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 1px solid #ced4da;
-}
-
-.btn {
-    background: #3a77ff;
+    color: #fff;
+    background-color: #007bff; /* Bootstrap primary color */
     border: none;
-    border-radius: 50px;
-    padding: 15px 0;
-    font-size: 1rem;
-    font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background 0.3s;
 }
 
-.btn:hover {
-    background: #265bb7;
+.form-check-input {
+    margin-top: 0.3em;
 }
 
+.form-check-label {
+    margin-left: 1.5em;
+}
+
+.form-group label {
+    float: left;
+}
+
+/* Additional Link Styles */
 .forgot-password {
-    margin-top: 10px;
+    display: block;
+    margin-top: 0.5rem; /* Reduced margin */
+    color: #007bff;
+    cursor: pointer;
 }
 
-.forgot-password a {
-    color: #6c757d;
-    text-decoration: none;
+.forgot-password:hover {
+    text-decoration: underline; /* Underline on hover for clear interactivity */
 }
-
-.forgot-password a:hover {
-    text-decoration: underline;
-}
-

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Verify your email address</title>
+    <style>
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+            color: #333;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .email-header {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .email-header img {
+            max-width: 150px;
+        }
+        .email-content {
+            padding: 20px;
+        }
+        .email-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .email-footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #777;
+        }
+        .email-footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <img src="https://yourdomain.com/static/logo.png" alt="Your Company Logo">
+        </div>
+        <div class="email-content">
+            <h2>Verify your email address</h2>
+            <p>In order to start using your account, you need to confirm your email address.</p>
+            <a href="{{ verification_link }}" class="email-button">Verify Email Address</a>
+        </div>
+        <div class="email-footer">
+            <p>If you did not sign up for this account, you can ignore this email and the account will be deleted.</p>
+        </div>
+    </div>
+</body>
+</html>

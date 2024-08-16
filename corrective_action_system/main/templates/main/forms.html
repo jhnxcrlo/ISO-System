@@ -6,68 +6,71 @@
 <h1>Forms</h1>
 <p>Here you can access and manage forms related to the ISO 9001:2015 Corrective Action Management System.</p>
 
-<!-- Internal Quality Audit (IQA) Forms -->
-<h2>Internal Quality Audit (IQA) Forms</h2>
+<!-- Upload New Template Button -->
+<div class="mb-4">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadTemplateModal">
+        Upload New Template
+    </button>
+</div>
 
-<div class="row">
-    <div class="col-md-4">
-        <div class="card mb-4">
-            <div class="card-header bg-dark text-light">
-                <strong>Request for Action Form (FM-QMS-010)</strong>
-            </div>
-            <div class="card-body">
-                <p>Use this form to request actions for quality management.</p>
-                <a href="{% url 'main:generate_report' report_type='request_for_action_form' %}" class="btn btn-primary">Generate Report</a>
-            </div>
+<!-- Templates List -->
+<ul class="list-group">
+    {% for template in templates %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+            <h5>{{ template.template_name }}</h5>
+            <p class="mb-1">{{ template.description }}</p>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card mb-4">
-            <div class="card-header bg-dark text-light">
-                <strong>Request for Action Monitoring Log (FM-IQA-006)</strong>
-            </div>
-            <div class="card-body">
-                <p>Use this form to monitor actions requested.</p>
-                <a href="{% url 'main:generate_report' report_type='request_for_action_monitoring_log' %}" class="btn btn-primary">Generate Report</a>
-            </div>
+        <div>
+            <a href="{{ template.file.url }}" class="btn btn-success btn-sm" download>
+                <i class="fas fa-download"></i> Download
+            </a>
+            <button type="button" class="btn btn-danger btn-sm" onclick="deleteTemplate('{{ template.id }}')">
+                <i class="fas fa-trash"></i> Delete
+            </button>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card mb-4">
-            <div class="card-header bg-dark text-light">
-                <strong>Root Cause Analysis Form (FM-IQA-014)</strong>
+    </li>
+    {% endfor %}
+</ul>
+
+<!-- Upload Template Modal -->
+<div class="modal fade" id="uploadTemplateModal" tabindex="-1" role="dialog" aria-labelledby="uploadTemplateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadTemplateModalLabel">Upload New Template</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="card-body">
-                <p>Use this form for root cause analysis.</p>
-                <a href="{% url 'main:generate_report' report_type='root_cause_analysis_form' %}" class="btn btn-primary">Generate Report</a>
+            <div class="modal-body">
+                <form method="post" action="{% url 'main:upload_template' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_template_name">Template Name</label>
+                        <input type="text" class="form-control" id="id_template_name" name="template_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_template_description">Description</label>
+                        <textarea class="form-control" id="id_template_description" name="template_description" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_template_file">Upload File</label>
+                        <input type="file" class="form-control-file" id="id_template_file" name="template_file" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <div class="card mb-4">
-            <div class="card-header bg-dark text-light">
-                <strong>Audit Report Summary (FM-IQA-005)</strong>
-            </div>
-            <div class="card-body">
-                <p>Use this form to summarize audit reports.</p>
-                <a href="{% url 'main:generate_report' report_type='audit_report_summary' %}" class="btn btn-primary">Generate Report</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card mb-4">
-            <div class="card-header bg-dark text-light">
-                <strong>Audit Report (FM-IQA-004)</strong>
-            </div>
-            <div class="card-body">
-                <p>Use this form for detailed audit reports.</p>
-                <a href="{% url 'main:generate_report' report_type='audit_report' %}" class="btn btn-primary">Generate Report</a>
-            </div>
-        </div>
-    </div>
-</div>
+<script>
+    function deleteTemplate(templateId) {
+        if (confirm('Are you sure you want to delete this template?')) {
+            window.location.href = '{% url "main:delete_template" 0 %}'.replace('0', templateId);
+        }
+    }
+</script>
 
 {% endblock %}

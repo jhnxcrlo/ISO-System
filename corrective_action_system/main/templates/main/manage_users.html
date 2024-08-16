@@ -3,48 +3,207 @@
 {% block title %}Manage Users{% endblock %}
 
 {% block content %}
+{% load custom_tags %}
 
 <style>
+    body {
+        background-color: #f9f9f9;
+    }
+    .container {
+        margin-top: 20px;
+    }
     .superuser {
-        background-color: gray; /* Highlight color for superuser */
+        background-color: #f8d7da; /* Light red background for superuser */
     }
     .highlight-role {
-        background-color: yellow;
+        background-color: #ffff99; /* Light yellow for role highlight */
+    }
+    .table {
+        margin-top: 20px;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .table th {
+        background-color: #007bff;
+        color: black;
+        text-align: center;
+    }
+    .table td {
+        padding: 15px;
+        text-align: center;
+    }
+    .btn-action {
+        margin: 0 0.5rem;
+    }
+    .search-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    .search-container input {
+        width: 300px;
+    }
+    .modal-content {
+        padding: 20px;
     }
 </style>
 
 <div class="container">
     <h1 class="mt-4">Manage Users</h1>
-    <p>Logged in as: {{ user.username }} - Role: <span class="highlight-role">{{ user_role }}</span></p>
-    <table class="table table-bordered mt-4">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-                <tr class="{% if user.id == superuser_id %}superuser{% endif %}">
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user_profiles.user.id.role }}</td>
-                    <td>
-                        <a href="{% url 'main:update_user' user.id %}" class="btn btn-sm btn-warning {% if user.id == superuser_id %}disabled{% endif %}">Edit</a>
-                        <form method="post" action="{% url 'main:delete_user' user.id %}" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-danger {% if user.id == superuser_id %}disabled{% endif %}" {% if user.id == superuser_id %}disabled{% endif %}>Delete</button>
-                        </form>
-                    </td>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search by username..." onkeyup="filterUsers()" aria-label="Search users">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">Add User</button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <a href="{% url 'main:add_user' %}" class="btn btn-primary mt-2">Add User</a>
+            </thead>
+            <tbody id="userTableBody">
+                {% for user in users %}
+                    {% if user.id != superuser_id %}
+                        <tr class="{% if user.id == superuser_id %}superuser{% endif %}">
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user_roles|get_item:user.id }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#addUserModal" data-id="{{ user.id }}" data-username="{{ user.username }}" data-email="{{ user.email }}" data-role="{{ user_roles|get_item:user.id }}">Edit</button>
+                                <form method="post" action="{% url 'main:delete_user' user.id %}" style="display:inline;" onsubmit="return confirmDeletion('{{ user.username }}');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger {% if user.id == superuser_id %}disabled{% endif %}" {% if user.id == superuser_id %}disabled{% endif %}>Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<!-- Add/Edit User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm" method="post" action="{% url 'main:add_user' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_username">Username:</label>
+                        <input type="text" name="username" maxlength="150" autofocus class="form-control" required id="id_username">
+                    </div>
+                    <div class="form-group">
+                        <label for="id_email">Email:</label>
+                        <input type="email" name="email" maxlength="254" class="form-control" required id="id_email">
+                    </div>
+                    <div class="form-group">
+                        <label for="id_password">Password:</label>
+                        <input type="password" name="password" class="form-control" required id="id_password">
+                    </div>
+                    <div class="form-group">
+                        <label for="id_password_confirm">Confirm Password:</label>
+                        <input type="password" name="password_confirm" class="form-control" required id="id_password_confirm">
+                    </div>
+                    <div class="form-group">
+                        <label for="id_role">Role:</label>
+                        <select name="role" class="form-control" required id="id_role">
+                            <option value="">Select Role</option>
+                            <option value="Process Owner">Process Owner</option>
+                            <option value="Internal Auditor">Internal Auditor</option>
+                        </select>
+                    </div>
+                    <div id="formErrors" class="mt-2"></div>
+                    <input type="hidden" name="user_id" id="user_id" value="">
+                    <button type="submit" class="btn btn-primary mt-2">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Success!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="successMessage">
+                <!-- Success message will be injected here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    function confirmDeletion(username) {
+        return confirm("Are you sure you want to delete user " + username + "?");
+    }
+
+    $('#addUserModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var userId = button.data('id');
+        var username = button.data('username');
+        var email = button.data('email');
+        var role = button.data('role');
+
+        var modal = $(this);
+        modal.find('.modal-title').text(userId ? 'Edit User' : 'Add User');
+        modal.find('#user_id').val(userId || '');
+        modal.find('input[name="username"]').val(username || '');
+        modal.find('input[name="email"]').val(email || '');
+        modal.find('select[name="role"]').val(role || '');
+        $('#formErrors').empty();  // Clear previous errors
+    });
+
+    $(document).ready(function () {
+        {% if messages %}
+            $('#successMessage').text('{% for message in messages %}{{ message }}{% endfor %}');
+            $('#successModal').modal('show');
+        {% endif %}
+    });
+
+    function filterUsers() {
+        var input = document.getElementById("searchInput");
+        var filter = input.value.toLowerCase();
+        var table = document.getElementById("userTableBody");
+        var tr = table.getElementsByTagName("tr");
+
+        for (var i = 0; i < tr.length; i++) {
+            var td = tr[i].getElementsByTagName("td")[1]; // Username column
+            if (td) {
+                var txtValue = td.textContent || td.innerText;
+                tr[i].style.display = txtValue.toLowerCase().indexOf(filter) > -1 ? "" : "none";
+            }
+        }
+    }
+</script>
 
 {% endblock %}
