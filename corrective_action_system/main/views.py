@@ -9,14 +9,15 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import LoginEvent, UserProfile
 from .forms import UserCreationForm, UserUpdateForm
-from django.http import HttpResponse, FileResponse
+from django.http import HttpResponse, FileResponse, Http404
 from .models import Announcement, TemplateModel
 from .forms import AnnouncementForm
-from .forms import ReportForm
-from django.core.files.storage import FileSystemStorage
-
+from .forms import ReportForm, TemplateForm
+from django.core.files.storage import default_storage
+from urllib.parse import quote
 
 s = URLSafeTimedSerializer('your-secret-key')
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -42,17 +43,20 @@ def login_view(request):
             return render(request, 'main/login.html', {'error': 'Invalid username or password'})
     return render(request, 'main/login.html')
 
+
 @login_required
 def dashboard_view(request):
-    return render(request, 'main/dashboard.html')
+    return render(request, 'main/administrator/dashboard.html')
+
 
 @login_required
 def internal_auditor_dashboard_view(request):
-    return render(request, 'main/internal_auditor_dashboard.html')
+    return render(request, 'main/internal audit/internal_auditor_dashboard.html')
+
 
 @login_required
 def process_owner_dashboard_view(request):
-    return render(request, 'main/process_owner_dashboard.html')
+    return render(request, 'main/process owner/process_owner_dashboard.html')
 
 
 @login_required
@@ -73,7 +77,8 @@ def manage_users_view(request):
         'add_user_form': add_user_form,
     }
 
-    return render(request, 'main/manage_users.html', context)
+    return render(request, 'main/administrator/manage_users.html', context)
+
 
 def add_user(request):
     if request.method == 'POST':
@@ -98,7 +103,7 @@ def add_user(request):
 
                 # Send confirmation email
                 subject = 'Account Created - Verify your email address'
-                html_content = render_to_string('email/confirmation_email.html',
+                html_content = render_to_string('main/administrator/confirmation_email.html',
                                                 {'verification_link': verification_link})
                 text_content = strip_tags(html_content)
 
@@ -113,19 +118,6 @@ def add_user(request):
 
     return redirect('main:manage_users')
 
-@login_required
-def update_user_view(request, user_id):
-    user = get_object_or_404(User, id=user_id)
-    if request.method == 'POST':
-        form = UserUpdateForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('main:manage_users')
-        else:
-            return render(request, 'main/user_form.html', {'form': form, 'title': 'Update User', 'errors': form.errors})
-    else:
-        form = UserUpdateForm(instance=user)
-    return render(request, 'main/user_form.html', {'form': form, 'title': 'Update User'})
 
 @login_required
 def delete_user_view(request, user_id):
@@ -138,7 +130,8 @@ def delete_user_view(request, user_id):
         else:
             return HttpResponse('Unauthorized', status=403)
 
-    return render(request, 'main/confirm_delete.html', {'user': user})
+    return render(request, 'main/administrator/confirm_delete.html', {'user': user})
+
 
 def verify_email(request, token):
     try:
@@ -153,13 +146,11 @@ def verify_email(request, token):
         messages.error(request, 'The verification link is invalid or has expired.')
         return redirect('main:login')  # Ensure this URL name matches your login view's URL pattern
 
-@login_required
-def announcements_view(request):
-    return render(request, 'main/announcements.html')
 
 def announcement_list(request):
     announcements = Announcement.objects.all()
-    return render(request, 'main/announcement_list.html', {'announcements': announcements})
+    return render(request, 'main/administrator/announcement_list.html', {'announcements': announcements})
+
 
 def announcement_create(request):
     if request.method == "POST":
@@ -171,6 +162,7 @@ def announcement_create(request):
     else:
         form = AnnouncementForm()
     return render(request, 'announcements/announcement_form.html', {'form': form})
+
 
 def announcement_update(request, pk):
     announcement = get_object_or_404(Announcement, pk=pk)
@@ -184,6 +176,7 @@ def announcement_update(request, pk):
         form = AnnouncementForm(instance=announcement)
     return render(request, 'announcements/announcement_form.html', {'form': form})
 
+
 def announcement_delete(request, pk):
     announcement = get_object_or_404(Announcement, pk=pk)
     if request.method == "POST":
@@ -192,34 +185,17 @@ def announcement_delete(request, pk):
         return redirect('main:announcement_list')
     return render(request, 'announcements/announcement_confirm_delete.html', {'announcement': announcement})
 
+
 @login_required
 def guidelines_view(request):
-    return render(request, 'main/guidelines.html')
+    return render(request, 'main/administrator/guidelines.html')
+
 
 @login_required
 def forms_view(request):
     templates = TemplateModel.objects.all()
-    return render(request, 'main/forms.html', {'templates': templates})
+    return render(request, 'main/administrator/forms.html', {'templates': templates})
 
-@login_required
-def generate_report(request, report_type):
-    if request.method == 'POST':
-        form = ReportForm(request.POST)
-        if form.is_valid():
-            # Handle form processing here
-            # You might want to generate and return a report file instead
-            return render(request, 'main/report_generated.html', {'form': form, 'report_type': report_type})
-    else:
-        form = ReportForm()
-
-    return render(request, 'main/forms.html', {'form': form, 'report_type': report_type})
-
-@login_required
-def download_template(request, pk):
-    template = get_object_or_404(TemplateModel, pk=pk)
-    if template.file:
-        return FileResponse(template.file.open('rb'), as_attachment=True, filename=template.template_name)
-    return redirect('main:forms')
 
 @login_required
 def upload_template(request):
@@ -229,28 +205,48 @@ def upload_template(request):
         template_file = request.FILES.get('template_file')
 
         if template_file:
-            fs = FileSystemStorage()
-            filename = fs.save(template_file.name, template_file)
-            template_url = fs.url(filename)
-
-            # Save the file information to the model
-            TemplateModel.objects.create(
+            # Save the file using Django's default storage system
+            template_model = TemplateModel.objects.create(
                 template_name=template_name,
                 description=template_description,
-                file=filename
+                file=template_file
             )
-
+            template_model.save()
             return redirect('main:forms')
-        else:
-            return render(request, 'main/forms.html', {'error': 'No file was uploaded.'})
+
+        return render(request, 'main/administrator/forms.html', {'error': 'No file was uploaded.'})
+
     return redirect('main:forms')
+
+
+@login_required
+def download_template(request, pk):
+    template = get_object_or_404(TemplateModel, pk=pk)
+    if template.file:
+        try:
+            # Open the file as a binary stream
+            file = template.file.open('rb')
+            response = FileResponse(file, as_attachment=True, filename=template.file.name)
+            return response
+        except FileNotFoundError:
+            raise Http404("File not found.")
+    return redirect('main:forms')
+
 
 @login_required
 def delete_template(request, pk):
     template = get_object_or_404(TemplateModel, pk=pk)
-    template.file.delete()  # Delete the file from the filesystem
+    if template.file:
+        template.file.delete(save=False)  # Delete the file from the filesystem
     template.delete()  # Delete the database entry
     return redirect('main:forms')
+
+
 @login_required
-def settings_view(request):
-    return render(request, 'main/settings.html')
+def generate_report(request, report_type):
+    form = ReportForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        # Handle report generation logic here
+        return render(request, 'main/report_generated.html', {'form': form, 'report_type': report_type})
+    return render(request, 'main/administrator/forms.html', {'form': form, 'report_type': report_type})
+

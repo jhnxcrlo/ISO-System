@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Announcement
+from .models import Announcement, TemplateModel
 
 class UserCreationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -15,8 +15,8 @@ class UserCreationForm(forms.ModelForm):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
         password_confirm = cleaned_data.get("password_confirm")
-        if password != password_confirm:
-            raise forms.ValidationError("Passwords do not match")
+        if password and password_confirm and password != password_confirm:
+            self.add_error('password_confirm', "Passwords do not match.")
         return cleaned_data
 
     def save(self, commit=True):
@@ -42,3 +42,8 @@ class ReportForm(forms.Form):
     report_title = forms.CharField(max_length=200, label='Report Title')
     report_date = forms.DateField(label='Report Date', widget=forms.TextInput(attrs={'type': 'date'}))
     description = forms.CharField(widget=forms.Textarea, label='Description')
+
+class TemplateForm(forms.ModelForm):
+    class Meta:
+        model = TemplateModel
+        fields = ['template_name', 'description', 'file']

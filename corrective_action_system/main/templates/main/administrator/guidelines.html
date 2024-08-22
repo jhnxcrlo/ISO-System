@@ -1,0 +1,68 @@
+{% extends 'main/administrator/base.html' %}
+
+{% block title %}Guidelines{% endblock %}
+
+{% block content %}
+<h1>Guidelines</h1>
+<p>Here you can find the guidelines for managing corrective actions according to ISO 9001:2015 standards.</p>
+
+<!-- Collapsible Corrective Action Procedures -->
+<div class="card mb-4">
+    <div class="card-header bg-dark text-light" id="headingOne">
+        <h5 class="mb-0">
+            <button class="btn btn-link text-light" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Corrective Action Procedures
+            </button>
+        </h5>
+    </div>
+
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="card-body">
+            <p>Follow these steps to address non-conformities:</p>
+            <ol>
+                <li>Identify the root cause of the non-conformity.</li>
+                <li>Develop a corrective action plan to address the root cause.</li>
+                <li>Implement the corrective action plan.</li>
+                <li>Verify the effectiveness of the corrective action.</li>
+                <li>Document the process and outcomes.</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<!-- Collapsible Documentation Requirements -->
+<div class="card mb-4">
+    <div class="card-header bg-dark text-light" id="headingTwo">
+        <h5 class="mb-0">
+            <button class="btn btn-link text-light collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Documentation Requirements
+            </button>
+        </h5>
+    </div>
+    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+        <div class="card-body">
+            <p>Ensure all corrective actions are documented according to the ISO 9001:2015 standards. Use the provided templates for consistency.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Collapsible External Resources -->
+<div class="card mb-4">
+    <div class="card-header bg-dark text-light" id="headingThree">
+        <h5 class="mb-0">
+            <button class="btn btn-link text-light collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                External Resources
+            </button>
+        </h5>
+    </div>
+    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+        <div class="card-body">
+            <ul>
+                <li><a href="https://www.iso.org/iso-9001-quality-management.html" target="_blank">ISO 9001:2015 Quality Management</a></li>
+                <li><a href="https://www.iso.org/standard/62085.html" target="_blank">ISO Corrective Actions Guidelines</a></li>
+                <li><a href="{% url 'main:download_template' pk=1 %}">Download Corrective Action Plan Template</a><li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

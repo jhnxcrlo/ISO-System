@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'main/administrator/base.html' %}
 {% load static %}
 {% block title %}Forms{% endblock %}
 
@@ -22,7 +22,7 @@
             <p class="mb-1">{{ template.description }}</p>
         </div>
         <div>
-            <a href="{{ template.file.url }}" class="btn btn-success btn-sm" download>
+            <a href="{% url 'main:download_template' template.id %}" class="btn btn-success btn-sm" download>
                 <i class="fas fa-download"></i> Download
             </a>
             <button type="button" class="btn btn-danger btn-sm" onclick="deleteTemplate('{{ template.id }}')">
@@ -30,6 +30,8 @@
             </button>
         </div>
     </li>
+    {% empty %}
+    <li class="list-group-item">No templates available.</li>
     {% endfor %}
 </ul>
 
