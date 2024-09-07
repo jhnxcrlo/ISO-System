@@ -1,4 +1,3 @@
-
 import os
 from pathlib import Path
 
@@ -17,6 +16,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.template.context_processors',
     'main',
 ]
 
@@ -81,5 +81,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'jhnxcrlo@gmail.com'  # Replace with your Gmail address
 EMAIL_HOST_PASSWORD = 'bnjhyhivbalncrnr'  # Replace with your Gmail password or App Password
-DEFAULT_FROM_EMAIL = 'jhnxcrlo@gmail.com'  # Replace with your Gmail address
-
+DEFAULT_FROM_EMAIL = 'jhnxcrlo@gmail.com'

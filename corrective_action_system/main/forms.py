@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from .models import Announcement, TemplateModel
 
+
+
 class UserCreationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     password_confirm = forms.CharField(widget=forms.PasswordInput, label="Confirm Password")
@@ -26,6 +28,7 @@ class UserCreationForm(forms.ModelForm):
             user.save()
         return user
 
+
 class UserUpdateForm(forms.ModelForm):
     role = forms.ChoiceField(choices=[('Process Owner', 'Process Owner'), ('Internal Auditor', 'Internal Auditor')])
 
@@ -33,17 +36,21 @@ class UserUpdateForm(forms.ModelForm):
         model = User
         fields = ['username', 'email', 'role']
 
+
 class AnnouncementForm(forms.ModelForm):
     class Meta:
         model = Announcement
         fields = ['title', 'content']
+
 
 class ReportForm(forms.Form):
     report_title = forms.CharField(max_length=200, label='Report Title')
     report_date = forms.DateField(label='Report Date', widget=forms.TextInput(attrs={'type': 'date'}))
     description = forms.CharField(widget=forms.Textarea, label='Description')
 
+
 class TemplateForm(forms.ModelForm):
     class Meta:
         model = TemplateModel
         fields = ['template_name', 'description', 'file']
+

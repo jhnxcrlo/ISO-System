@@ -8,7 +8,7 @@
 
 <!-- Upload New Template Button -->
 <div class="mb-4">
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadTemplateModal">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadTemplateModal">
         Upload New Template
     </button>
 </div>
@@ -22,7 +22,7 @@
             <p class="mb-1">{{ template.description }}</p>
         </div>
         <div>
-            <a href="{% url 'main:download_template' template.id %}" class="btn btn-success btn-sm" download>
+            <a href="{% url 'download_template' template.id %}" class="btn btn-success btn-sm" download>
                 <i class="fas fa-download"></i> Download
             </a>
             <button type="button" class="btn btn-danger btn-sm" onclick="deleteTemplate('{{ template.id }}')">
@@ -41,12 +41,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="uploadTemplateModalLabel">Upload New Template</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{% url 'main:upload_template' %}" enctype="multipart/form-data">
+                <form method="post" action="{% url 'upload_template' %}" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="id_template_name">Template Name</label>
@@ -70,7 +70,7 @@
 <script>
     function deleteTemplate(templateId) {
         if (confirm('Are you sure you want to delete this template?')) {
-            window.location.href = '{% url "main:delete_template" 0 %}'.replace('0', templateId);
+            window.location.href = '{% url "delete_template" 0 %}'.replace('0', templateId);
         }
     }
 </script>

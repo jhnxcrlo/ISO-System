@@ -12,28 +12,27 @@
     .container {
         margin-top: 20px;
     }
-    .superuser {
-        background-color: #f8d7da; /* Light red background for superuser */
-    }
-    .highlight-role {
-        background-color: #ffff99; /* Light yellow for role highlight */
-    }
     .table {
         margin-top: 20px;
         border-radius: 8px;
         overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
     .table th {
         background-color: #007bff;
-        color: black;
+        color: white;
         text-align: center;
     }
     .table td {
         padding: 15px;
         text-align: center;
     }
+    .table-hover tbody tr:hover {
+        background-color: #f1f1f1;
+    }
     .btn-action {
         margin: 0 0.5rem;
+        display: inline-block;
     }
     .search-container {
         display: flex;
@@ -43,9 +42,21 @@
     }
     .search-container input {
         width: 300px;
+        padding: 0.5rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
     }
     .modal-content {
         padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+    }
+    .modal-header {
+        border-bottom: none;
+    }
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 600;
     }
 </style>
 
@@ -53,12 +64,14 @@
     <h1 class="mt-4">Manage Users</h1>
 
     <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search by username..." onkeyup="filterUsers()" aria-label="Search users">
-        <button class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">Add User</button>
+        <input type="text" id="searchInput" class="form-control" placeholder="Search by username..." onkeyup="filterUsers()" aria-label="Search users">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
+            <i class="fas fa-plus"></i> Add User
+        </button>
     </div>
 
     <div class="table-responsive">
-        <table class="table table-bordered">
+        <table class="table table-bordered table-hover">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -71,16 +84,20 @@
             <tbody id="userTableBody">
                 {% for user in users %}
                     {% if user.id != superuser_id %}
-                        <tr class="{% if user.id == superuser_id %}superuser{% endif %}">
+                        <tr>
                             <td>{{ user.id }}</td>
                             <td>{{ user.username }}</td>
                             <td>{{ user.email }}</td>
                             <td>{{ user_roles|get_item:user.id }}</td>
                             <td>
-                                <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#addUserModal" data-id="{{ user.id }}" data-username="{{ user.username }}" data-email="{{ user.email }}" data-role="{{ user_roles|get_item:user.id }}">Edit</button>
-                                <form method="post" action="{% url 'main:delete_user' user.id %}" style="display:inline;" onsubmit="return confirmDeletion('{{ user.username }}');">
+                                <button class="btn btn-sm btn-warning btn-action" data-toggle="modal" data-target="#addUserModal" data-id="{{ user.id }}" data-username="{{ user.username }}" data-email="{{ user.email }}" data-role="{{ user_roles|get_item:user.id }}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <form method="post" action="{% url 'delete_user' user.id %}" style="display:inline;" onsubmit="return confirmDeletion('{{ user.username }}');">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-danger {% if user.id == superuser_id %}disabled{% endif %}" {% if user.id == superuser_id %}disabled{% endif %}>Delete</button>
+                                    <button type="submit" class="btn btn-sm btn-danger btn-action" {% if user.id == superuser_id %}disabled{% endif %}>
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -102,7 +119,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="userForm" method="post" action="{% url 'main:add_user' %}">
+                <form id="userForm" method="post" action="{% url 'add_user' %}">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="id_username">Username:</label>

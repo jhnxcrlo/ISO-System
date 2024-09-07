@@ -12,9 +12,7 @@ from .forms import UserCreationForm, UserUpdateForm
 from django.http import HttpResponse, FileResponse, Http404
 from .models import Announcement, TemplateModel
 from .forms import AnnouncementForm
-from .forms import ReportForm, TemplateForm
-from django.core.files.storage import default_storage
-from urllib.parse import quote
+
 
 s = URLSafeTimedSerializer('your-secret-key')
 
@@ -27,18 +25,18 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth_login(request, user)
-            # Log the login event and update user profile with the selected role
+
             LoginEvent.objects.create(user=user)
             user_profile, created = UserProfile.objects.get_or_create(user=user)
-            request.session['user_role'] = user_profile.role  # Save the role in the session
+            request.session['user_role'] = user_profile.role
 
             # Redirect based on user role
             if user_profile.role == 'Internal Auditor':
-                return redirect('main:internal_auditor_dashboard')
+                return redirect('internal_auditor_dashboard')
             elif user_profile.role == 'Process Owner':
-                return redirect('main:process_owner_dashboard')
+                return redirect('process_owner_dashboard')
             else:
-                return redirect('main:dashboard')  # Default redirect
+                return redirect('dashboard')
         else:
             return render(request, 'main/login.html', {'error': 'Invalid username or password'})
     return render(request, 'main/login.html')
@@ -57,7 +55,6 @@ def internal_auditor_dashboard_view(request):
 @login_required
 def process_owner_dashboard_view(request):
     return render(request, 'main/process owner/process_owner_dashboard.html')
-
 
 @login_required
 def manage_users_view(request):
@@ -83,10 +80,10 @@ def manage_users_view(request):
 def add_user(request):
     if request.method == 'POST':
         user_id = request.POST.get('user_id')
-        if user_id:  # Edit user
+        if user_id:
             user = get_object_or_404(User, id=user_id)
             form = UserUpdateForm(request.POST, instance=user)
-        else:  # Add new user
+        else:
             form = UserCreationForm(request.POST)
 
         if form.is_valid():
@@ -101,7 +98,7 @@ def add_user(request):
                 token = s.dumps(user.email, salt='email-confirm')
                 verification_link = request.build_absolute_uri(f'/main/verify/{token}/')
 
-                # Send confirmation email
+
                 subject = 'Account Created - Verify your email address'
                 html_content = render_to_string('main/administrator/confirmation_email.html',
                                                 {'verification_link': verification_link})
@@ -111,12 +108,12 @@ def add_user(request):
                 email.attach_alternative(html_content, "text/html")
                 email.send()
 
-            return redirect('main:manage_users')
+            return redirect('manage_users')
         else:
             messages.error(request, 'Please correct the errors below.')
-            return redirect('main:manage_users')
+            return redirect('manage_users')
 
-    return redirect('main:manage_users')
+    return redirect('manage_users')
 
 
 @login_required
@@ -126,7 +123,7 @@ def delete_user_view(request, user_id):
         if request.user.is_superuser or request.user == user:
             user.delete()
             messages.success(request, 'User account has been successfully deleted.')
-            return redirect('main:manage_users')
+            return redirect('manage_users')
         else:
             return HttpResponse('Unauthorized', status=403)
 
@@ -141,10 +138,10 @@ def verify_email(request, token):
         user_profile.email_verified = True
         user_profile.save()
         messages.success(request, 'Email successfully verified.')
-        return redirect('main:login')  # Ensure this URL name matches your login view's URL pattern
+        return redirect('login')
     except Exception as e:
         messages.error(request, 'The verification link is invalid or has expired.')
-        return redirect('main:login')  # Ensure this URL name matches your login view's URL pattern
+        return redirect('login')
 
 
 def announcement_list(request):
@@ -158,7 +155,7 @@ def announcement_create(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Announcement created successfully!")
-            return redirect('main:announcement_list')
+            return redirect('announcement_list')
     else:
         form = AnnouncementForm()
     return render(request, 'announcements/announcement_form.html', {'form': form})
@@ -171,7 +168,7 @@ def announcement_update(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, "Announcement updated successfully!")
-            return redirect('main:announcement_list')
+            return redirect('announcement_list')
     else:
         form = AnnouncementForm(instance=announcement)
     return render(request, 'announcements/announcement_form.html', {'form': form})
@@ -182,7 +179,7 @@ def announcement_delete(request, pk):
     if request.method == "POST":
         announcement.delete()
         messages.success(request, "Announcement deleted successfully!")
-        return redirect('main:announcement_list')
+        return redirect('announcement_list')
     return render(request, 'announcements/announcement_confirm_delete.html', {'announcement': announcement})
 
 
@@ -205,18 +202,18 @@ def upload_template(request):
         template_file = request.FILES.get('template_file')
 
         if template_file:
-            # Save the file using Django's default storage system
+
             template_model = TemplateModel.objects.create(
                 template_name=template_name,
                 description=template_description,
                 file=template_file
             )
             template_model.save()
-            return redirect('main:forms')
+            return redirect('forms')
 
         return render(request, 'main/administrator/forms.html', {'error': 'No file was uploaded.'})
 
-    return redirect('main:forms')
+    return redirect('forms')
 
 
 @login_required
@@ -224,29 +221,23 @@ def download_template(request, pk):
     template = get_object_or_404(TemplateModel, pk=pk)
     if template.file:
         try:
-            # Open the file as a binary stream
+
             file = template.file.open('rb')
             response = FileResponse(file, as_attachment=True, filename=template.file.name)
             return response
         except FileNotFoundError:
             raise Http404("File not found.")
-    return redirect('main:forms')
+    return redirect('forms')
 
 
 @login_required
 def delete_template(request, pk):
     template = get_object_or_404(TemplateModel, pk=pk)
     if template.file:
-        template.file.delete(save=False)  # Delete the file from the filesystem
-    template.delete()  # Delete the database entry
-    return redirect('main:forms')
+        template.file.delete(save=False)
+    template.delete()
+    return redirect('forms')
 
 
-@login_required
-def generate_report(request, report_type):
-    form = ReportForm(request.POST or None)
-    if request.method == 'POST' and form.is_valid():
-        # Handle report generation logic here
-        return render(request, 'main/report_generated.html', {'form': form, 'report_type': report_type})
-    return render(request, 'main/administrator/forms.html', {'form': form, 'report_type': report_type})
+
 

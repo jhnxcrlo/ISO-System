@@ -2,8 +2,8 @@ from django.urls import path
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
 
-app_name = 'main'
 
 urlpatterns = [
     path('login/', views.login_view, name='login'),
@@ -23,5 +23,8 @@ urlpatterns = [
     path('upload-template/', views.upload_template, name='upload_template'),
     path('download-template/<int:pk>/', views.download_template, name='download_template'),
     path('forms/<int:pk>/delete/', views.delete_template, name='delete_template'),
-    path('generate-report/<int:report_type>/', views.generate_report, name='generate_report'),
+    path('password_reset/', auth_views.PasswordResetView.as_view(template_name='main/administrator/registration/password_reset.html'), name='password_reset'),
+    path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name='main/administrator/registration/password_reset_done.html'), name='password_reset_done'),
+    path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='main/administrator/registration/password_reset_confirm.html'),name='password_reset_confirm'),
+    path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='main/administrator/registration/password_reset_complete.html'), name='password_reset_complete'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -16,14 +16,13 @@
             </div>
             <h4 class="mb-3">Faculty Login</h4>
 
-            <!-- Display error message if it exists -->
             {% if error %}
             <div class="alert alert-danger">
                 {{ error }}
             </div>
             {% endif %}
 
-            <form action="{% url 'main:login' %}" method="post">
+            <form action="{% url 'login' %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="username">Username</label>
@@ -34,7 +33,7 @@
                     <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password" required>
                 </div>
                 <div class="mb-3">
-                    <a href="#" class="forgot-password">Forgot Password?</a>
+                    <a href="{% url 'password_reset' %}" class="forgot-password">Forgot Password?</a>
                 </div>
                 <button type="submit" class="btn btn-primary">Log In</button>
             </form>

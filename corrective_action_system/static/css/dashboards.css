@@ -84,7 +84,7 @@ body {
     color: black;
     font-size: 1rem;
     transition: color 0.3s ease;
-    margin-right: 20px;
+
 }
 
 .notification-icon a:hover {
