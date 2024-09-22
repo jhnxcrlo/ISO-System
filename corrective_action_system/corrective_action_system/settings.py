@@ -53,13 +53,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'corrective_action_system.wsgi.application'
 
+import os
 # Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'corrective_action_db',
-        'USER': 'your_db_user',
-        'PASSWORD': 'your_db_password',
+        'USER': 'nanci',
+        'PASSWORD': 'batman101',
         'HOST': 'localhost',
         'PORT': '3306',
     }

@@ -1,10 +1,448 @@
-{% extends 'main\administrator\base.html' %}
+{% extends 'main/internal audit/base.html' %}
+{% block title %}Internal Audit Dashboard{% endblock %}
 
-{% block title %}Internal Auditor Dashboard{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Welcome, Internal Auditor!</h1>
-    <p>This is the dashboard for Internal Auditors.</p>
+<style>
+
+
+/* Primary Button (Dark Red) */
+.btn-primary {
+  background-color: #8E2524 !important; /* Dark red */
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important; /* Slightly less rounded for modern look */
+  padding: 12px 24px !important; /* More balanced padding */
+  font-weight: bold !important;
+  font-size: 1rem !important; /* Ensure consistent font size */
+  cursor: pointer !important;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important; /* Add subtle shadow */
+}
+
+.btn-primary:hover {
+  background-color: #A33331 !important; /* Slightly lighter red on hover */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15) !important; /* Enhance shadow on hover */
+}
+
+.btn-primary:disabled {
+  background-color: #d3d3d3 !important;
+  color: #777 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+/* Secondary Button (Lighter Red) */
+.btn-secondary {
+  background-color: #E6A5A4!important; /* Lighter red */
+  color: #8E2524  !important; /* Darker red text */
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 8px 24px !important;
+  font-weight: bold !important;
+  font-size: 1rem !important;
+  cursor: pointer !important;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-secondary:hover {
+  background-color: #E6A5A4 !important; /* Slightly darker on hover */
+  color: white;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15) !important;
+}
+
+.btn-secondary:disabled {
+  background-color: #f0f0f0 !important;
+  color: #777 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+/* Tertiary Button (Minimal Red) */
+.btn-tertiary {
+  background-color: transparent !important; /* No background */
+  color: #A33331 !important; /* Use primary red for text */
+  border: none !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  padding: 10px 15px !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+  transition: color 0.3s ease, text-shadow 0.3s ease !important;
+}
+
+.btn-tertiary:hover {
+  color: #7e1f1f !important; /* Slightly darker red on hover */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) !important; /* Add a soft text shadow */
+}
+
+.btn-tertiary:disabled {
+  color: #ccc !important;
+  cursor: not-allowed !important;
+  text-shadow: none !important;
+}
+
+.bg-primary {
+    background-color: #C74C4A!important; /* Replace with your desired color */
+    color: white !important;
+}
+
+
+
+
+
+</style>
+ <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <div class="greeting-section text-left mb-4">
+      <h1>Hi, <strong>{{ user.username }}!</strong> </h1>
+      <a href="#taskSection" class="greeting-link">Proceed to do task</a>
+    </div>
+
+    <!-- Announcement Section -->
+    <div class="announcement-header">
+      <h2>Latest Announcements</h2>
+      <p class="text-muted">Stay updated with the latest news and information</p>
+    </div>
+
+    <div class="announcement-list mt-4">
+      {% for announcement in announcements %}
+      <div class="card mb-4 announcement-card">
+        <div class="card-body">
+          <h5 class="card-title">{{ announcement.title }}</h5>
+          <p class="card-text">{{ announcement.body }}</p>
+          <p class="card-text"><small class="text-muted">Posted on {{ announcement.date_posted|date:"F d, Y" }}</small></p>
+        </div>
+      </div>
+      {% empty %}
+      <p>No announcements to show at the moment.</p>
+      {% endfor %}
+    </div>
+
+    <!-- Dashboard Section -->
+    <div class="container dashboard-section mt-5">
+      <div class="row">
+        <!-- Projects -->
+        <div class="col-md-3">
+          <div class="dashboard-card d-flex align-items-center">
+            <i class="bi bi-kanban-fill dashboard-icon projects-icon"></i>
+            <div class="dashboard-text ms-3 d-flex flex-column align-items-start">
+              <div class="d-flex align-items-center">
+                <div class="stat-number">32</div>
+                <div class="stat-title ms-2">Projects</div>
+              </div>
+              <div class="stat-subtitle">Awaiting processing</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Members -->
+        <div class="col-md-3">
+          <div class="dashboard-card d-flex align-items-center">
+            <i class="bi bi-person-circle dashboard-icon members-icon"></i>
+            <div class="dashboard-text ms-3 d-flex flex-column align-items-start">
+              <div class="d-flex align-items-center">
+                <div class="stat-number">94</div>
+                <div class="stat-title ms-2">Members</div>
+              </div>
+              <div class="stat-subtitle">Working hard</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Invoices -->
+        <div class="col-md-3">
+          <div class="dashboard-card d-flex align-items-center">
+            <i class="bi bi-file-earmark-text-fill dashboard-icon invoices-icon"></i>
+            <div class="dashboard-text ms-3 d-flex flex-column align-items-start">
+              <div class="d-flex align-items-center">
+                <div class="stat-number">23</div>
+                <div class="stat-title ms-2">Invoices</div>
+              </div>
+              <div class="stat-subtitle">Soon to be cleared</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Refunds -->
+        <div class="col-md-3">
+          <div class="dashboard-card d-flex align-items-center">
+            <i class="bi bi-arrow-clockwise dashboard-icon refunds-icon"></i>
+            <div class="dashboard-text ms-3 d-flex flex-column align-items-start">
+              <div class="d-flex align-items-center">
+                <div class="stat-number">3</div>
+                <div class="stat-title ms-2">Refunds</div>
+              </div>
+              <div class="stat-subtitle">Fresh start</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- Audit Section -->
+    <div class="container-fluid mt-3">
+      <div class="row">
+        <!-- Donut Chart and Audit Summary -->
+        <div class="col-md-6">
+          <div class="chart-container">
+            <div class="chart-info">
+              <h2>Audit Summary</h2>
+              <p>Audit Findings</p>
+              <ul>
+                <li><span style="background-color:#8E2524; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span> <span>Product design</span> <span>78</span></li>
+                <li><span style="background-color:#A33331; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span> <span>Development</span> <span>63</span></li>
+                <li><span style="background-color:#C74C4A; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span> <span>QA & Testing</span> <span>56</span></li>
+                <li><span style="background-color:#D67F7E; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span> <span>Customer queries</span> <span>36</span></li>
+                <li><span style="background-color:#E6A5A4; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span> <span>R & D</span> <span>24</span></li>
+              </ul>
+              <button class="btn btn-tertiary" >See Details...</button>
+            </div>
+            <div class="chart-canvas">
+              <canvas id="myChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- ISO Audit Report Section -->
+        <div class="col-md-6 ">
+          <div class="report-container">
+            <h2 class="report-title"><i class="bi bi-file-earmark-check-fill"></i> ISO Audit Report</h2>
+            <p class="report-subtitle">ISO 9001:2015 Corrective Management System</p>
+            <div class="report-content">
+              <ul class="report-lines">
+                <li>
+                  <span>Finding 1: Non-conformance in Quality Management</span>
+                  <i class="bi bi-chevron-down"></i>
+                  <div class="report-expand-content">
+                    <p>Details:</p>
+                  </div>
+                </li>
+                <li>
+                  <span>Finding 2: Documentation Errors</span>
+                  <i class="bi bi-chevron-down"></i>
+                  <div class="report-expand-content">
+                    <p>Details: </p>
+                  </div>
+                </li>
+                <li>
+                  <span>Finding 3: Non-compliance in Training</span>
+                  <i class="bi bi-chevron-down"></i>
+                  <div class="report-expand-content">
+                    <p>Details: </p>
+                  </div>
+                </li>
+                <li>
+                  <span>Finding 4: Inconsistent Safety Protocols</span>
+                  <i class="bi bi-chevron-down"></i>
+                  <div class="report-expand-content">
+                    <p>Details: </p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+   <div class="container mx-lg-n4 mt-3 p-4 rounded-3 shadow">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold">Projects (32)</h3>
+            <button class="btn btn-primary d-flex align-items-center">
+                <i class="bi bi-plus-lg me-2"></i>Add New Project
+            </button>
+        </div>
+
+        <!-- Filter Tabs -->
+        <ul class="nav nav-pills mb-4">
+            <li class="nav-item">
+                <a class="nav-link active" href="#">All (32)</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="#">Ongoing (14)</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="#">Cancelled (2)</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="#">Finished (14)</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="#">Postponed (2)</a>
+            </li>
+        </ul>
+
+
+        <!-- Search Bar -->
+       <div class="search-container">
+          <input type="text" class="search-input" placeholder="Search..." />
+          <span class="input-group-text"><i class="fas fa-search"></i></span>
+        </div>
+
+
+
+    <!-- Project Table -->
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>NON-CONFORMITIES</th>
+                <th>Assignees</th>
+                <th>CAMPUS</th>
+                <th>START DATE</th>
+                <th>DEADLINE</th>
+                <th>TASK</th>
+                <th>PROGRESS</th>
+                <th>STATUS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><a href="#" style="color: #203040;">Incomplete Documentation of Processes</a></td>
+                <td>
+                    <div class="avatar-group">
+                        <img src="https://via.placeholder.com/35" alt="Assignee">
+                        <img src="https://via.placeholder.com/35" alt="Assignee">
+                        <span class="badge bg-primary">+2</span>
+                    </div>
+                </td>
+                <td>BULAN</td>
+                <td>Nov 17, 2020</td>
+                <td>May 21, 2028</td>
+                <td>287</td>
+                <td><div>145 / 145</div><div class="progress"><div class="progress-bar bg-success" style="width: 100%;"></div></div></td>
+                <td><span class="badge-status badge-completed">COMPLETED</span></td>
+            </tr>
+            <tr>
+                <td><a href="#" style="color: #203040;">Lack of Corrective Action for Student Complaints</a></td>
+                <td>
+                    <div class="avatar-group">
+                        <img src="https://via.placeholder.com/35" alt="Assignee">
+                    </div>
+                </td>
+                <td>BULAN</td>
+                <td>Mar 8, 2021</td>
+                <td>Sep 15, 2022</td>
+                <td>125</td>
+                <td><div>148 / 223</div><div class="progress"><div class="progress-bar bg-warning" style="width: 66%;"></div></div></td>
+                <td><span class="badge-status badge-inactive">INACTIVE</span></td>
+            </tr>
+            <tr>
+                <td><a href="#" style="color: #203040;">Non-Compliance with Health and Safety Regulations</a></td>
+                <td>
+                    <div class="avatar-group">
+                        <img src="https://via.placeholder.com/35" alt="Assignee">
+                        <img src="https://via.placeholder.com/35" alt="Assignee">
+                        <span class="badge bg-primary">R</span>
+                    </div>
+                </td>
+                <td>BULAN</td>
+                <td>Nov 17, 2020</td>
+                <td>Sep 23, 2026</td>
+                <td>72</td>
+                <td><div>277 / 539</div><div class="progress"><div class="progress-bar bg-info" style="width: 51%;"></div></div></td>
+                <td><span class="badge-status badge-ongoing">ONGOING</span></td>
+            </tr>
+            <tr>
+                <td><a href="#" style="color: #203040;">Inconsistent Teacher Training and Development Programs</a></td>
+                <td>
+                    <div class="avatar-group">
+                        <img src="https://via.placeholder.com/35" alt="Assignee">
+                        <img src="https://via.placeholder.com/35" alt="Assignee">
+                    </div>
+                </td>
+                <td>BULAN</td>
+                <td>Jan 01, 2016</td>
+                <td>Apr 04, 2022</td>
+                <td>91</td>
+                <td><div>169 / 394</div><div class="progress"><div class="progress-bar bg-danger" style="width: 43%;"></div></div></td>
+                <td><span class="badge-status badge-critical">CRITICAL</span></td>
+            </tr>
+            <!-- Add more rows as needed -->
+        </tbody>
+    </table>
+
+    <!-- View All -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+      <div class="d-flex align-items-center">
+        <span>1 to 6 Items of 7</span>
+        <a href="#" class="nav-link view-all-link d-flex align-items-center">
+          View all
+        </a>
+        <i class="fa fa-angle-right ms-1"></i>
+      </div>
+
+      <!-- Pagination -->
+      <nav aria-label="Page navigation example" class="pagination-container">
+        <ul class="pagination pagination-red">
+          <li class="page-item">
+            <a class="page-link" href="#" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+
 </div>
+
+
+
+
+<!-- Chart.js Configuration -->
+<script>
+  // Setup chart data with lighter color palette
+  const ctx = document.getElementById('myChart').getContext('2d');
+  const data = {
+    labels: ['Product design', 'Development', 'QA & Testing', 'Customer queries', 'R & D'],
+    datasets: [{
+      data: [78, 63, 56, 36, 24],
+      backgroundColor: [
+        '#8E2524',  // Dark red
+        '#A33331',  // Slightly lighter dark red
+        '#C74C4A',  // Mid-range red
+        '#D67F7E',  // Soft red
+        '#E6A5A4',  // Lighter red
+        '#F2C7C6',  // Very light red
+        '#F7E0E0'   // Almost white, pale red
+      ],
+      hoverOffset: 4
+    }]
+  };
+
+  // Create donut chart
+  const myChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: data,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false, // Disable the aspect ratio
+      plugins: {
+        legend: {
+          display: false // Hide default legend
+        }
+      },
+      cutout: '70%' // Controls the inner radius of the donut
+    }
+  });
+</script>
+
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
 {% endblock %}

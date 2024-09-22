@@ -1,0 +1,71 @@
+{% extends 'main/internal audit/base.html' %}
+
+{% block title %}Guidelines{% endblock %}
+
+
+{% block content %}
+<style>
+  /* Custom styling for external resource links */
+  .external-resources-links a {
+    color: #800000; /* Maroon color for the links */
+    text-decoration: none; /* Remove underline */
+    transition: color 0.3s ease;
+  }
+
+  .external-resources-links a:hover {
+    color: #5a1f1f; /* Darker maroon on hover */
+    text-decoration: underline; /* Optional: underline on hover */
+  }
+</style>
+
+<div class="container-fluid">
+  <h1>Guidelines</h1>
+  <p>This page provides a clear and concise overview of corrective action procedures according to ISO 9001:2015 standards.</p>
+
+  <div class="mb-4">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="mb-0">
+          Corrective Action Procedures
+        </h3>
+      </div>
+      <div class="card-body">
+        <p>Follow these steps to address non-conformities:</p>
+        <ol>
+          <li>Identify the root cause of the non-conformity.</li>
+          <li>Develop a corrective action plan to address the root cause.</li>
+          <li>Implement the corrective action plan.</li>
+          <li>Verify the effectiveness of the corrective action.</li>
+          <li>Document the process and outcomes.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-header">
+        <h3 class="mb-0">
+          Documentation Requirements
+        </h3>
+      </div>
+      <div class="card-body">
+        <p>Ensure all corrective actions are documented according to the ISO 9001:2015 standards. Use the provided templates for consistency.</p>
+      </div>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-header">
+        <h3 class="mb-0">
+          External Resources
+        </h3>
+      </div>
+      <div class="card-body">
+        <ul class="external-resources-links">
+          <li><a href="https://www.iso.org/iso-9001-quality-management.html" target="_blank">ISO 9001:2015 Quality Management</a></li>
+          <li><a href="https://www.iso.org/standard/62085.html" target="_blank">ISO Corrective Actions Guidelines</a></li>
+          <li><a href="{% url 'download_template' pk=1 %}">Download Corrective Action Plan Template</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

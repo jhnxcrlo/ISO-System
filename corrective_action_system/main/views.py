@@ -364,6 +364,26 @@ def delete_template(request, pk):
     template.delete()
     return redirect('forms')
 
+# newly added
+def process_owner_forms_view(request):
+    templates = TemplateModel.objects.all()  # Assuming you store the forms as templates
+    return render(request, 'main/process owner/process_owner_forms.html', {'templates': templates})
+
+def process_owner_guidelines_view(request):
+    return render(request, 'main/process owner/process_owner_guidelines.html')
+
+def internal_auditor_forms_view(request):
+    templates = TemplateModel.objects.all()  # Assuming you store the forms as templates
+    return render(request, 'main/internal audit/internal_auditor_forms.html', {'templates': templates})
+
+def internal_auditor_guidelines_view(request):
+    return render(request, 'main/internal audit/internal_auditor_guidelines.html')
+
+def internal_auditor_monitoring_log(request):
+    # Any additional logic can be added here
+    return render(request, 'main/internal audit/internal_auditor_monitoring_log.html')
+
+
 
 
 

@@ -6,11 +6,22 @@
     <title>{% block title %}Dashboard{% endblock %}</title>
     {% load static %}
 
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+     <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome for additional icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <!-- FullCalendar CSS -->
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet'>
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Custom Dashboard CSS (Make sure this comes last to override other styles) -->
     <link rel="stylesheet" href="{% static 'css/dashboards.css' %}">
+
 
     <style>
 /* ========== Navbar Styling ========== */
@@ -32,6 +43,7 @@
 .navbar-nav .nav-item .nav-link {
     color: #ffffff;
     font-size: 1.2rem;
+    background-color:#A33331;
 
 }
 
@@ -426,12 +438,19 @@
 /* Collapsed Sidebar */
 .sidebar-collapsed {
     width: 80px;
+    transition: width 0.3s ease;
 }
 
+/* Adjust content margin when sidebar is collapsed */
+.main-content-expanded {
+    margin-left: 80px;
+    transition: margin-left 0.3s ease;
+}
+
+/* Hide text but show icons in collapsed state */
 .sidebar-collapsed .nav-link {
     justify-content: center;
-    padding: 10px;
-    font-size: 0;
+    font-size: 0; /* Hide text */
 }
 
 .sidebar-collapsed .nav-link i {
@@ -442,6 +461,7 @@
 .sidebar-collapsed .system-title {
     display: none;
 }
+
 
 /* Main content area */
 .main-content {
@@ -509,6 +529,600 @@
  Adjust content margin when sidebar is collapsed */
 }
 
+/* Primary Button (Dark Red) */
+.btn-primary {
+  background-color: #8E2524 !important; /* Dark red */
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important; /* Slightly less rounded for modern look */
+  padding: 12px 24px !important; /* More balanced padding */
+  font-weight: bold !important;
+  font-size: 1rem !important; /* Ensure consistent font size */
+  cursor: pointer !important;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important; /* Add subtle shadow */
+}
+
+.btn-primary:hover {
+  background-color: #A33331 !important; /* Slightly lighter red on hover */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15) !important; /* Enhance shadow on hover */
+}
+
+.btn-primary:disabled {
+  background-color: #d3d3d3 !important;
+  color: #777 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+/* Secondary Button (Lighter Red) */
+.btn-secondary {
+  background-color: #E6A5A4!important; /* Lighter red */
+  color: #8E2524  !important; /* Darker red text */
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 12px 24px !important;
+  font-weight: bold !important;
+  font-size: 1rem !important;
+  cursor: pointer !important;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-secondary:hover {
+  background-color: #C74C4A !important; /* Darker red hover */
+  color: white !important;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15) !important;
+}
+
+.btn-secondary:disabled {
+  background-color: #f0f0f0 !important;
+  color: #777 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+/* Tertiary Button (Minimal Red) */
+.btn-tertiary {
+  background-color: transparent !important; /* No background */
+  color: #A33331 !important; /* Use primary red for text */
+  border: none !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  padding: 10px 15px !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+  transition: color 0.3s ease, text-shadow 0.3s ease !important;
+}
+
+.btn-tertiary:hover {
+  color: #7e1f1f !important; /* Slightly darker red on hover */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) !important; /* Add a soft text shadow */
+}
+
+.btn-tertiary:disabled {
+  color: #ccc !important;
+  cursor: not-allowed !important;
+  text-shadow: none !important;
+}
+
+/* Badge Primary Background */
+.bg-primary {
+  background-color: #C74C4A!important; /* Replace with a mid-range red */
+  color: white !important;
+}
+
+/* Badge Secondary Background */
+.bg-secondary {
+  background-color: #E6A5A4!important; /* Lighter red */
+  color: #8E2524!important; /* Dark red text */
+}
+
+/* Ripple Effect for Buttons */
+.btn {
+  position: relative;
+  overflow: hidden; /* Ensures the ripple does not exceed button boundary */
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.4); /* Light ripple effect */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
+  opacity: 0;
+}
+
+.btn:hover::before {
+  width: 300%;
+  height: 300%;
+  opacity: 1;
+}
+
+/* Badge Styling */
+.badge {
+  font-size: 0.85rem;
+  padding: 5px 10px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+
+        /* General Container and Layout */
+.custom-background {
+  background-color: #ffffff;
+  color: #333;
+  min-height: 100vh;
+  padding: 40px 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.container-fluid {
+  padding: 20px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Greeting Section */
+.greeting-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  color: white;
+}
+
+.greeting-section:hover .greeting-link {
+  transform: scale(1.2);
+  color: #7e1f1f;
+}
+
+.greeting-section strong {
+  color: #272F3E; /* Change this to your desired color */
+  font-weight: bolder;
+}
+
+/* Announcement Section */
+
+.announcement-header h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.announcement-card {
+  background-color: #ffffff;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.announcement-card h5 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.announcement-card .card-text {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Dashboard Card Styling */
+.dashboard-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-icon {
+  font-size: 40px;
+  color: #272F3E;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.stat-title {
+  font-size: 1.25rem;
+}
+
+.stat-subtitle {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Greeting Section */
+.greeting-section {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  border: 2px solid #8e2524;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 30px;
+  transition: transform 0.3s ease;
+}
+
+.greeting-section h1 {
+  color: #8e2524;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.greeting-link {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.greeting-link:hover {
+  color: #ffd700;
+  text-decoration: underline;
+}
+
+/* Form and Button Styling */
+.form-control,
+.form-select {
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+/* Chart Section */
+.chart-container {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.chart-info {
+  width: 60%;
+}
+
+.chart-info h2 {
+  font-weight: bold;
+}
+
+.chart-info ul {
+  list-style-type: none;
+  padding: 0;
+  margin-right: 30px;
+}
+
+.chart-info ul li {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.chart-info ul li span {
+  font-weight: bold;
+}
+
+.chart-canvas {
+  width: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chart-canvas canvas {
+  width: 250px;
+  height: 250px;
+}
+
+/* ISO Audit Report Enhancements */
+.report-container {
+  background-color: #f9f9f9;
+  padding: 20px;
+
+}
+
+.report-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #203040;
+  display: flex;
+  align-items: center;
+}
+
+.report-subtitle {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.report-lines {
+  list-style: none;
+  padding: 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.report-lines li {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.report-lines li:hover {
+  background-color: #f2f2f2;
+}
+
+/* Flexbox for responsiveness */
+@media (max-width: 768px) {
+  .row {
+    flex-direction: column;
+  }
+}
+
+/* Table Styling */
+.table-wrapper {
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  margin-top: 2rem;
+}
+
+.table th, .table td {
+  vertical-align: middle;
+}
+
+.table th {
+  color: #203040;
+  font-weight: bold;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f2f2f2;
+}
+
+/* Avatar Group Styling */
+.avatar-group {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-group img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin-right: -10px;
+  border: 2px solid #fff;
+}
+
+.progress {
+  height: 3px;
+}
+
+.progress-bar {
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+/* Badge Styling */
+.badge-status {
+  font-size: 0.85rem;
+  padding: 5px 10px;
+  border-radius: 12px;
+}
+
+.badge-completed {
+  background-color: #28a745;
+  color: white;
+}
+
+.badge-ongoing {
+  background-color: #007bff;
+  color: white;
+}
+
+.badge-critical {
+  background-color: #dc3545;
+  color: white;
+}
+
+.badge-inactive {
+  background-color: #ffc107;
+  color: white;
+}
+
+.badge-cancelled {
+  background-color: #6c757d;
+  color: white;
+}
+
+.badge bg-primary{
+    badkground-color: #e6a5a4;
+}
+
+/* Filter Tabs */
+.filter-tabs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.filter-tabs .nav-link {
+  font-weight: bold;
+  color: #A33331;
+  transition: color 0.3s;
+}
+
+.filter-tabs .nav-link:hover, .filter-tabs .nav-link.active {
+  color: #A33331;
+}
+
+/* Change the default color of nav-pills links */
+.nav-pills .nav-link {
+    color: #A33331; /* Your desired color for inactive pills */
+}
+
+/* Change the color of the active pill */
+.nav-pills .nav-link.active {
+    background-color: #A33331; /* Background color for the active pill */
+    color: #fff; /* Text color for the active pill */
+}
+
+/* Change the color on hover */
+.nav-pills .nav-link:hover {
+    color: #A33331; /* Text color on hover */
+}
+
+/* Other Styling */
+.card {
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.text-primary {
+  color: #8B0000;
+}
+
+h3 {
+  font-size: 1.75rem;
+}
+
+.input-group-text {
+  background-color: #f0f2f5;
+}
+/* Search Bar Container */
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 350px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid #ddd;
+  transition: border-color 0.3s ease;
+}
+
+/* Search Input */
+.search-input {
+  flex-grow: 1;
+  padding: 10px 20px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  border-radius: 30px 0 0 30px;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #0d6efd;
+}
+
+/* Search Button */
+.input-group-text {
+  padding: 13px 20px;
+  background-color: white; /* Dark Red */
+  color: #8E2524;
+  border: 2px solid #8E2524;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  border-radius: 0 5px 5px 0;
+}
+
+.input-group-text:hover {
+  background-color: #f0f0f0; /* Slightly lighter red on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+        /* View All Link Styling */
+
+  .view-all-link {
+    font-weight: bold;
+    color: #A33331;
+    transition: color 0.3s;
+    text-decoration: none;
+    margin-left: 15px;
+  }
+
+.nav-link  i.fa-angle-right {
+    color: #A33331; /* Icon changes color when hovered */
+}
+  .view-all-link:hover {
+    color: #8E2524; /* Darker red on hover */
+    text-decoration: underline;
+  }
+
+  /* Pagination Red Theme */
+  .pagination-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top:12px;
+}
+
+  .pagination-red .page-link {
+    color: #8E2524; /* Dark Red */
+    font-weight: bold;
+  }
+
+  .pagination-red .page-link:hover {
+    background-color: #8E2524;
+    color: #fff; /* White text on hover */
+  }
+
+  .pagination-red .page-link:focus {
+    box-shadow: none; /* Remove the blue outline on focus */
+  }
+
+  .pagination-red .page-item.active .page-link {
+    background-color: #8E2524;
+    border-color: #8E2524;
+    color: #fff; /* White text when active */
+  }
+
+  .pagination-red .page-item.disabled .page-link {
+    color: #d3d3d3; /* Disabled item color */
+    pointer-events: none;
+    background-color: #f0f0f0;
+  }
+
 
     </style>
 </head>
@@ -516,31 +1130,44 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Side Navbar -->
-             <div class="col-md-2 sidenav d-flex flex-column" id="sidebar" style="margin-top: 60px;">
+            <div class="col-md-2 sidenav d-flex flex-column" id="sidebar" style="margin-top: 60px;">
                 <div class="text-center py-4">
                     <img src="{% static 'main/img2.png' %}" alt="Management System Logo" class="img-fluid" style="max-width: 60%; height: auto; border-radius: 50%;">
                     <h6 class="mt-3 system-title" style="color:#272F3F">Management System</h6>
                 </div>
                 <ul class="nav flex-column">
-                    <!-- Sidebar links here -->
+                    <!-- Home Link -->
+
+
+                    <!-- Dashboard Link -->
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/main/process_owner/process_owner_dashboard.html/' %}active{% endif %}" href="{% url 'process_owner_dashboard' %}">
-                            <i class="fas fa-home"></i> Dashboard
+                        <a class="nav-link {% if request.path == '/main/internal_auditor/internal_auditor_dashboard.html/' %}active{% endif %}" href="{% url 'internal_auditor_dashboard' %}">
+                            <i class="fas fa-home"></i> Home
                         </a>
                     </li>
+
+                    <!-- Monitoring Log Link -->
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/main/process-owner-forms/' %}active{% endif %}" href="{% url 'process_owner_forms' %}">
-                            <i class="fas fa-file-alt"></i> Forms
+                        <a class="nav-link {% if request.path == '/main/internal_auditor_monitoring_log.html/' %}active{% endif %}" href="{% url 'internal_auditor_monitoring_log' %}">
+                            <i class="fas fa-tachometer-alt me-2"></i> Monitoring Log
                         </a>
                     </li>
+
+                    <!-- Forms Link -->
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/main/process-owner-guidelines/' %}active{% endif %}" href="{% url 'process_owner_guidelines' %}">
-                            <i class="fas fa-book"></i> Guidelines
+                        <a class="nav-link {% if request.path == '/main/internal-auditor-forms/' %}active{% endif %}" href="{% url 'internal_auditor_forms' %}">
+                            <i class="fas fa-file-alt me-2"></i> Forms
+                        </a>
+                    </li>
+
+                    <!-- Guidelines Link -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/main/internal-auditor-guidelines/' %}active{% endif %}" href="{% url 'internal_auditor_guidelines' %}">
+                            <i class="fas fa-book me-2"></i> Guidelines
                         </a>
                     </li>
                 </ul>
-
-                 <!-- Collapse Button at the bottom -->
+                <!-- Collapse Button at the bottom -->
                 <button class="sidebar-toggle-btn" id="sidebarToggle">
                     <i class="fas fa-arrow-left"></i>
                 </button>
@@ -558,9 +1185,9 @@
                             <li class="nav-item dropdown">
                                 <button class="btn btn-light dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
                                     <img src="{% static 'main/img2.png' %}" alt="User" class="rounded-circle me-1">
-                                    <div class="d-flex flex-column align-items-start">
-                                         <span class="username" style="margin-top: 15px;"><strong>{{ user.username }}&nbsp;</strong></span>
-                                         <span class="text-muted" style="font-size: 0.8rem; inline-block; width: 100%; text-align: center;">(Process Owner)</span>
+                                     <div class="d-flex flex-column align-items-start ">
+                                         <span class="username" style="margin-top: 15px; margin-left:5px;"><strong>{{ user.username }}&nbsp;</strong></span>
+                                         <span class="text-muted" style="font-size: 0.8rem; inline-block; width: 100%; text-align: center;">(Internal Auditor)</span>
                                      </div>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
@@ -597,26 +1224,29 @@
         </div>
         <div class="chatbox-body">
             <div class="message">
-                <h6>Support</h6>
-                <p>How can we assist you today?</p>
+                <h6>Internal Auditor Support</h6> <!-- Changed the header -->
+                <p>How can we assist you with your internal audit today?</p> <!-- Updated message -->
                 <div class="quick-replies">
-                    <button class="btn">Reviewed the report <i class="bi bi-send"></i></button>
-                    <button class="btn">Action being implemented <i class="bi bi-send"></i></button>
-                    <button class="btn">Documentation completed <i class="bi bi-send"></i></button>
-                    <button class="btn">Need more info? <i class="bi bi-send"></i></button>
+                    <button class="btn">Reviewed the audit findings <i class="bi bi-send"></i></button>
+                    <button class="btn">Implemented corrective action <i class="bi bi-send"></i></button>
+                    <button class="btn">Audit documentation completed <i class="bi bi-send"></i></button>
+                    <button class="btn">Need clarification on compliance <i class="bi bi-send"></i></button>
                 </div>
             </div>
         </div>
         <div class="chatbox-footer">
             <label for="file-upload" class="file-upload-label">
                 <i class="fas fa-paperclip"></i>
-                <span class="tooltip-text">Attach file</span>
+                <span class="tooltip-text">Attach audit report</span> <!-- Changed tooltip text -->
             </label>
             <input type="file" id="file-upload">
             <input type="text" placeholder="Write a message...">
             <button type="button" class="send-button"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
+
+
+
 
     <!-- JavaScript -->
     <script>
@@ -635,26 +1265,29 @@
         });
     </script>
 
-<script>
+    <script>
+           document.addEventListener("DOMContentLoaded", function () {
     const sidebar = document.getElementById('sidebar');
     const sidebarToggle = document.getElementById('sidebarToggle');
     const mainContent = document.querySelector('.main-content');
 
     sidebarToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('sidebar-collapsed');
-    mainContent.classList.toggle('main-content-expanded');
+        sidebar.classList.toggle('sidebar-collapsed');
+        mainContent.classList.toggle('main-content-expanded');
 
-    // Toggle arrow icons correctly
-    if (sidebar.classList.contains('sidebar-collapsed')) {
-        sidebarToggle.querySelector('i').classList.remove('fa-arrow-left');
-        sidebarToggle.querySelector('i').classList.add('fa-arrow-right');
-    } else {
-        sidebarToggle.querySelector('i').classList.remove('fa-arrow-right');
-        sidebarToggle.querySelector('i').classList.add('fa-arrow-left');
-    }
+        // Toggle arrow icons correctly
+        if (sidebar.classList.contains('sidebar-collapsed')) {
+            sidebarToggle.querySelector('i').classList.remove('fa-arrow-left');
+            sidebarToggle.querySelector('i').classList.add('fa-arrow-right');
+        } else {
+            sidebarToggle.querySelector('i').classList.remove('fa-arrow-right');
+            sidebarToggle.querySelector('i').classList.add('fa-arrow-left');
+        }
+    });
 });
 
-</script>
+
+    </script>
 
     <!-- JavaScript Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
