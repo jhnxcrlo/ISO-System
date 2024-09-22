@@ -1,0 +1,133 @@
+{% extends 'main/administrator/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h2 >Guidelines</h2>
+            <!-- Button to trigger the upload modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#guidelineModal">
+                 Upload Guideline
+            </button>
+        </div>
+    </div>
+
+    <!-- Responsive grid for guidelines -->
+    {% if guidelines %}
+        <div class="row">
+            {% for guideline in guidelines %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card border-light shadow-sm h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold text-dark">{{ guideline.title }}</h5>
+                            <p class="card-text text-muted">{{ guideline.description|truncatechars:150 }}</p>
+                            <p class="text-muted small mt-auto">
+                                <i class="fas fa-user"></i> {{ guideline.uploaded_by.username }}
+                                <span class="text-muted">|</span>
+                                <i class="fas fa-clock"></i> {{ guideline.created_at|date:"F j, Y" }}
+                            </p>
+                        </div>
+                        <div class="card-footer bg-light border-0 d-flex justify-content-between">
+                            <!-- Edit button -->
+                            <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editGuidelineModal-{{ guideline.id }}">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+
+                            <!-- Delete button -->
+                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteGuidelineModal-{{ guideline.id }}">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Modal -->
+                <div class="modal fade" id="editGuidelineModal-{{ guideline.id }}" tabindex="-1" aria-labelledby="editGuidelineModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title fw-bold" id="editGuidelineModalLabel">Edit Guideline</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" enctype="multipart/form-data" action="{% url 'edit_guideline' guideline.id %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label fw-bold">Title</label>
+                                        <input type="text" class="form-control" id="title" name="title" value="{{ guideline.title }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="description" class="form-label fw-bold">Description</label>
+                                        <textarea class="form-control" id="description" name="description" rows="4" required>{{ guideline.description }}</textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="file" class="form-label fw-bold">Upload File</label>
+                                        <input type="file" class="form-control" id="file" name="file">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Modal -->
+                <div class="modal fade" id="deleteGuidelineModal-{{ guideline.id }}" tabindex="-1" aria-labelledby="deleteGuidelineModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title fw-bold" id="deleteGuidelineModalLabel">Delete Guideline</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete the guideline "<strong>{{ guideline.title }}</strong>"?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <form method="POST" action="{% url 'delete_guideline' guideline.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info ">No guidelines available.</div>
+    {% endif %}
+
+    <!-- Upload Modal -->
+    <div class="modal fade" id="guidelineModal" tabindex="-1" aria-labelledby="guidelineModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="guidelineModalLabel">Upload Guideline</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" enctype="multipart/form-data" action="{% url 'upload_guideline' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="title" class="form-label fw-bold">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label fw-bold">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="file" class="form-label fw-bold">Upload File</label>
+                            <input type="file" class="form-control" id="file" name="file">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

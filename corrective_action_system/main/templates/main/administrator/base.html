@@ -6,52 +6,83 @@
     <title>{% block title %}Dashboard{% endblock %}</title>
     {% load static %}
 
-    <!-- Bootstrap 5 CSS -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/dashboards.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 
     <style>
-        /* Additional styles for responsiveness */
-        @media (max-width: 768px) {
-            .sidenav {
-                position: fixed;
-                top: 0;
-                left: -250px;
-                width: 250px;
-                height: 100%;
-                background-color: blue;
-                transition: left 0.3s;
-                z-index: 1000;
-            }
-            .sidenav.open {
-                left: 0;
-            }
-            .main-content {
-                margin-left: 0;
-            }
-            .navbar-toggler {
-                margin-right: 10px;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .main-content {
-                margin-left: 210px;
-            }
-        }
-
-        /* General padding and margin adjustments */
+        /* Additional styles for layout and alignment */
         body {
             overflow-x: hidden;
+        }
+
+        /* Sidebar styles */
+        .sidenav {
+            background-color: #203040;
+            height: 100vh;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 220px;
+            z-index: 1000;
+        }
+
+        /* Sidebar navigation links */
+        .sidenav .nav-link {
+            color: #b0c4de;
+            padding: 12px 15px;
+            font-size: 16px;
+        }
+
+        .sidenav .nav-link.active,
+        .sidenav .nav-link:hover {
+            background-color: #1c2833;
+            color: white;
+            border-radius: 5px;
+        }
+
+        /* Main content area */
+        .main-content {
+            margin-left: 200px; /* Align main content with sidebar */
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #eaecef;
+            border-bottom: 1px solid #ddd;
+            z-index: 1001;
+        }
+
+        /* User profile dropdown and notification icon */
+        .notification-icon a {
+            color: black;
+            font-size: 1.25rem;
+        }
+
+        .navbar .dropdown-toggle {
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .dropdown-menu {
+            font-size: 14px;
+        }
+
+        .navbar .rounded-circle {
+            border: 2px solid #ffffff;
         }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
-            <!-- Side Navbar -->
+
             <div class="col-md-2 sidenav d-flex flex-column">
                 <div class="text-center py-4">
                     <img src="{% static 'main/img2.png' %}" alt="Management System Logo" class="img-fluid" style="max-width: 40%; height: auto;">
@@ -69,7 +100,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white {% if request.path == '/main/guidelines/' %}active{% endif %}" href="{% url 'guidelines' %}">
+                        <a class="nav-link text-white {% if request.path == '/main/guidelines/guideline_list/' %}active{% endif %}" href="{% url 'guideline_list' %}">
                             <i class="fas fa-book"></i> Guidelines
                         </a>
                     </li>
@@ -86,31 +117,27 @@
                 </ul>
             </div>
 
-            <!-- Main Content Area -->
+
             <div class="col main-content">
-                <!-- Top Navbar -->
+
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                     <div class="container-fluid">
-                        <!-- Toggle button for mobile sidebar -->
                         <button class="navbar-toggler" type="button" id="menu-toggle" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
 
                         <div class="d-flex ms-auto align-items-center">
-                            <!-- Notification Icon -->
                             <div class="notification-icon me-3">
-                                <a href="#"><i class="fas fa-bell fa-lg"></i></a>
+                                <a href="#"><i class="fas fa-bell"></i></a>
                             </div>
-
-                            <!-- User Profile Dropdown -->
                             <div class="dropdown">
                                 <button class="btn btn-light dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
                                     <img src="{% static 'main/img2.png' %}" alt="User" class="rounded-circle me-1" width="30">
-                                    <span>{{ user.username }}</span>
+                                    <span>{{ user.last_name }} {{ user.first_name|slice:":1" }}. ({{ user.userprofile.role }})</span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
                                     <li class="dropdown-header">
-                                        <strong>{{ user.username }}</strong> <!-- Username Displayed Here -->
+                                        <strong>{{ user.last_name }} {{ user.first_name|slice:":1" }}. ({{ user.userprofile.role }})</strong>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'login' %}">Log Out</a></li>
@@ -120,24 +147,36 @@
                     </div>
                 </nav>
 
-                <!-- Content Block -->
+
                 <div class="container-fluid my-4">
                     {% block content %}
+
                     {% endblock %}
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Libraries -->
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
 
     <script>
-        // Sidebar toggle script
+        // Sidebar toggle
         document.getElementById("menu-toggle").addEventListener("click", function () {
             document.querySelector(".sidenav").classList.toggle("open");
+        });
+
+        // FullCalendar Initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            if (calendarEl) {
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth'
+                });
+                calendar.render();
+            }
         });
     </script>
 </body>

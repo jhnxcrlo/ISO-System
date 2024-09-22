@@ -22,6 +22,7 @@
         background-color: #007bff;
         color: white;
         text-align: center;
+        font-weight: 600;
     }
     .table td {
         padding: 15px;
@@ -58,14 +59,29 @@
         font-size: 1.5rem;
         font-weight: 600;
     }
+    .btn-primary, .btn-warning, .btn-danger {
+        border-radius: 20px;
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+    .btn-primary i, .btn-warning i, .btn-danger i {
+        margin-right: 6px;
+    }
+    .modal-footer {
+        justify-content: center;
+    }
+    .error-message {
+        color: red;
+        margin-bottom: 10px;
+    }
 </style>
 
 <div class="container">
-    <h1 class="mt-4">Manage Users</h1>
+    <h2 class="mt-4 fw-bold">Manage Users</h2>
 
     <div class="search-container">
         <input type="text" id="searchInput" class="form-control" placeholder="Search by username..." onkeyup="filterUsers()" aria-label="Search users">
-        <button class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
             <i class="fas fa-plus"></i> Add User
         </button>
     </div>
@@ -83,25 +99,26 @@
             </thead>
             <tbody id="userTableBody">
                 {% for user in users %}
-                    {% if user.id != superuser_id %}
-                        <tr>
-                            <td>{{ user.id }}</td>
-                            <td>{{ user.username }}</td>
-                            <td>{{ user.email }}</td>
-                            <td>{{ user_roles|get_item:user.id }}</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning btn-action" data-toggle="modal" data-target="#addUserModal" data-id="{{ user.id }}" data-username="{{ user.username }}" data-email="{{ user.email }}" data-role="{{ user_roles|get_item:user.id }}">
-                                    <i class="fas fa-edit"></i> Edit
-                                </button>
-                                <form method="post" action="{% url 'delete_user' user.id %}" style="display:inline;" onsubmit="return confirmDeletion('{{ user.username }}');">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-danger btn-action" {% if user.id == superuser_id %}disabled{% endif %}>
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endif %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user_roles|get_item:user.id }}</td>
+                    <td>
+                        <!-- Edit button -->
+                        <button class="btn btn-sm btn-warning btn-action" data-bs-toggle="modal" data-bs-target="#addUserModal" data-id="{{ user.id }}" data-username="{{ user.username }}" data-email="{{ user.email }}" data-role="{{ user_roles|get_item:user.id }}">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+
+                        <!-- Delete button -->
+                        <form method="post" action="{% url 'delete_user' user.id %}" style="display:inline;" onsubmit="return confirmDeletion('{{ user.username }}');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger btn-action" {% if user.is_superuser %}disabled{% endif %}>
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -114,40 +131,32 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="userForm" method="post" action="{% url 'add_user' %}">
                     {% csrf_token %}
+
                     <div class="form-group">
-                        <label for="id_username">Username:</label>
-                        <input type="text" name="username" maxlength="150" autofocus class="form-control" required id="id_username">
+                        <label for="id_username" class="fw-bold">Username:</label>
+                        <input type="text" name="username" class="form-control" required id="id_username">
                     </div>
                     <div class="form-group">
-                        <label for="id_email">Email:</label>
-                        <input type="email" name="email" maxlength="254" class="form-control" required id="id_email">
+                        <label for="id_email" class="fw-bold">Email:</label>
+                        <input type="email" name="email" class="form-control" required id="id_email">
                     </div>
                     <div class="form-group">
-                        <label for="id_password">Password:</label>
-                        <input type="password" name="password" class="form-control" required id="id_password">
-                    </div>
-                    <div class="form-group">
-                        <label for="id_password_confirm">Confirm Password:</label>
-                        <input type="password" name="password_confirm" class="form-control" required id="id_password_confirm">
-                    </div>
-                    <div class="form-group">
-                        <label for="id_role">Role:</label>
+                        <label for="id_role" class="fw-bold">Role:</label>
                         <select name="role" class="form-control" required id="id_role">
                             <option value="">Select Role</option>
+                            <option value="Admin">Admin</option>
                             <option value="Process Owner">Process Owner</option>
                             <option value="Internal Auditor">Internal Auditor</option>
                         </select>
                     </div>
                     <div id="formErrors" class="mt-2"></div>
                     <input type="hidden" name="user_id" id="user_id" value="">
-                    <button type="submit" class="btn btn-primary mt-2">Save</button>
+                    <button type="submit" class="btn btn-primary w-100 mt-2">Save</button>
                 </form>
             </div>
         </div>
@@ -160,30 +169,28 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="successModalLabel">Success!</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="successMessage">
                 <!-- Success message will be injected here -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Include jQuery and Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Include jQuery and Bootstrap 5 JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
     function confirmDeletion(username) {
         return confirm("Are you sure you want to delete user " + username + "?");
     }
 
+    // Prefill the modal with data for editing
     $('#addUserModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var userId = button.data('id');

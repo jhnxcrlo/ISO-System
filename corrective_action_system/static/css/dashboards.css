@@ -10,28 +10,13 @@ body {
 .sidenav {
     background-color: #203040;
     height: 100vh;
-    color: white;
+    color: black;
     padding-top: 20px;
     position: fixed;
     top: 0;
     left: 0;
     width: 230px;
-}
-
-.sidebar-header {
-    padding: 10px;
-    text-align: center;
-}
-
-.sidebar-header img {
-    max-width: 60px;
-    margin-bottom: 10px;
-}
-
-.sidebar-header h5 {
-    font-size: 18px;
-    color: #fff;
-    font-weight: 600;
+    z-index: 1000;
 }
 
 .sidenav .nav-link {
@@ -54,47 +39,30 @@ body {
 
 /* Main content styles */
 .main-content {
-    margin-left: 250px;
+    margin-left: 230px;  /* Keeps the content away from the sidebar */
     padding: 20px;
     min-height: 100vh;
 }
 
 /* Navbar styles */
 .navbar {
-    background-color: #eaecef;
+    background-color: black;
     border-bottom: 1px solid #ddd;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px;
+    padding: 100 20px;
 }
 
-.navbar-brand {
-    color: #333;
-    font-size: 18px;
-}
-
-.notification-icon {
-     margin-left: 1100px;
-    display: flex;
-    align-items: center;
-}
-
+/* Notification Icon */
 .notification-icon a {
     color: black;
     font-size: 1rem;
     transition: color 0.3s ease;
-
 }
 
 .notification-icon a:hover {
     color: blue;
-}
-
-.divider {
-    height: 24px;
-    border-right: 1px solid #ccc;
-    margin-right: 10px;
 }
 
 .navbar .dropdown-toggle {
@@ -102,32 +70,6 @@ body {
     padding: 0;
     display: flex;
     align-items: center;
-}
-
-.navbar .dropdown-menu {
-    font-size: 14px;
-    padding: 10px;
-}
-
-.dropdown-header {
-    font-size: 16px;
-    color: #333;
-    text-align: left;
-    padding: 10px 20px;
-}
-
-.dropdown-header strong {
-    font-weight: 600;
-}
-
-.navbar .rounded-circle {
-    border: 2px solid #ffffff;
-}
-
-/* Logout Button */
-.logout-btn i {
-    margin-right: 5px;
-    margin-top: 20px;
 }
 
 /* Card styles */
@@ -166,33 +108,7 @@ body {
     vertical-align: middle;
 }
 
-
-
-.img-circle {
-    border-radius: 50%;
-}
-
-/* Adjustments for smaller screens */
-@media (max-width: 768px) {
-    .main-content {
-        margin-left: 0;
-    }
-
-    .sidenav {
-        width: 100%;
-        height: auto;
-        position: relative;
-    }
-
-    .logout-btn {
-        bottom: 100px;
-        right: 10px;
-        top: 5000px;
-    }
-}
 /* FullCalendar Custom Styles */
-
-/* Container styling */
 #calendar {
     max-width: 100%;
     margin: 0 auto;
@@ -217,24 +133,6 @@ body {
     color: #ffffff;
 }
 
-.fc-button {
-    background-color: #1c2833;
-    color: #ffffff;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
-    margin: 0 5px;
-    font-size: 0.9rem;
-}
-
-.fc-button:hover {
-    background-color: #34495e;
-}
-
-.fc-button:focus {
-    box-shadow: none;
-}
-
 /* Day cells styling */
 .fc-daygrid-day {
     background-color: #f8f9fa;
@@ -242,43 +140,7 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.fc-daygrid-day:hover {
-    background-color: #e9ecef;
-}
-
-/* Event styling */
-.fc-event {
-    background-color: #17a2b8;
-    color: #ffffff;
-    border: none;
-    padding: 2px 5px;
-    font-size: 0.85rem;
-    border-radius: 4px;
-    text-align: center;
-}
-
-.fc-event:hover {
-    background-color: #138496;
-}
-
-/* Today's date styling */
 .fc-day-today {
     background-color: #ffeeba;
     border-color: #ffc107;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    #calendar {
-        padding: 10px;
-    }
-
-    .fc-toolbar h2 {
-        font-size: 1.2rem;
-    }
-
-    .fc-button {
-        padding: 3px 7px;
-        font-size: 0.8rem;
-    }
 }

@@ -3,6 +3,7 @@ from . import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from .views import change_password
 
 
 urlpatterns = [
@@ -13,12 +14,16 @@ urlpatterns = [
     path('manage_users/', views.manage_users_view, name='manage_users'),
     path('add_user/', views.add_user, name='add_user'),
     path('delete_user/<int:user_id>/', views.delete_user_view, name='delete_user'),
+    path('password_change/', change_password, name='password_change'),
     path('verify/<str:token>/', views.verify_email, name='verify_email'),
-    path('announcements/', views.announcement_list, name='announcement_list'),
-    path('announcements/create/', views.announcement_create, name='announcement_create'),
-    path('announcements/<int:pk>/update/', views.announcement_update, name='announcement_update'),
-    path('announcements/<int:pk>/delete/', views.announcement_delete, name='announcement_delete'),
-    path('guidelines/', views.guidelines_view, name='guidelines'),
+    path('', views.announcement_list, name='announcement_list'),
+    path('create/', views.create_announcement, name='create_announcement'),
+    path('<int:pk>/update/', views.update_announcement, name='update_announcement'),
+    path('<int:pk>/delete/', views.delete_announcement, name='delete_announcement'),
+    path('guidelines/', views.guideline_list, name='guideline_list'),
+    path('guidelines/upload/', views.upload_guideline, name='upload_guideline'),
+    path('guidelines/<int:pk>/edit/', views.edit_guideline, name='edit_guideline'),
+    path('guidelines/<int:pk>/delete/', views.delete_guideline, name='delete_guideline'),
     path('forms/', views.forms_view, name='forms'),
     path('upload-template/', views.upload_template, name='upload_template'),
     path('download-template/<int:pk>/', views.download_template, name='download_template'),
