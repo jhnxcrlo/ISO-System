@@ -379,10 +379,10 @@ def internal_auditor_forms_view(request):
 def internal_auditor_guidelines_view(request):
     return render(request, 'main/internal audit/internal_auditor_guidelines.html')
 
+@login_required
 def internal_auditor_monitoring_log(request):
-    # Any additional logic can be added here
+    # Your logic here
     return render(request, 'main/internal audit/internal_auditor_monitoring_log.html')
-
 
 
 
