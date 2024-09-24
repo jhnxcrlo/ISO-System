@@ -28,19 +28,20 @@
 
 
 
+
     <style>
 /* ========== Navbar Styling ========== */
 .navbar {
     height: 70px;
     width: 100%;
     padding: 0 20px;
-    background: linear-gradient(45deg, #203040, #8E2524); /* Background gradient */
+    background: linear-gradient(45deg, #203040, #8E2524);
     color: #fff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 999;
+    z-index: 1000; /* Ensure the navbar is on top */
     display: flex;
     align-items: center;
 }
@@ -71,13 +72,19 @@
 
 /* Sidebar Styling */
 .sidenav {
-    background: white; /* Background */
-    height: 100vh; /* Full height */
-    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1); /* Shadow */
+    background: white;
+    height: 100vh;
+    width: 250px;
+    position: fixed; /* Make it fixed so it scrolls with the page */
+    top: 0px; /* Adjust so it starts below the navbar */
+    left: 0;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 999; /* Ensure it's below the navbar */
     padding: 20px;
-    border-radius: 12px; /* Rounded corners */
+    border-radius: 12px;
     transition: all 0.3s ease;
 }
+
 
 .sidenav .nav-item {
     margin-bottom: 15px;
@@ -132,10 +139,11 @@
 
 /* ========== Main Content Area Styling ========== */
 .main-content {
+    margin-left: 250px; /* Adjust to account for the sidebar width */
     padding: 40px;
     background-color: #f9f9f9;
     min-height: 100vh;
-    margin-top: 70px;
+    margin-top: 70px; /* Make sure it starts below the navbar */
 }
 
 .container-fluid h1, h2, h3 {
@@ -1076,7 +1084,7 @@ h3 {
 }
 
 
-        /* View All Link Styling */
+/* View All Link Styling */
 
   .view-all-link {
     font-weight: bold;
