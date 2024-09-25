@@ -12,25 +12,6 @@
       <a href="#taskSection" class="greeting-link">Proceed to do task</a>
     </div>
 
-    <!-- Announcement Section -->
-    <div class="announcement-header">
-      <h2>Latest Announcements</h2>
-      <p class="text-muted">Stay updated with the latest news and information</p>
-    </div>
-
-    <div class="announcement-list mt-4">
-      {% for announcement in announcements %}
-      <div class="card mb-4 announcement-card">
-        <div class="card-body">
-          <h5 class="card-title">{{ announcement.title }}</h5>
-          <p class="card-text">{{ announcement.body }}</p>
-          <p class="card-text"><small class="text-muted">Posted on {{ announcement.date_posted|date:"F d, Y" }}</small></p>
-        </div>
-      </div>
-      {% empty %}
-      <p>No announcements to show at the moment.</p>
-      {% endfor %}
-    </div>
 
     <!-- Dashboard Section -->
     <div class="container dashboard-section mt-5">
@@ -42,9 +23,23 @@
             <div class="dashboard-text ms-3 d-flex flex-column align-items-start">
               <div class="d-flex align-items-center">
                 <div class="stat-number">32</div>
-                <div class="stat-title ms-2">Projects</div>
+                <div class="stat-title ms-1">Non-Conformities</div>
               </div>
               <div class="stat-subtitle">Awaiting processing</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Invoices -->
+        <div class="col-md-3">
+          <div class="dashboard-card d-flex align-items-center">
+            <i class="bi bi-file-earmark-text-fill dashboard-icon invoices-icon"></i>
+            <div class="dashboard-text ms-3 d-flex flex-column align-items-start">
+              <div class="d-flex align-items-center">
+                <div class="stat-number">23</div>
+                <div class="stat-title ms-2">Tasks</div>
+              </div>
+              <div class="stat-subtitle">Soon to be cleared</div>
             </div>
           </div>
         </div>
@@ -63,20 +58,6 @@
           </div>
         </div>
 
-        <!-- Invoices -->
-        <div class="col-md-3">
-          <div class="dashboard-card d-flex align-items-center">
-            <i class="bi bi-file-earmark-text-fill dashboard-icon invoices-icon"></i>
-            <div class="dashboard-text ms-3 d-flex flex-column align-items-start">
-              <div class="d-flex align-items-center">
-                <div class="stat-number">23</div>
-                <div class="stat-title ms-2">Invoices</div>
-              </div>
-              <div class="stat-subtitle">Soon to be cleared</div>
-            </div>
-          </div>
-        </div>
-
         <!-- Refunds -->
         <div class="col-md-3">
           <div class="dashboard-card d-flex align-items-center">
@@ -91,12 +72,32 @@
           </div>
         </div>
       </div>
+
     </div>
 
 
 
+  <!-- Announcement Section -->
+    <div class="announcement-header mt-5">
+      <h2>Latest Announcements</h2>
+      <p class="text-muted">Stay updated with the latest news and information</p>
+        <div class="announcement-list mt-4">
+        {% for announcement in announcements %}
+          <div class="card mb-4 announcement-card">
+            <div class="card-body">
+              <h5 class="card-title">{{ announcement.title }}</h5>
+              <p class="card-text">{{ announcement.body }}</p>
+              <p class="card-text"><small class="text-muted">Posted on {{ announcement.date_posted|date:"F d, Y" }}</small></p>
+            </div>
+          </div>
+        {% empty %}
+        <p>No announcements to show at the moment.</p>
+        {% endfor %}
+      </div>
+    </div>
+
     <!-- Audit Section -->
-    <div class="container-fluid mt-3">
+    <div class="container-fluid mt-5">
       <div class="row">
         <!-- Donut Chart and Audit Summary -->
         <div class="col-md-6">
@@ -105,11 +106,11 @@
               <h2>Audit Summary</h2>
               <p>Audit Findings</p>
               <ul>
-                <li><span style="background-color:#8E2524; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span> <span>Product design</span> <span>78</span></li>
-                <li><span style="background-color:#A33331; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span> <span>Development</span> <span>63</span></li>
-                <li><span style="background-color:#C74C4A; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span> <span>QA & Testing</span> <span>56</span></li>
-                <li><span style="background-color:#D67F7E; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span> <span>Customer queries</span> <span>36</span></li>
-                <li><span style="background-color:#E6A5A4; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span> <span>R & D</span> <span>24</span></li>
+                <li><span style="background-color:#8E2524; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span> <span>Non-Comformities</span> <span>78</span></li>
+                <li><span style="background-color:#A33331; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span> <span>Good Points</span> <span>63</span></li>
+                <li><span style="background-color:#C74C4A; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span> <span>Engagement</span> <span>56</span></li>
+                <li><span style="background-color:#D67F7E; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span> <span>Executed Tasks</span> <span>36</span></li>
+                <li><span style="background-color:#E6A5A4; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span> <span>Audit Results</span> <span>24</span></li>
               </ul>
               <button class="btn btn-tertiary" >See Details...</button>
             </div>
