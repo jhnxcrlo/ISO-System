@@ -18,13 +18,13 @@
     height: 70px;
     width: 100%;
     padding: 0 20px;
-    background: linear-gradient(45deg, #203040, #8E2524);
+    background: linear-gradient(45deg, #203040, #8E2524); /* Background gradient */
     color: #fff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1000; /* Ensure the navbar is on top */
+    z-index: 999;
     display: flex;
     align-items: center;
 }
@@ -120,11 +120,10 @@
 
 /* ========== Main Content Area Styling ========== */
 .main-content {
-    margin-left: 250px; /* Adjust to account for the sidebar width */
     padding: 40px;
     background-color: #f9f9f9;
     min-height: 100vh;
-    margin-top: 70px; /* Make sure it starts below the navbar */
+    margin-top: 70px;
 }
 
 .container-fluid h1, h2, h3 {
@@ -337,20 +336,20 @@
     color: white;
     transform: scale(1.05);
 }
- /* Main Content Area Styling */
-.main-content {
-    padding: 40px;
-    background-color: #f9f9f9;
-    min-height: 100vh;
-    margin-left: 250px;
-    transition: margin-left 0.3s ease;
-}
+         /* Main Content Area Styling */
+        .main-content {
+            padding: 40px;
+            background-color: #f9f9f9;
+            min-height: 100vh;
+            margin-left: 250px;
+            transition: margin-left 0.3s ease;
+        }
 
-.container-fluid h1, h2, h3 {
-    color: #203040;
-}
+        .container-fluid h1, h2, h3 {
+            color: #203040;
+        }
 
-/* Sidebar styling */
+      /* Sidebar styling */
 .sidenav {
     background: white;
     height: 100vh;
