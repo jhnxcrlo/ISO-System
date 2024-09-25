@@ -75,7 +75,7 @@ body {
 }
 
 .notification-icon {
-     margin-left: 1100px;
+     margin-left: 1300px;
     display: flex;
     align-items: center;
 }
@@ -2255,7 +2255,7 @@ body {
         .navbar .dropdown-toggle {
             border: none;
             display: flex;
-            align-items: center;
+            align-items: right;
         }
 
         .navbar .dropdown-menu {
@@ -2265,6 +2265,8 @@ body {
         .navbar .rounded-circle {
             border: 2px solid #ffffff;
         }
+
+
 
 
 

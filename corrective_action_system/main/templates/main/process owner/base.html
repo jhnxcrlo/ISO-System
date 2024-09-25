@@ -555,28 +555,29 @@
             <div class="col-md-10 main-content">
                 <!-- Top Navbar -->
                 <nav class="navbar navbar-expand-lg">
-                    <div class="container-fluid">
-                        <ul class="navbar-nav">
-                            <li class="nav-item notification-icon">
+                       <div class="container-fluid">
+                        <button class="navbar-toggler" type="button" id="menu-toggle" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <div class="d-flex ms-auto align-items-center">
+                            <div class="notification-icon me-3">
                                 <a href="#"><i class="fas fa-bell"></i></a>
-                            </li>
-                            <li class="nav-item dropdown">
+                            </div>
+                            <div class="dropdown">
                                 <button class="btn btn-light dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="{% static 'main/img2.png' %}" alt="User" class="rounded-circle me-1">
-                                    <div class="d-flex flex-column align-items-start">
-                                         <span class="username" style="margin-top: 15px;"><strong>{{ user.username }}&nbsp;</strong></span>
-                                         <span class="text-muted" style="font-size: 0.8rem; inline-block; width: 100%; text-align: center;">(Process Owner)</span>
-                                     </div>
+                                    <img src="{% static 'main/img2.png' %}" alt="User" class="rounded-circle me-1" width="30">
+                                    <span>{{ user.last_name }} {{ user.first_name|slice:":1" }}. ({{ user.userprofile.role }})</span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
                                     <li class="dropdown-header">
-                                        <strong>{{ user.username }}</strong>
+                                        <strong>{{ user.last_name }} {{ user.first_name|slice:":1" }}. ({{ user.userprofile.role }})</strong>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'login' %}">Log Out</a></li>
                                 </ul>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                     </div>
                 </nav>
 
