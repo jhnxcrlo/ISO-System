@@ -15,7 +15,7 @@
             <p class="mb-1">{{ template.description }}</p>
         </div>
         <div>
-            <a href="{% url 'download_template' template.id %}" class="btn btn-success btn-sm" download>
+            <a class="btn btn-success btn-sm" download href="{% url 'download_template' template.id %}">
                 <i class="fas fa-download"></i> Download
             </a>
         </div>
