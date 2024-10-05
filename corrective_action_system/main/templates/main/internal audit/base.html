@@ -29,161 +29,196 @@
 
     <style>
         /* ========== Navbar Styling ========== */
-        .navbar {
-            height: 70px;
-            width: 100%;
-            padding: 0 20px;
-            background: linear-gradient(45deg, #203040, #8E2524);
-            color: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000; /* Ensure the navbar is on top */
-            display: flex;
-            align-items: center;
-        }
+.navbar {
+    height: 70px;
+    width: 100%;
+    padding: 0 20px;
+    background: linear-gradient(45deg, #203040, #8E2524); /* Background gradient */
+    color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+}
 
-        .navbar-nav .nav-item .nav-link {
-            color: white;
-            font-size: 1.2rem;
-            background-color:#A33331;
+.navbar-nav .nav-item .nav-link {
+    color: #ffffff;
+    font-size: 1.2rem;
+}
 
-        }
+.navbar .notification-icon i {
+    font-size: 24px;
+    color: white;
+    margin-right: 15px;
+}
 
-        .navbar .notification-icon i {
-            font-size: 24px;
-            color: white;
-            margin-right: 15px;
-        }
+.navbar .notification-icon i:hover {
+    color: #F1F1F1;
+}
 
-        .navbar .notification-icon i:hover {
-            color: #f7b1ab;
-        }
+/* ========== Button Styling ========== */
+.navbar .btn {
+    background-color: transparent;
+    border: none;
+    color: white;
+    padding: 10px 0px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
 
-        .navbar .dropdown-toggle img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 20px;
-        }
+.navbar .username:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: underline;
+}
 
-        /* Sidebar Styling */
-        .sidenav {
-            background: white;
-            height: 100vh;
-            width: 250px;
-            position: fixed; /* Make it fixed so it scrolls with the page */
-            top: 0px; /* Adjust so it starts below the navbar */
-            left: 0;
-            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
-            z-index: 999; /* Ensure it's below the navbar */
-            padding: 20px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
+/* Dropdown and User Profile */
+.dropdown-toggle {
+    font-size: 16px;
+    color: white;
+    padding-left: 10px;
+    margin-left: 15px;
+}
 
+.dropdown-toggle img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 3px;
+}
 
-        .sidenav .nav-item {
-            margin-bottom: 15px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover effects */
-        }
+.dropdown-menu {
+    right: 0;
+    left: auto;
+}
 
-        .sidenav .nav-link {
-            font-size: 1rem; /* Larger font size */
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            background: #272F3F;
-            color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow on hover */
-        }
+/* ========== Sidebar Styling ========== */
+.sidenav {
+    background: white;
+    height: 100vh;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    padding: 20px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
 
-        .sidenav .nav-link i {
-            margin-right: 10px;
-            font-size: 1.5rem; /* Icon size */
-            opacity: 0.7;
-        }
+.sidenav .nav-item {
+    margin-bottom: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-        .sidenav .nav-link:hover {
-            background: white;
-            color: #272F3F;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow on hover */
-            transform: translateY(-2px); /* Lift on hover */
-            border: 2px solid #272F3F;
-        }
+.sidenav .nav-link {
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    color: #333;
+    background-color: #f1f1f1;
+    border: 2px solid #272F3F;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-        /* Active State Styling */
-        .sidenav .nav-link.active {
-            background-color: white; /* Active link background */
-            color: #272F3F; /* Maroon text */
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow */
-            border: 2px solid #272F3F;
-        }
+.sidenav .nav-link i {
+    margin-right: 10px;
+    font-size: 1.5rem;
+}
 
-        /* Sidebar Logo */
-        .system-title {
-            font-size: 1.7rem;
-            font-weight: bold;
-            color: #EFF1F3;
-            padding: 10px 20px;
-            background-color: #ffffff; /* White background */
-            border-radius: 8px;
-            display: inline-block;
-            margin-top: 20px;
-        }
+.sidenav .nav-link:hover {
+    background-color: #f1f1f1;
+    color: #272F3F;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    border: 2px solid #272F3F;
+}
 
-        /* ========== Main Content Area Styling ========== */
-        .main-content {
-            margin-left: 250px; /* Adjust to account for the sidebar width */
-            padding: 40px;
-            background-color: #f9f9f9;
-            min-height: 100vh;
-            margin-top: 70px; /* Make sure it starts below the navbar */
-        }
+/* Active State Styling */
+.sidenav .nav-link.active {
+    background-color: white;
+    color: #272F3F;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 2px solid #272F3F;
+    border-left: 6px solid #8E2524;
+}
 
-        .container-fluid h1, h2, h3 {
-            color: #203040;
-        }
+/* Sidebar Logo */
+.system-title {
+    font-size: 1.7rem;
+    font-weight: bold;
+    color: #EFF1F3;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: inline-block;
+    margin-top: 20px;
+}
 
-        /* ========== Button Styling ========== */
+.sidebar-toggle-btn {
+    font-size: 1rem;
+    color: #333;
+    border: none;
+    background: transparent;
+    position: absolute;
+    bottom: 20px;
+    left: 38%;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 10px 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    margin-bottom: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .navbar .btn {
-            background-color: transparent; /* No background color */
-            border: none; /* Remove the border */
-            color: white; /* Text color */
-            padding: 10px 0px; /* Maintain padding for spacing */
-            font-size: 1rem; /* Adjust font size if needed */
-            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
-        }
+/* Hover effect when sidebar is not collapsed */
+.sidebar-toggle-btn:hover {
+    background-color: #8E2524;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translate(-5px, 0);
+    transition: transform 0.3s ease;
+}
 
-        .navbar .username:hover {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow */
-            text-decoration: underline;
-        }
+/* Hover effect when sidebar is collapsed */
+.sidebar-collapsed .sidebar-toggle-btn:hover {
+    background-color: #8E2524;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translate(5px, 0);
+    transition: transform 0.3s ease;
+}
 
-        /* Dropdown and User Profile */
-        .dropdown-toggle {
-            font-size: 16px;
-            color: white;
-            padding-left: 10px;
-            margin-left: 15px;
-        }
+/* Collapsed Sidebar */
+.sidebar-collapsed {
+    width: 95px;
+}
 
-        .dropdown-toggle img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin: 3px;
-        }
+.sidebar-collapsed .nav-link {
+    justify-content: center;
+    padding: 10px;
+    font-size: 0;
+}
 
-        .dropdown-menu {
-            right: 0;
-            left: auto;
-        }
+.sidebar-collapsed .nav-link i {
+    font-size: 1.5rem;
+    justify-content: center;
+}
+
+.sidebar-collapsed .system-title {
+    display: none;
+}
 
         /* ========== Chatbox and Button Styling ========== */
         .chat-button {
@@ -366,112 +401,6 @@
 
         .container-fluid h1, h2, h3 {
             color: #203040;
-        }
-
-        /* Sidebar styling */
-        .sidenav {
-            background: white;
-            height: 100vh;
-            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            transition: width 0.3s ease;
-        }
-
-        .sidenav .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            font-size: 1rem;
-            color: #333;
-            background-color: #f1f1f1;
-            border: 2px solid #272F3F; /* Add border when active */
-        }
-
-        .sidenav .nav-link i {
-            margin-right: 10px;
-            font-size: 1.5rem;
-        }
-
-        .sidenav .nav-link:hover {
-            background-color: #f1f1f1;
-        }
-
-        .sidenav .nav-link.active {
-            background-color: white; /* Active link background */
-
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow */
-            border: 2px solid #272F3F; /* Add border when active */
-            border-left: 6px solid #8E2524; /* Highlight border on the left */
-        }
-
-        .sidenav .system-title {
-            margin-bottom: 20px;
-        }
-
-        .sidebar-toggle-btn {
-            font-size: 1rem; /* Same font size as nav links */
-            color: #333;
-            border: none;
-            background: transparent;
-            position: absolute;
-            bottom: 20px; /* Adjust this to position the button higher or lower */
-            left: 38%;
-            background-color: #ffffff;
-            border-radius: 8px; /* Same border-radius as nav links */
-            padding: 10px 15px; /* Same padding as nav links */
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            margin-bottom: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Hover effect when sidebar is not collapsed (moves left) */
-        .sidebar-toggle-btn:hover {
-            background-color: #8E2524;
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transform: translate(-5px, 0); /* Move left */
-            transition: transform 0.3s ease; /* Smooth transition */
-        }
-
-        /* Hover effect when sidebar is collapsed (moves right) */
-        .sidebar-collapsed .sidebar-toggle-btn:hover {
-            background-color: #8E2524; /* Different background when collapsed */
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transform: translate(5px, 0); /* Move right */
-            transition: transform 0.3s ease; /* Smooth transition */
-        }
-
-        /* Collapsed Sidebar */
-        .sidebar-collapsed {
-            width: 95px;
-            transition: width 0.3s ease;
-        }
-
-        /* Adjust content margin when sidebar is collapsed */
-        .main-content-expanded {
-            margin-left: 80px;
-            transition: margin-left 0.3s ease;
-        }
-
-        /* Hide text but show icons in collapsed state */
-        .sidebar-collapsed .nav-link {
-            justify-content: center;
-            font-size: 0; /* Hide text */
-        }
-
-        .sidebar-collapsed .nav-link i {
-            font-size: 1.5rem;
-            justify-content: center;
-        }
-
-        .sidebar-collapsed .system-title {
-            display: none;
         }
 
 
