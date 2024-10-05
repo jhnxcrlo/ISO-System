@@ -89,7 +89,7 @@
 <!-- Upload New Template Button -->
 <div class="mb-4">
     <button class="btn btn-primary" data-bs-target="#uploadTemplateModal" data-bs-toggle="modal" type="button">
-        Upload New Template
+        Upload New Form
     </button>
 </div>
 
@@ -115,40 +115,34 @@
     {% endfor %}
 </ul>
 
-<!-- Upload Template Modal -->
-<div aria-hidden="true" aria-labelledby="uploadTemplateModalLabel" class="modal fade" id="uploadTemplateModal" role="dialog"
-     tabindex="-1">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="uploadTemplateModalLabel">Upload New Template</h5>
-                <button aria-label="Close" class="close" data-bs-dismiss="modal" type="button">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="{% url 'upload_template' %}" enctype="multipart/form-data" method="post">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="id_template_name">Template Name</label>
-                        <input class="form-control" id="id_template_name" name="template_name" required type="text">
-                    </div>
-                    <div class="form-group">
-                        <label for="id_template_description">Description</label>
-                        <textarea class="form-control" id="id_template_description" name="template_description" required
-                                  rows="4"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="id_template_file">Upload File</label>
-                        <input class="form-control-file" id="id_template_file" name="template_file" required
-                               type="file">
-                    </div>
-                    <button class="btn btn-primary" type="submit">Upload</button>
-                </form>
+<div class="modal fade" id="uploadTemplateModal" tabindex="-1" aria-labelledby="uploadTemplateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="uploadTemplateModalLabel">Upload New Forms</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'upload_template' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_template_name" class="form-label fw-bold">Form Name</label>
+                            <input type="text" class="form-control" id="id_template_name" name="template_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_template_description" class="form-label fw-bold">Description</label>
+                            <textarea class="form-control" id="id_template_description" name="template_description" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_template_file" class="form-label fw-bold">Upload File</label>
+                            <input type="file" class="form-control" id="id_template_file" name="template_file" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Upload</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 <script>
     function deleteTemplate(templateId) {
