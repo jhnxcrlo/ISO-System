@@ -475,9 +475,9 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/main/process-owner-guidelines/' %}active{% endif %}"
-                       href="{% url 'process_owner_guidelines' %}">
-                        <i class="fas fa-book"></i> Guidelines
+                    <a class="nav-link {% if request.path == '/main/guidelines/process-owner/' %}active{% endif %}"
+                       href="{% url 'process_owner_guideline_list' %}">
+                        <i class="fas fa-book me-2"></i> Guidelines
                     </a>
                 </li>
             </ul>
@@ -513,9 +513,8 @@
                             </button>
                             <ul aria-labelledby="userMenu" class="dropdown-menu dropdown-menu-end">
                                 <li class="dropdown-header">
-                                    <strong>{{ user.last_name }} {{ user.first_name|slice:":1" }}. ({{
-                                        user.userprofile.role }})</strong>
-                                </li>
+                                        <strong>{{ user.last_name }} {{ user.first_name|slice:":1" }}. ({{ user.userprofile.role }})</strong>
+                                    </li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>

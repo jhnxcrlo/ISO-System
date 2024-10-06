@@ -10,7 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
 
     <style>
         /* Additional styles for layout and alignment */
@@ -100,7 +100,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white {% if request.path == '/main/guidelines/guideline_list/' %}active{% endif %}" href="{% url 'guideline_list' %}">
+                        <a class="nav-link text-white {% if request.path == '/main/guidelines/guideline_list/' %}active{% endif %}" href="{% url 'admin_guideline_list' %}">
                             <i class="fas fa-book"></i> Guidelines
                         </a>
                     </li>

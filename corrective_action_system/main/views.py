@@ -3,7 +3,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login as auth_login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from itsdangerous import URLSafeTimedSerializer
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -15,7 +15,6 @@ from .forms import GuidelineForm, AnnouncementForm, CustomPasswordChangeForm
 from itsdangerous import SignatureExpired, BadSignature
 from django.contrib.auth import update_session_auth_hash
 import logging
-
 
 s = URLSafeTimedSerializer('your-secret-key')
 
@@ -234,7 +233,8 @@ def verify_email(request, token):
 def announcement_list(request):
     announcements = Announcement.objects.all()
     form = AnnouncementForm()
-    return render(request, 'main/administrator/announcements/announcement_list.html', {'announcements': announcements, 'form': form})
+    return render(request, 'main/administrator/announcements/announcement_list.html',
+                  {'announcements': announcements, 'form': form})
 
 
 @login_required
@@ -249,7 +249,8 @@ def create_announcement(request):
     else:
         form = AnnouncementForm()
 
-    return render(request, 'main/administrator/announcement_list.html', {'form': form})
+    return render(request, 'main/administrator/announcements/announcement_list.html', {'form': form})
+
 
 @login_required
 def update_announcement(request, pk):
@@ -268,52 +269,7 @@ def delete_announcement(request, pk):
         announcement.delete()
         return redirect('announcement_list')
 
-@login_required
-def upload_guideline(request):
-    if request.method == "POST":
-        form = GuidelineForm(request.POST, request.FILES)
-        if form.is_valid():
-            guideline = form.save(commit=False)
-            guideline.uploaded_by = request.user
-            guideline.save()
-            return redirect('guideline_list')  # Assuming you have this URL
-    else:
-        form = GuidelineForm()
-    return render(request, 'main/administrator/guidelines/upload.html', {'form': form})
 
-
-# List Guidelines (for different roles)
-@login_required
-def guideline_list(request):
-    if request.user.groups.filter(name="Admin").exists():
-        guidelines = Guideline.objects.all()
-    else:
-        guidelines = Guideline.objects.filter(uploaded_by=request.user)
-    return render(request, 'main/administrator/guidelines/list.html', {'guidelines': guidelines})
-
-
-# Edit Guideline
-@login_required
-def edit_guideline(request, pk):
-    guideline = get_object_or_404(Guideline, pk=pk)
-    if request.method == "POST":
-        form = GuidelineForm(request.POST, request.FILES, instance=guideline)
-        if form.is_valid():
-            form.save()
-            return redirect('guideline_list')
-    else:
-        form = GuidelineForm(instance=guideline)
-    return render(request, 'main/administrator/guidelines/edit.html', {'form': form, 'guideline': guideline})
-
-# Delete Guideline
-@login_required
-def delete_guideline(request, pk):
-    guideline = get_object_or_404(Guideline, pk=pk)
-    if request.method == "POST":
-        guideline.delete()
-        return redirect('guideline_list')
-    return render(request, 'main/administrator/guidelines/delete_confirm.html', {'guideline': guideline})
-1
 @login_required
 def forms_view(request):
     templates = TemplateModel.objects.all()
@@ -328,7 +284,6 @@ def upload_template(request):
         template_file = request.FILES.get('template_file')
 
         if template_file:
-
             template_model = TemplateModel.objects.create(
                 template_name=template_name,
                 description=template_description,
@@ -356,28 +311,40 @@ def download_template(request, pk):
     return redirect('forms')
 
 
+def role_allowed_to_delete(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role in ['Admin', 'Internal Auditor']
+
+
 @login_required
+@user_passes_test(role_allowed_to_delete)
 def delete_template(request, pk):
     template = get_object_or_404(TemplateModel, pk=pk)
     if template.file:
         template.file.delete(save=False)
     template.delete()
-    return redirect('forms')
 
-# newly added
-def process_owner_forms_view(request):
-    templates = TemplateModel.objects.all()  # Assuming you store the forms as templates
-    return render(request, 'main/process owner/process_owner_forms.html', {'templates': templates})
+    # Redirect based on user role
+    if request.user.userprofile.role == 'Admin':
+        return redirect('forms')
+    elif request.user.userprofile.role == 'Internal Auditor':
+        return redirect('internal_auditor_forms')
+    else:
+        # Default redirection if none of the roles match
+        return redirect('forms')
 
-def process_owner_guidelines_view(request):
-    return render(request, 'main/process owner/process_owner_guidelines.html')
 
+@login_required
 def internal_auditor_forms_view(request):
-    templates = TemplateModel.objects.all()  # Assuming you store the forms as templates
+    templates = TemplateModel.objects.all()
     return render(request, 'main/internal audit/internal_auditor_forms.html', {'templates': templates})
 
-def internal_auditor_guidelines_view(request):
-    return render(request, 'main/internal audit/internal_auditor_guidelines.html')
+
+@login_required
+def process_owner_forms_view(request):
+    templates = TemplateModel.objects.all()  # List all available forms
+    return render(request, 'main/process owner/process_owner_forms.html', {'templates': templates})
+
+
 
 @login_required
 def internal_auditor_monitoring_log(request):
@@ -385,5 +352,140 @@ def internal_auditor_monitoring_log(request):
     return render(request, 'main/internal audit/internal_auditor_monitoring_log.html')
 
 
+# Check if user is admin
+def is_admin(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
 
 
+
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_guideline_list(request):
+    guidelines = Guideline.objects.all()
+    for guideline in guidelines:
+        logger.info(f"File URL: {guideline.file.url}")
+    return render(request, 'main/administrator/guidelines/list.html', {'guidelines': guidelines})
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_upload_guideline(request):
+    if request.method == "POST":
+        form = GuidelineForm(request.POST, request.FILES)
+        if form.is_valid():
+            guideline = form.save(commit=False)
+            guideline.uploaded_by = request.user
+            guideline.save()
+            messages.success(request, "Guideline uploaded successfully.")
+            return redirect('admin_guideline_list')
+        else:
+            messages.error(request, "Failed to upload guideline. Please check the form.")
+    else:
+        form = GuidelineForm()
+
+    return render(request, 'main/administrator/guidelines/upload.html', {'form': form})
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_edit_guideline(request, pk):
+    guideline = get_object_or_404(Guideline, pk=pk)
+    if request.method == "POST":
+        form = GuidelineForm(request.POST, request.FILES, instance=guideline)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Guideline updated successfully.")
+            return redirect('admin_guideline_list')
+        else:
+            messages.error(request, "Failed to update guideline. Please check the form.")
+    else:
+        form = GuidelineForm(instance=guideline)
+
+    return render(request, 'main/administrator/guidelines/edit.html', {'form': form, 'guideline': guideline})
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_delete_guideline(request, pk):
+    guideline = get_object_or_404(Guideline, pk=pk)
+    if request.method == "POST":
+        guideline.delete()
+        messages.success(request, "Guideline deleted successfully.")
+        return redirect('admin_guideline_list')
+
+    return render(request, 'main/administrator/guidelines/delete_confirm.html', {'guideline': guideline})
+
+
+# Check if user is internal auditor
+def is_internal_auditor(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role == 'Internal Auditor'
+
+
+@login_required
+@user_passes_test(is_internal_auditor)
+def internal_auditor_guideline_list(request):
+    guidelines = Guideline.objects.all()
+    return render(request, 'main/internal audit/list.html', {'guidelines': guidelines})
+
+
+@login_required
+@user_passes_test(is_internal_auditor)
+def internal_auditor_upload_guideline(request):
+    if request.method == "POST":
+        form = GuidelineForm(request.POST, request.FILES)
+        if form.is_valid():
+            guideline = form.save(commit=False)
+            guideline.uploaded_by = request.user
+            guideline.save()
+            messages.success(request, "Guideline uploaded successfully.")
+            return redirect('internal_auditor_guideline_list')
+        else:
+            messages.error(request, "Failed to upload guideline. Please check the form.")
+    else:
+        form = GuidelineForm()
+
+    return render(request, 'main/internal audit/upload_guideline.html', {'form': form})
+
+
+@login_required
+@user_passes_test(is_internal_auditor)
+def internal_auditor_edit_guideline(request, pk):
+    guideline = get_object_or_404(Guideline, pk=pk)
+    if request.method == "POST":
+        form = GuidelineForm(request.POST, request.FILES, instance=guideline)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Guideline updated successfully.")
+            return redirect('internal_auditor_guideline_list')
+        else:
+            messages.error(request, "Failed to update guideline. Please check the form.")
+    else:
+        form = GuidelineForm(instance=guideline)
+
+    return render(request, 'main/internal audit/edit_guideline.html', {'form': form, 'guideline': guideline})
+
+
+@login_required
+@user_passes_test(is_internal_auditor)
+def internal_auditor_delete_guideline(request, pk):
+    guideline = get_object_or_404(Guideline, pk=pk)
+    if request.method == "POST":
+        guideline.delete()
+        messages.success(request, "Guideline deleted successfully.")
+        return redirect('internal_auditor_guideline_list')
+
+    return render(request, 'main/internal audit/delete_guideline.html', {'guideline': guideline})
+
+
+# Check if user is process owner
+def is_process_owner(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role == 'Process Owner'
+
+
+@login_required
+@user_passes_test(is_process_owner)
+def process_owner_guideline_list(request):
+    guidelines = Guideline.objects.all()
+    return render(request, 'main/process owner/list.html', {'guidelines': guidelines})

@@ -1,0 +1,38 @@
+{% extends 'main/process owner/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>Process Owner Guidelines</h2>
+        </div>
+    </div>
+
+    <!-- Guidelines Grid -->
+    {% if guidelines %}
+        <div class="row">
+            {% for guideline in guidelines %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card border-light shadow-sm h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold text-dark">{{ guideline.title }}</h5>
+                            <p class="card-text text-muted">{{ guideline.description|truncatechars:150 }}</p>
+                            <!-- Display file link if present -->
+                            {% if guideline.file %}
+                                <a href="{{ guideline.file.url }}" target="_blank" class="mt-2">View/Download Attached File</a>
+                            {% endif %}
+                            <p class="text-muted small mt-auto">
+                                <i class="fas fa-user"></i> {{ guideline.uploaded_by.username }}
+                                <span class="text-muted">|</span>
+                                <i class="fas fa-clock"></i> {{ guideline.created_at|date:"F j, Y" }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">No guidelines available.</div>
+    {% endif %}
+</div>
+{% endblock %}

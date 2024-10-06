@@ -1,75 +1,84 @@
-{% extends 'main/internal audit/base.html' %}
-
-{% block title %}Guidelines{% endblock %}
-
+{% extends 'main/internal audit/base.html' %}  <!-- Extend the internal auditor's base template -->
 
 {% block content %}
-<style>
-    /* Custom styling for external resource links */
-    .external-resources-links a {
-      color: #800000; /* Maroon color for the links */
-      text-decoration: none; /* Remove underline */
-      transition: color 0.3s ease;
-    }
-
-    .external-resources-links a:hover {
-      color: #5a1f1f; /* Darker maroon on hover */
-      text-decoration: underline; /* Optional: underline on hover */
-    }
-</style>
-
-<div class="container-fluid">
-    <h1>Guidelines</h1>
-    <p>This page provides a clear and concise overview of corrective action procedures according to ISO 9001:2015
-        standards.</p>
-
-    <div class="mb-4">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="mb-0">
-                    Corrective Action Procedures
-                </h3>
-            </div>
-            <div class="card-body">
-                <p>Follow these steps to address non-conformities:</p>
-                <ol>
-                    <li>Identify the root cause of the non-conformity.</li>
-                    <li>Develop a corrective action plan to address the root cause.</li>
-                    <li>Implement the corrective action plan.</li>
-                    <li>Verify the effectiveness of the corrective action.</li>
-                    <li>Document the process and outcomes.</li>
-                </ol>
-            </div>
-        </div>
-
-        <div class="card mt-3">
-            <div class="card-header">
-                <h3 class="mb-0">
-                    Documentation Requirements
-                </h3>
-            </div>
-            <div class="card-body">
-                <p>Ensure all corrective actions are documented according to the ISO 9001:2015 standards. Use the
-                    provided templates for consistency.</p>
-            </div>
-        </div>
-
-        <div class="card mt-3">
-            <div class="card-header">
-                <h3 class="mb-0">
-                    External Resources
-                </h3>
-            </div>
-            <div class="card-body">
-                <ul class="external-resources-links">
-                    <li><a href="https://www.iso.org/iso-9001-quality-management.html" target="_blank">ISO 9001:2015
-                        Quality Management</a></li>
-                    <li><a href="https://www.iso.org/standard/62085.html" target="_blank">ISO Corrective Actions
-                        Guidelines</a></li>
-                    <li><a href="{% url 'download_template' pk=1 %}">Download Corrective Action Plan Template</a></li>
-                </ul>
-            </div>
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h2>Internal Auditor Guidelines</h2>
+            <!-- Only show the upload button to Internal Auditor (Admin check can be removed here) -->
+            {% if user.userprofile.role == 'Admin' or user.userprofile.role == 'Internal Auditor' %}
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#uploadGuidelineModal">
+                    Upload Guideline
+                </button>
+            {% endif %}
         </div>
     </div>
+
+    <!-- Guidelines Grid -->
+    {% if guidelines %}
+        <div class="row">
+            {% for guideline in guidelines %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card border-light shadow-sm h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold text-dark">{{ guideline.title }}</h5>
+                            <p class="card-text text-muted">{{ guideline.description|truncatechars:150 }}</p>
+                            <p class="text-muted small mt-auto">
+                                <i class="fas fa-user"></i> {{ guideline.uploaded_by.username }}
+                                <span class="text-muted">|</span>
+                                <i class="fas fa-clock"></i> {{ guideline.created_at|date:"F j, Y" }}
+                            </p>
+                        </div>
+                        <!-- Show edit and delete buttons only for Internal Auditor -->
+                        <div class="card-footer bg-light border-0 d-flex justify-content-between">
+                            {% if user.profile.role == 'Internal Auditor' %}
+                                <a href="{% url 'edit_guideline' guideline.id %}" class="btn btn-sm btn-outline-warning">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="{% url 'delete_guideline' guideline.id %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">No guidelines available.</div>
+    {% endif %}
+
+    <!-- Upload Modal (only for Internal Auditor) -->
+    {% if user.profile.role == 'Internal Auditor' %}
+        <div class="modal fade" id="uploadGuidelineModal" tabindex="-1" aria-labelledby="uploadGuidelineModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="uploadGuidelineModalLabel">Upload Guideline</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" enctype="multipart/form-data" action="{% url 'upload_guideline' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="title" class="form-label fw-bold">Title</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label fw-bold">Description</label>
+                                <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="file" class="form-label fw-bold">Upload File</label>
+                                <input type="file" class="form-control" id="file" name="file">
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Upload</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

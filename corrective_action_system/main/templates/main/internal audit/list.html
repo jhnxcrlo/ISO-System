@@ -1,10 +1,10 @@
-{% extends 'main/administrator/base.html' %}
+{% extends 'main/internal audit/base.html' %}
 
 {% block content %}
 <div class="container mt-5">
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
-            <h2>Guidelines</h2>
+            <h2>Internal Auditor Guidelines</h2>
             <!-- Upload Button -->
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadGuidelineModal">
                 Upload Guideline
@@ -54,7 +54,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form method="POST" enctype="multipart/form-data" action="{% url 'admin_edit_guideline' guideline.id %}">
+                                <form method="POST" enctype="multipart/form-data" action="{% url 'internal_auditor_edit_guideline' guideline.id %}">
                                     {% csrf_token %}
                                     <div class="mb-3">
                                         <label for="title" class="form-label">Title</label>
@@ -87,7 +87,7 @@
                                 <p>Are you sure you want to delete "<strong>{{ guideline.title }}</strong>"?</p>
                             </div>
                             <div class="modal-footer">
-                                <form method="POST" action="{% url 'admin_delete_guideline' guideline.id %}">
+                                <form method="POST" action="{% url 'internal_auditor_delete_guideline' guideline.id %}">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-danger">Yes, Delete</button>
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -111,7 +111,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" enctype="multipart/form-data" action="{% url 'admin_upload_guideline' %}">
+                    <form method="POST" enctype="multipart/form-data" action="{% url 'internal_auditor_upload_guideline' %}">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="title" class="form-label">Title</label>
