@@ -37,6 +37,7 @@ urlpatterns = [
                   # Process Owner views (view only)
     path('process-owner/guidelines/', views.process_owner_guideline_list,name='process_owner_guideline_list'),
 
+
     path('forms/', views.forms_view, name='forms'),
     path('upload-template/', views.upload_template, name='upload_template'),
     path('download-template/<int:pk>/', views.download_template, name='download_template'),
@@ -45,5 +46,4 @@ urlpatterns = [
     path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name='main/administrator/registration/password_reset_done.html'), name='password_reset_done'),
     path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='main/administrator/registration/password_reset_confirm.html'),name='password_reset_confirm'),
     path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='main/administrator/registration/password_reset_complete.html'), name='password_reset_complete'),
-    path('test/', views.test, name='test'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
