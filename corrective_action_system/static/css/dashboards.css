@@ -320,6 +320,36 @@ body {
     margin-right: 15px;
 }
 
+.navbar {
+    height: 70px;
+    width: 100%;
+    padding: 0 20px;
+    background: linear-gradient(45deg, #203040, #8E2524); /* Background gradient */
+    color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-nav .nav-item .nav-link {
+    color: #ffffff;
+    font-size: 1.2rem;
+}
+
+.navbar .notification-icon i {
+    font-size: 24px;
+    color: white;
+    margin-right: 15px;
+}
+
+.navbar .notification-icon i:hover {
+    color: #F1F1F1;
+}
+
 .navbar .notification-icon i:hover {
     color: #f7b1ab;
 }
