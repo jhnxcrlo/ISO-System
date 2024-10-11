@@ -95,9 +95,51 @@
 
 <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
     <h3 class="fw-bold">Projects (32)</h3>
-    <button class="btn btn-primary d-flex align-items-center">
+    <button class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#addProjectModal">
         <i class="bi bi-plus-lg me-2"></i>Add New Project
     </button>
+</div>
+
+<!-- Modal for Adding a New Project -->
+<div class="modal fade" id="addProjectModal" tabindex="-1" aria-labelledby="addProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="addProjectModalLabel">Add New Project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addProjectForm">
+                    <div class="mb-3">
+                        <label for="nonConformities" class="form-label fw-bold">Non-Conformities</label>
+                        <input type="text" class="form-control" id="nonConformities" name="nonConformities" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="assignees" class="form-label fw-bold">Assignees</label>
+                        <input type="text" class="form-control" id="assignees" name="assignees" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="campus" class="form-label fw-bold">Campus</label>
+                        <input type="text" class="form-control" id="campus" name="campus" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="startDate" class="form-label fw-bold">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" name="startDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="deadline" class="form-label fw-bold">Deadline</label>
+                        <input type="date" class="form-control" id="deadline" name="deadline" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="task" class="form-label fw-bold">Task</label>
+                        <input type="number" class="form-control" id="task" name="task" required>
+                    </div>
+                    <!-- Corrected Add Project Button -->
+                    <button type="submit" class="btn btn-primary w-100">Add Project</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Filter Tabs -->
@@ -126,7 +168,7 @@
 </div>
 
 <!-- Project Table -->
-<table class="table table-striped table-hover">
+<table class="table table-striped table-hover" id="projectsTable">
     <thead>
     <tr>
         <th>NON-CONFORMITIES</th>
@@ -1218,5 +1260,52 @@
     </div>
 </div>
 
+<!-- Script to handle form submission and table update -->
+<script>
+    document.getElementById('addProjectForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Collect form data
+        const nonConformities = document.getElementById('nonConformities').value;
+        const assignees = document.getElementById('assignees').value;
+        const campus = document.getElementById('campus').value;
+        const startDate = document.getElementById('startDate').value;
+        const deadline = document.getElementById('deadline').value;
+        const task = document.getElementById('task').value;
+
+        // Get the table body
+        const table = document.getElementById('projectsTable').getElementsByTagName('tbody')[0];
+
+        // Create a new row
+        const newRow = document.createElement('tr');
+
+        // Set the innerHTML for the new row
+        newRow.innerHTML = `
+            <td>${nonConformities}</td>
+            <td>${assignees}</td>
+            <td>${campus}</td>
+            <td>${startDate}</td>
+            <td>${deadline}</td>
+            <td>${task}</td>
+            <td>
+                <div>0 / ${task}</div>
+                <div class="progress">
+                    <div class="progress-bar bg-warning" style="width: 0%;"></div>
+                </div>
+            </td>
+            <td><span class="badge-status badge-inactive">INACTIVE</span></td>
+        `;
+
+        // Append the new row to the table body
+        table.appendChild(newRow);
+
+        // Reset the form
+        document.getElementById('addProjectForm').reset();
+
+        // Close the modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addProjectModal'));
+        modal.hide();
+    });
+</script>
 
 {% endblock %}
