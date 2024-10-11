@@ -352,16 +352,7 @@ def internal_auditor_monitoring_log(request):
     return render(request, 'main/internal audit/internal_auditor_monitoring_log.html')
 
 
-# Check if user is admin
-def is_admin(user):
-    return hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
-
-
-
-
-
 @login_required
-@user_passes_test(is_admin)
 def admin_guideline_list(request):
     guidelines = Guideline.objects.all()
     for guideline in guidelines:
@@ -370,7 +361,7 @@ def admin_guideline_list(request):
 
 
 @login_required
-@user_passes_test(is_admin)
+
 def admin_upload_guideline(request):
     if request.method == "POST":
         form = GuidelineForm(request.POST, request.FILES)
@@ -389,7 +380,7 @@ def admin_upload_guideline(request):
 
 
 @login_required
-@user_passes_test(is_admin)
+
 def admin_edit_guideline(request, pk):
     guideline = get_object_or_404(Guideline, pk=pk)
     if request.method == "POST":
@@ -407,7 +398,6 @@ def admin_edit_guideline(request, pk):
 
 
 @login_required
-@user_passes_test(is_admin)
 def admin_delete_guideline(request, pk):
     guideline = get_object_or_404(Guideline, pk=pk)
     if request.method == "POST":

@@ -23,10 +23,10 @@ urlpatterns = [
     path('<int:pk>/update/', views.update_announcement, name='update_announcement'),
     path('<int:pk>/delete/', views.delete_announcement, name='delete_announcement'),
                   # Admin views
-    path('admin/guidelines/', views.admin_guideline_list, name='admin_guideline_list'),
-    path('admin/guidelines/upload/', views.admin_upload_guideline, name='admin_upload_guideline'),
-    path('admin/guidelines/edit/<int:pk>/', views.admin_edit_guideline, name='admin_edit_guideline'),
-    path('admin/guidelines/delete/<int:pk>/', views.admin_delete_guideline,name='admin_delete_guideline'),
+    path('administrator/guidelines/', views.admin_guideline_list, name='admin_guideline_list'),
+    path('administrator/guidelines/upload/', views.admin_upload_guideline, name='admin_upload_guideline'),
+    path('administrator/guidelines/edit/<int:pk>/', views.admin_edit_guideline, name='admin_edit_guideline'),
+    path('administrator/guidelines/delete/<int:pk>/', views.admin_delete_guideline,name='admin_delete_guideline'),
 
                   # Internal Auditor views
     path('internal-auditor/guidelines/', views.internal_auditor_guideline_list,name='internal_auditor_guideline_list'),

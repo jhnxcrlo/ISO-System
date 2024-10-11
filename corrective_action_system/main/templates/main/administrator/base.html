@@ -100,10 +100,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white {% if request.path == '/main/guidelines/guideline_list/' %}active{% endif %}" href="{% url 'admin_guideline_list' %}">
+                        <a class="nav-link text-white {% if request.path == '/main/guidelines/admin/' %}active{% endif %}" href="{% url 'admin_guideline_list' %}">
                             <i class="fas fa-book"></i> Guidelines
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link text-white {% if request.path == '/main/forms/' %}active{% endif %}" href="{% url 'forms' %}">
                             <i class="fas fa-file-alt"></i> Forms
