@@ -7,8 +7,7 @@
             <h2>Internal Auditor Guidelines</h2>
             <!-- Only show the upload button to Internal Auditor (Admin check can be removed here) -->
             {% if user.userprofile.role == 'Admin' or user.userprofile.role == 'Internal Auditor' %}
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#uploadGuidelineModal">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadGuidelineModal">
                     Upload Guideline
                 </button>
             {% endif %}

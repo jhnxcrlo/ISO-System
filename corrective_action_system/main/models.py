@@ -57,3 +57,10 @@ class Guideline(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Template(models.Model):
+    template_name = models.CharField(max_length=100)
+    description = models.TextField()
+    template_file = models.FileField(upload_to='templates/')
+    completed = models.BooleanField(default=False)  # New field to track completion

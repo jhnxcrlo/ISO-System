@@ -373,7 +373,7 @@
         <div class="row d-flex justify-content-center align-items-center">
             <div class="col col-xl-10">
 
-                <div class="greeting-section text-left mb-4">
+                <div id="greeting-section" class="greeting-section text-left mb-4">
                     <h1>Hi, <strong>{{ user.username }}!</strong></h1>
                     <a class="greeting-link" href="#taskSection"> Proceed to do task</a>
                 </div>
@@ -1046,6 +1046,17 @@
     </div>
 
 
-
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Check if the greeting has already been shown
+        if (localStorage.getItem('greetingShown')) {
+            // Hide the greeting section if it has been shown before
+            document.getElementById('greeting-section').style.display = 'none';
+        } else {
+            // Set the localStorage flag to indicate the greeting has been shown
+            localStorage.setItem('greetingShown', 'true');
+        }
+    });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
