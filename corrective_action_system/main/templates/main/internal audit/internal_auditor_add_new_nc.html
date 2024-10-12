@@ -25,15 +25,19 @@
     .form-label {
         font-weight: bold;
     }
+
+    .form-check-label {
+        font-weight: normal;
+    }
 </style>
 
 <h1>Add New Non-Conformity</h1>
 <p>Add non-conformities related to the ISO 9001:2015 Corrective Action Management System.</p>
 
-
-
 <form id="addNonConformityForm" method="POST" action="{% url 'add_project' %}">
     {% csrf_token %}
+
+    <!-- Non-Conformity and Assignees -->
     <div class="mb-3">
         <label for="nonConformity" class="form-label">Non-Conformity</label>
         <input type="text" class="form-control" id="nonConformity" name="non_conformity" required>
@@ -42,9 +46,101 @@
         <label for="assignees" class="form-label">Assignees</label>
         <input type="text" class="form-control" id="assignees" name="assignees" required>
     </div>
+
+    <!-- Originator's Name/ID, Unit/Department, Phone, Email -->
     <div class="mb-3">
-        <label for="campus" class="form-label">Campus</label>
-        <input type="text" class="form-control" id="campus" name="campus" required>
+        <label for="originatorName" class="form-label">Originator’s Name/ID No.</label>
+        <select class="form-control" id="originatorName" name="originator_name" required>
+            <option value="" disabled selected>Select Originator’s Name/ID No.</option>
+            <option value="John_Doe_001">John Doe - 001</option>
+            <option value="Jane_Smith_002">Jane Smith - 002</option>
+            <!-- Add more options as needed -->
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="unitDepartment" class="form-label">Unit/Department</label>
+        <select class="form-control" id="unitDepartment" name="unit_department" required>
+            <option value="" disabled selected>Select Unit/Department</option>
+            <option value="HR">Human Resources (HR)</option>
+            <option value="IT">Information Technology (IT)</option>
+            <!-- Add more options as needed -->
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="phone" class="form-label">Phone</label>
+        <input type="tel" class="form-control" id="phone" name="phone" required>
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+    </div>
+
+    <!-- This RFA is intended to -->
+    <div class="mb-3">
+        <label class="form-label">This RFA is intended to:</label>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="correct_nc" name="rfa_intent" value="correct_nc">
+            <label class="form-check-label" for="correct_nc">Correct a NC / eliminate source of non-conformance</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="prevent_nc" name="rfa_intent" value="prevent_nc">
+            <label class="form-check-label" for="prevent_nc">Prevent a potential NC / mitigate risk</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="improvement" name="rfa_intent" value="improvement">
+            <label class="form-check-label" for="improvement">For Improvement</label>
+        </div>
+    </div>
+
+    <!-- Department -->
+    <div class="mb-3">
+        <label for="department" class="form-label">Department (where NC exists)</label>
+        <input type="text" class="form-control" id="department" name="department" required>
+    </div>
+
+    <!-- Description of Non-Conformance -->
+    <div class="mb-3">
+        <label for="nonConformanceCategory" class="form-label">Description of Non-Conformance</label>
+        <select class="form-control" id="nonConformanceCategory" name="non_conformance_category" required>
+            <option value="" disabled selected>Select Description</option>
+            <option value="iqa_related">IQA-Related</option>
+            <option value="supplier_related">Supplier-Related</option>
+            <option value="3rd_party_audit_related">3rd Party Audit Related</option>
+            <option value="process_procedural">Process/Procedural-related</option>
+            <option value="customer_satisfaction">Customer Satisfaction Related</option>
+            <option value="kpi_quality_objective">Relates to KPI/Quality Objective Review</option>
+            <option value="hrd_related">HRD-Related</option>
+            <option value="others">Others (Please Specify)</option>
+        </select>
+    </div>
+
+    <!-- ISO Clause / Reference -->
+    <div class="mb-3">
+        <label for="isoClause" class="form-label">ISO Clause / Reference</label>
+        <input type="text" class="form-control" id="isoClause" name="iso_clause" required>
+    </div>
+
+    <!-- Category (Major/Minor) -->
+    <div class="mb-3">
+        <label for="category" class="form-label">Category</label>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="major" name="category" value="major">
+            <label class="form-check-label" for="major">Major</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="minor" name="category" value="minor">
+            <label class="form-check-label" for="minor">Minor</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="other_category" name="category" value="others">
+            <label class="form-check-label" for="other_category">Others (Please Specify)</label>
+        </div>
+    </div>
+
+    <!-- Task, Start Date, Deadline -->
+    <div class="mb-3">
+        <label for="task" class="form-label">Task</label>
+        <input type="number" class="form-control" id="task" name="task" required>
     </div>
     <div class="mb-3">
         <label for="startDate" class="form-label">Start Date</label>
@@ -54,12 +150,9 @@
         <label for="deadline" class="form-label">Deadline</label>
         <input type="date" class="form-control" id="deadline" name="deadline" required>
     </div>
-    <div class="mb-3">
-        <label for="task" class="form-label">Task</label>
-        <input type="number" class="form-control" id="task" name="task" required>
-    </div>
+
+    <!-- Submit Button -->
     <button type="submit" class="btn btn-primary w-100">Add Non-Conformity</button>
 </form>
-
 
 {% endblock %}
