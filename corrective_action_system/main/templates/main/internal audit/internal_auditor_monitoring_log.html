@@ -94,78 +94,40 @@
 <p style="margin-bottom: 50px;">This is the internal auditor monitoring log page.</p>
 
 <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
-    <h3 class="fw-bold">Projects (32)</h3>
-    <button class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#addProjectModal">
+    <h3 class="fw-bold">Projects</h3>
+    <a href="{% url 'add_project' %}" class="btn btn-primary d-flex align-items-center">
         <i class="bi bi-plus-lg me-2"></i>Add New Project
-    </button>
+    </a>
 </div>
 
-<!-- Modal for Adding a New Project -->
-<div class="modal fade" id="addProjectModal" tabindex="-1" aria-labelledby="addProjectModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="addProjectModalLabel">Add New Project</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addProjectForm">
-                    <div class="mb-3">
-                        <label for="nonConformities" class="form-label fw-bold">Non-Conformities</label>
-                        <input type="text" class="form-control" id="nonConformities" name="nonConformities" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="assignees" class="form-label fw-bold">Assignees</label>
-                        <input type="text" class="form-control" id="assignees" name="assignees" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="campus" class="form-label fw-bold">Campus</label>
-                        <input type="text" class="form-control" id="campus" name="campus" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="startDate" class="form-label fw-bold">Start Date</label>
-                        <input type="date" class="form-control" id="startDate" name="startDate" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="deadline" class="form-label fw-bold">Deadline</label>
-                        <input type="date" class="form-control" id="deadline" name="deadline" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="task" class="form-label fw-bold">Task</label>
-                        <input type="number" class="form-control" id="task" name="task" required>
-                    </div>
-                    <!-- Corrected Add Project Button -->
-                    <button type="submit" class="btn btn-primary w-100">Add Project</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Filter Tabs -->
-<ul class="nav nav-pills mb-4">
+<ul id="tabContainer" class="nav nav-pills mb-4">
     <li class="nav-item">
-        <a class="nav-link active" href="#">All (32)</a>
+        <a class="nav-link active" href="#" data-filter="all">All (32)</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#">Ongoing (14)</a>
+        <a class="nav-link" href="#" data-filter="ongoing">Ongoing (14)</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#">Cancelled (2)</a>
+        <a class="nav-link" href="#" data-filter="cancelled">Cancelled (2)</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#">Finished (14)</a>
+        <a class="nav-link" href="#" data-filter="finished">Finished (14)</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#">Postponed (2)</a>
+        <a class="nav-link" href="#" data-filter="postponed">Postponed (2)</a>
     </li>
 </ul>
 
+
 <!-- Search Bar -->
 <div class="search-container">
-    <input class="search-input" placeholder="Search..." type="text"/>
+    <input class="search-input" id="searchInput" placeholder="Search..." type="text" />
     <span class="input-group-text"><i class="fas fa-search"></i></span>
 </div>
+
 
 <!-- Project Table -->
 <table class="table table-striped table-hover" id="projectsTable">
@@ -182,7 +144,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr>
+    <tr data-status="finished">
         <td><a data-bs-target="#auditTask1Modal" data-bs-toggle="modal" href="#" style="color: #203040;">Incomplete
             Documentation of Processes</a></td>
         <td>
@@ -205,7 +167,7 @@
         <td><span class="badge-status badge-completed">COMPLETED</span></td>
     </tr>
 
-    <tr>
+    <tr data-status="ongoing">
         <td><a data-bs-target="#auditTask2Modal" data-bs-toggle="modal" href="#" style="color: #203040;">Lack of
             Corrective Action for Student Complaints</a></td>
         <td>
@@ -226,7 +188,7 @@
         <td><span class="badge-status badge-inactive">INACTIVE</span></td>
     </tr>
 
-    <tr>
+    <tr data-status="ongoing">
         <td><a data-bs-target="#auditTask3Modal" data-bs-toggle="modal" href="#" style="color: #203040;">Non-Compliance
             with Health and Safety Regulations</a>
         </td>
@@ -250,7 +212,7 @@
         <td><span class="badge-status badge-ongoing">ONGOING</span></td>
     </tr>
 
-    <tr>
+    <tr data-status="postponed">
         <td><a data-bs-target="#auditTask4Modal" data-bs-toggle="modal" href="#" style="color: #203040;">Inconsistent
             Teacher Training and Development Programs</a>
         </td>
@@ -390,15 +352,14 @@
                     <!-- Right-side progress steps -->
                     <div class="col-md-6">
                         <div class="progress-step">
-                            <h6>
-                                <a aria-controls="auditStep1Content" aria-expanded="false" class="btn-link" data-bs-toggle="collapse"
-                                   href="#auditStep1Content" role="button">
+                            <h6 class="d-flex justify-content-between align-items-center">
+                                <a aria-controls="auditStep1Content" aria-expanded="false" class="btn-link" data-bs-toggle="collapse" href="#auditStep1Content" role="button">
                                     Step 1: Review RFA Submission Process
                                 </a>
+                                <i class="bi bi-check-circle text-success" id="step1-check" style="display: none;"></i> <!-- Check Icon -->
                             </h6>
                             <div class="collapse" id="auditStep1Content">
-                                <p class="text-muted">Verify if the process owner has followed all steps in the RFA
-                                    form, including submission, approval, and verification processes.</p>
+                                <p class="text-muted">Verify if the process owner has followed all steps in the RFA form, including submission, approval, and verification processes.</p>
 
                                 <div class="attachment-input">
                                     <label for="file-attachment-auditstep1"><i class="bi bi-paperclip"></i> Attach file</label>
@@ -407,21 +368,27 @@
 
                                 <div class="comments-section">
                                     <div class="comment admin-comment">
-                                        <strong>Auditor:</strong> Ensure that the process owner has submitted the RFA
-                                        form with all steps completed as required.
+                                        <strong>Auditor:</strong> Ensure that the process owner has submitted the RFA form with all steps completed as required.
                                     </div>
                                     <div class="comment user-comment">
-                                        <strong>User (Auditee):</strong> Awaiting feedback on RFA form from Marketing
-                                        Department.
+                                        <strong>User (Auditee):</strong> Awaiting feedback on RFA form from Marketing Department.
                                     </div>
                                 </div>
 
-                                <div class="add-comment">
-                                    <input placeholder="Add a comment..." type="text">
-                                    <button type="button">Comment</button>
+                                <div class="add-comment d-flex">
+                                    <input placeholder="Add a comment..." type="text" class="form-control me-2">
+                                    <button type="button" class="btn btn-outline-secondary">
+                                        <i class="bi bi-send"></i> <!-- Send Icon -->
+                                    </button>
+                                </div>
+
+                                <!-- Complete Step Button (placed downward) -->
+                                <div class="mt-4">
+                                    <button type="button" class="btn btn-primary complete-step-btn" data-step="1">Complete Step</button>
                                 </div>
                             </div>
                         </div>
+
 
                         <div class="progress-step">
                             <h6>
@@ -1260,52 +1227,212 @@
     </div>
 </div>
 
-<!-- Script to handle form submission and table update -->
 <script>
-    document.getElementById('addProjectForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+    // Function to update the count in each tab
+function updateTabCounts() {
+    const statusCounts = {
+        all: 0,
+        ongoing: 0,
+        cancelled: 0,
+        finished: 0,
+        postponed: 0
+    };
 
-        // Collect form data
-        const nonConformities = document.getElementById('nonConformities').value;
-        const assignees = document.getElementById('assignees').value;
-        const campus = document.getElementById('campus').value;
-        const startDate = document.getElementById('startDate').value;
-        const deadline = document.getElementById('deadline').value;
-        const task = document.getElementById('task').value;
-
-        // Get the table body
-        const table = document.getElementById('projectsTable').getElementsByTagName('tbody')[0];
-
-        // Create a new row
-        const newRow = document.createElement('tr');
-
-        // Set the innerHTML for the new row
-        newRow.innerHTML = `
-            <td>${nonConformities}</td>
-            <td>${assignees}</td>
-            <td>${campus}</td>
-            <td>${startDate}</td>
-            <td>${deadline}</td>
-            <td>${task}</td>
-            <td>
-                <div>0 / ${task}</div>
-                <div class="progress">
-                    <div class="progress-bar bg-warning" style="width: 0%;"></div>
-                </div>
-            </td>
-            <td><span class="badge-status badge-inactive">INACTIVE</span></td>
-        `;
-
-        // Append the new row to the table body
-        table.appendChild(newRow);
-
-        // Reset the form
-        document.getElementById('addProjectForm').reset();
-
-        // Close the modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('addProjectModal'));
-        modal.hide();
+    // Count the number of rows for each status
+    document.querySelectorAll('#projectsTable tbody tr').forEach(function(row) {
+        const status = row.getAttribute('data-status');
+        statusCounts.all++;
+        if (statusCounts[status] !== undefined) {
+            statusCounts[status]++;
+        }
     });
+
+    // Update the text of each tab to reflect the current counts
+    document.querySelector('[data-filter="all"]').textContent = `All (${statusCounts.all})`;
+    document.querySelector('[data-filter="ongoing"]').textContent = `Ongoing (${statusCounts.ongoing})`;
+    document.querySelector('[data-filter="cancelled"]').textContent = `Cancelled (${statusCounts.cancelled})`;
+    document.querySelector('[data-filter="finished"]').textContent = `Finished (${statusCounts.finished})`;
+    document.querySelector('[data-filter="postponed"]').textContent = `Postponed (${statusCounts.postponed})`;
+}
+
+// Call this function initially to set the counts on page load
+updateTabCounts();
+
+// Modify the filter logic to call the updateTabCounts function after filtering
+document.querySelectorAll('#tabContainer .nav-link').forEach(function(tab) {
+    tab.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Remove active class from all tabs within #tabContainer
+        document.querySelectorAll('#tabContainer .nav-link').forEach(function(nav) {
+            nav.classList.remove('active');
+        });
+
+        // Add active class to the clicked tab
+        tab.classList.add('active');
+
+        // Get the filter type
+        const filter = tab.getAttribute('data-filter');
+
+        // Get all table rows
+        const rows = document.querySelectorAll('#projectsTable tbody tr');
+
+        // Show/Hide rows based on the filter
+        rows.forEach(function(row) {
+            const status = row.getAttribute('data-status');
+
+            if (filter === 'all' || status === filter) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Update the counts after filtering
+        updateTabCounts();
+    });
+});
+
+// Modify the filterTable function to also update the counts after filtering
+function filterTable() {
+    const filter = document.querySelector('#tabContainer .nav-link.active').getAttribute('data-filter');
+    const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#projectsTable tbody tr');
+
+    rows.forEach(function(row) {
+        const status = row.getAttribute('data-status');
+        const rowText = row.textContent.toLowerCase();
+
+        // Check if the row matches both the selected filter and search query
+        const matchesFilter = (filter === 'all' || status === filter);
+        const matchesSearch = rowText.includes(searchQuery);
+
+        // Show the row if it matches both, otherwise hide it
+        if (matchesFilter && matchesSearch) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    // Update the counts after filtering
+    updateTabCounts();
+}
+
+// Attach event listener to search input, scoped to the monitoring log
+document.getElementById('searchInput').addEventListener('input', function() {
+    filterTable();
+});
+
+
+// Function to filter table rows based on selected tab
+document.querySelectorAll('#tabContainer .nav-link').forEach(function(tab) {
+    tab.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Remove active class from all tabs within #tabContainer
+        document.querySelectorAll('#tabContainer .nav-link').forEach(function(nav) {
+            nav.classList.remove('active');
+        });
+
+        // Add active class to the clicked tab
+        tab.classList.add('active');
+
+        // Get the filter type
+        const filter = tab.getAttribute('data-filter');
+
+        // Get all table rows
+        const rows = document.querySelectorAll('#projectsTable tbody tr');
+
+        // Show/Hide rows based on the filter
+        rows.forEach(function(row) {
+            const status = row.getAttribute('data-status');
+
+            if (filter === 'all' || status === filter) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+});
+
+// Search input filter logic, scoped to the monitoring log
+function filterTable() {
+    const filter = document.querySelector('#tabContainer .nav-link.active').getAttribute('data-filter');
+    const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#projectsTable tbody tr');
+
+    rows.forEach(function(row) {
+        const status = row.getAttribute('data-status');
+        const rowText = row.textContent.toLowerCase();
+
+        // Check if the row matches both the selected filter and search query
+        const matchesFilter = (filter === 'all' || status === filter);
+        const matchesSearch = rowText.includes(searchQuery);
+
+        // Show the row if it matches both, otherwise hide it
+        if (matchesFilter && matchesSearch) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+// Attach event listener to search input, scoped to the monitoring log
+document.getElementById('searchInput').addEventListener('input', function() {
+    filterTable();
+});
+
+
+    document.querySelectorAll('.complete-step-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        const stepNumber = btn.getAttribute('data-step');
+        const checkIcon = document.getElementById(`step${stepNumber}-check`);
+
+        // Display the check icon
+        if (checkIcon) {
+            checkIcon.style.display = 'inline-block';
+        }
+
+        // Optionally collapse the step
+        const stepContent = document.getElementById(`auditStep${stepNumber}Content`);
+        if (stepContent) {
+            stepContent.classList.remove('show');  // This will collapse the step
+        }
+    });
+});
+
+    document.querySelectorAll('.complete-step-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        const stepNumber = btn.getAttribute('data-step');
+        const checkIcon = document.getElementById(`step${stepNumber}-check`);
+
+        // Display the check icon
+        if (checkIcon) {
+            checkIcon.style.display = 'inline-block';
+        }
+
+        // Disable further interaction with this step
+        const stepLink = document.querySelector(`[data-bs-toggle="collapse"][href="#auditStep${stepNumber}Content"]`);
+        if (stepLink) {
+            stepLink.classList.add('disabled');
+            stepLink.style.pointerEvents = 'none';
+            stepLink.style.color = '#6c757d'; // Optional: change color to indicate disabled state
+        }
+
+        // Optionally collapse the step
+        const stepContent = document.getElementById(`auditStep${stepNumber}Content`);
+        if (stepContent) {
+            stepContent.classList.remove('show');  // This will collapse the step
+        }
+    });
+});
+
+
 </script>
+
+
 
 {% endblock %}

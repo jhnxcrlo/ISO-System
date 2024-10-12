@@ -1,0 +1,65 @@
+{% extends 'main/internal audit/base.html' %}
+{% block title %}Add New Non-Conformity{% endblock %}
+
+{% block content %}
+<style>
+    .btn-primary {
+        background-color: #A33331 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 12px 24px !important;
+        font-weight: bold !important;
+        font-size: 1rem !important;
+        cursor: pointer !important;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    }
+    .btn-primary:hover {
+        background-color: #A33331 !important;
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15) !important;
+        color: white;
+    }
+
+    /* Apply bold styling to all form labels */
+    .form-label {
+        font-weight: bold;
+    }
+</style>
+
+<h1>Add New Non-Conformity</h1>
+<p>Add non-conformities related to the ISO 9001:2015 Corrective Action Management System.</p>
+
+
+
+<form id="addNonConformityForm" method="POST" action="{% url 'add_project' %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="nonConformity" class="form-label">Non-Conformity</label>
+        <input type="text" class="form-control" id="nonConformity" name="non_conformity" required>
+    </div>
+    <div class="mb-3">
+        <label for="assignees" class="form-label">Assignees</label>
+        <input type="text" class="form-control" id="assignees" name="assignees" required>
+    </div>
+    <div class="mb-3">
+        <label for="campus" class="form-label">Campus</label>
+        <input type="text" class="form-control" id="campus" name="campus" required>
+    </div>
+    <div class="mb-3">
+        <label for="startDate" class="form-label">Start Date</label>
+        <input type="date" class="form-control" id="startDate" name="start_date" required>
+    </div>
+    <div class="mb-3">
+        <label for="deadline" class="form-label">Deadline</label>
+        <input type="date" class="form-control" id="deadline" name="deadline" required>
+    </div>
+    <div class="mb-3">
+        <label for="task" class="form-label">Task</label>
+        <input type="number" class="form-control" id="task" name="task" required>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Add Non-Conformity</button>
+</form>
+
+
+{% endblock %}
