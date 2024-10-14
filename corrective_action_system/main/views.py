@@ -500,4 +500,6 @@ def add_project(request):
     # If not POST request, render the form to add a project
     return render(request, 'main/internal audit/internal_auditor_add_new_nc.html')
 
+def fm_qms_010_page_1(request):
+    return render(request, 'main/internal audit/fm_qms_010_page_1.html')
 
