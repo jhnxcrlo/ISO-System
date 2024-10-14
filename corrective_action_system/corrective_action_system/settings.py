@@ -20,6 +20,9 @@ INSTALLED_APPS = [
     'main',
     'crispy_forms',
     'widget_tweaks',
+    'api',
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
