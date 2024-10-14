@@ -66,3 +66,14 @@ class Template(models.Model):
     description = models.TextField()
     template_file = models.FileField(upload_to='templates/')
     completed = models.BooleanField(default=False)  # New field to track completion
+
+class Project(models.Model):
+    non_conformity = models.CharField(max_length=255)
+    assignees = models.CharField(max_length=255)
+    campus = models.CharField(max_length=255)
+    start_date = models.DateField()
+    deadline = models.DateField()
+    task = models.IntegerField()
+
+    def __str__(self):
+        return self.non_conformity

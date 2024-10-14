@@ -4,7 +4,7 @@
 <div class="container mt-5">
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
-            <h2>Internal Auditor Guidelines</h2>
+            <h1>Internal Auditor Guidelines</h1>
             <!-- Only show the upload button to Internal Auditor (Admin check can be removed here) -->
             {% if user.userprofile.role == 'Admin' or user.userprofile.role == 'Internal Auditor' %}
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadGuidelineModal">

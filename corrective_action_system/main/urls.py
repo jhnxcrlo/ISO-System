@@ -33,6 +33,10 @@ urlpatterns = [
     path('internal-auditor/guidelines/upload/', views.internal_auditor_upload_guideline,name='internal_auditor_upload_guideline'),
     path('internal-auditor/guidelines/edit/<int:pk>/', views.internal_auditor_edit_guideline,name='internal_auditor_edit_guideline'),
     path('internal-auditor/guidelines/delete/<int:pk>/', views.internal_auditor_delete_guideline,name='internal_auditor_delete_guideline'),
+    path('add-project/', views.add_project, name='add_project'),
+    path('internal-auditor-monitoring-log/', views.internal_auditor_monitoring_log, name='monitoring_log'),  # Your monitoring log view
+    path('fm-qms-010-page-1/', views.fm_qms_010_page_1, name='fm_qms_010_page_1'),
+
 
                   # Process Owner views (view only)
     path('process-owner/guidelines/', views.process_owner_guideline_list,name='process_owner_guideline_list'),

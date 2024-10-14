@@ -13,6 +13,7 @@ from django.http import HttpResponse, FileResponse, Http404
 from .models import TemplateModel, Guideline, Announcement
 from .forms import GuidelineForm, AnnouncementForm, CustomPasswordChangeForm
 from itsdangerous import SignatureExpired, BadSignature
+from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
 import logging
 
@@ -504,3 +505,26 @@ def is_process_owner(user):
 def process_owner_guideline_list(request):
     guidelines = Guideline.objects.all()
     return render(request, 'main/process owner/list.html', {'guidelines': guidelines})
+
+
+@login_required
+def add_project(request):
+    if request.method == "POST":
+        non_conformity = request.POST.get('non_conformity')
+        assignees = request.POST.get('assignees')
+        campus = request.POST.get('campus')
+        start_date = request.POST.get('start_date')
+        deadline = request.POST.get('deadline')
+        task = request.POST.get('task')
+
+        # Add logic for saving the project
+
+        messages.success(request, 'Project added successfully.')
+        return redirect('internal_auditor_monitoring_log')  # Redirect after adding project
+
+    # If not POST request, render the form to add a project
+    return render(request, 'main/internal audit/internal_auditor_add_new_nc.html')
+
+def fm_qms_010_page_1(request):
+    return render(request, 'main/internal audit/fm_qms_010_page_1.html')
+
