@@ -101,7 +101,14 @@
             </div>
         </div>
     </div>
-
 </div>
+
+    <script>
+    function deleteTemplate(templateId) {
+        if (confirm('Are you sure you want to delete this template?')) {
+            window.location.href = '{% url "delete_template" 0 %}'.replace('0', templateId);
+        }
+    }
+</script>
 
 {% endblock %}

@@ -4,3 +4,4 @@ venv/
 media/
 staticfiles/
 static/
+db.sqlite3

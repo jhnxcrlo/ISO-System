@@ -311,7 +311,9 @@ def download_template(request, pk):
     return redirect('forms')
 
 
+
 def role_allowed_to_delete(user):
+    print(f"User {user.username} with role {user.userprofile.role} is trying to delete.")
     return hasattr(user, 'userprofile') and user.userprofile.role in ['Admin', 'Internal Auditor']
 
 
@@ -319,17 +321,19 @@ def role_allowed_to_delete(user):
 @user_passes_test(role_allowed_to_delete)
 def delete_template(request, pk):
     template = get_object_or_404(TemplateModel, pk=pk)
-    if template.file:
-        template.file.delete(save=False)
-    template.delete()
+    if request.method == "POST":
+        if template.file:
+            template.file.delete(save=False)
+        template.delete()
 
-    # Redirect based on user role
+        messages.success(request, "Template deleted successfully.")
+
+    # Redirect to appropriate page based on the user's role
     if request.user.userprofile.role == 'Admin':
         return redirect('forms')
     elif request.user.userprofile.role == 'Internal Auditor':
         return redirect('internal_auditor_forms')
     else:
-        # Default redirection if none of the roles match
         return redirect('forms')
 
 
@@ -337,6 +341,26 @@ def delete_template(request, pk):
 def internal_auditor_forms_view(request):
     templates = TemplateModel.objects.all()
     return render(request, 'main/internal audit/internal_auditor_forms.html', {'templates': templates})
+
+@login_required
+def internal_upload_template(request):
+    if request.method == 'POST':
+        template_name = request.POST.get('template_name')
+        template_description = request.POST.get('template_description')
+        template_file = request.FILES.get('template_file')
+
+        if template_file:
+            template_model = TemplateModel.objects.create(
+                template_name=template_name,
+                description=template_description,
+                file=template_file
+            )
+            template_model.save()
+            return redirect('forms')
+
+        return render(request, 'main/administrator/forms.html', {'error': 'No file was uploaded.'})
+
+    return redirect('forms')
 
 
 @login_required
@@ -362,6 +386,7 @@ def admin_guideline_list(request):
 
 @login_required
 
+@login_required
 def admin_upload_guideline(request):
     if request.method == "POST":
         form = GuidelineForm(request.POST, request.FILES)
@@ -370,7 +395,7 @@ def admin_upload_guideline(request):
             guideline.uploaded_by = request.user
             guideline.save()
             messages.success(request, "Guideline uploaded successfully.")
-            return redirect('admin_guideline_list')
+            return redirect('admin_guideline_list')  # Redirect to Guidelines
         else:
             messages.error(request, "Failed to upload guideline. Please check the form.")
     else:

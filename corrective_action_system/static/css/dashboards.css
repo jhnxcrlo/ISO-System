@@ -805,8 +805,8 @@ body {
         display: none;
     }
 }
- Adjust content margin when sidebar is collapsed */
-}
+/* Adjust content margin when sidebar is collapsed *!*/
+/*}*/
 
 /* Primary Button (Dark Red) */
 .btn-primary {
@@ -1262,7 +1262,7 @@ html {
 }
 
 .filter-tabs .nav-link:hover, .filter-tabs .nav-link.active {
-  color: #white;
+  color: white;
 }
 
 /* Change the default color of nav-pills links */
@@ -1932,8 +1932,7 @@ h3 {
         display: none;
     }
 }
- Adjust content margin when sidebar is collapsed */
-}
+ /*Adjust content margin when sidebar is collapsed *!*/
 
 body {
             overflow-x: hidden;
@@ -1983,7 +1982,7 @@ body {
         .navbar .dropdown-toggle {
             border: none;
             display: flex;
-            align-items: right;
+            align-items: center;
         }
 
         .navbar .dropdown-menu {
@@ -1993,8 +1992,3 @@ body {
         .navbar .rounded-circle {
             border: 2px solid #ffffff;
         }
-
-
-
-
-

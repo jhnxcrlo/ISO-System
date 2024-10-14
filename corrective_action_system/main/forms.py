@@ -96,16 +96,27 @@ class GuidelineForm(forms.ModelForm):
 class CustomPasswordChangeForm(PasswordChangeForm):
     first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'placeholder': 'First Name'}))
     last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'placeholder': 'Last Name'}))
+    phone_number = forms.CharField(max_length=15, required=False, widget=forms.TextInput(attrs={'placeholder': 'Phone Number'}))
+    position = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'placeholder': 'Position'}))
+    department = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'placeholder': 'Department'}))
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'old_password', 'new_password1', 'new_password2']
+        fields = ['first_name', 'last_name', 'old_password', 'new_password1', 'new_password2', 'phone_number', 'position', 'department']
 
     def save(self, commit=True):
         user = super().save(commit=False)
         # Update the user's first and last name
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
+
+        # Update the related UserProfile fields
+        user_profile = user.userprofile
+        user_profile.phone_number = self.cleaned_data['phone_number']
+        user_profile.position = self.cleaned_data['position']
+        user_profile.department = self.cleaned_data['department']
+
         if commit:
             user.save()
+            user_profile.save()
         return user

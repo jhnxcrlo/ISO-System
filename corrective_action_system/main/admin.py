@@ -4,7 +4,8 @@ from .models import UserProfile, TemplateModel
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'role')
+    list_display = ('user', 'role', 'phone_number', 'department', 'position')
+
 
 
 @admin.register(TemplateModel)
