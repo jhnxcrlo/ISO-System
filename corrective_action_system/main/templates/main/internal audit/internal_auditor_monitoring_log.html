@@ -352,6 +352,7 @@
 
                     <!-- Right-side progress steps -->
                     <div class="col-md-6">
+                        <!-- Step 1 -->
                         <div class="progress-step">
                             <h6 class="d-flex justify-content-between align-items-center">
                                 <a aria-controls="auditStep1Content" aria-expanded="false" class="btn-link" data-bs-toggle="collapse" href="#auditStep1Content" role="button">
@@ -383,24 +384,23 @@
                                     </button>
                                 </div>
 
-                                <!-- Complete Step Button (placed downward) -->
+                                <!-- Complete Step Button -->
                                 <div class="mt-4">
                                     <button type="button" class="btn btn-primary complete-step-btn" data-step="1">Complete Step</button>
                                 </div>
                             </div>
                         </div>
 
-
+                        <!-- Step 2 -->
                         <div class="progress-step">
-                            <h6>
-                                <a aria-controls="auditStep2Content" aria-expanded="false" class="btn-link" data-bs-toggle="collapse"
-                                   href="#auditStep2Content" role="button">
+                            <h6 class="d-flex justify-content-between align-items-center">
+                                <a aria-controls="auditStep2Content" aria-expanded="false" class="btn-link" data-bs-toggle="collapse" href="#auditStep2Content" role="button">
                                     Step 2: Assess Corrective Actions
                                 </a>
+                                <i class="bi bi-check-circle text-success" id="step2-check" style="display: none;"></i> <!-- Check Icon -->
                             </h6>
                             <div class="collapse" id="auditStep2Content">
-                                <p class="text-muted">Determine if corrective actions have been implemented by the
-                                    process owner to address any non-compliance with the RFA form process.</p>
+                                <p class="text-muted">Determine if corrective actions have been implemented by the process owner to address any non-compliance with the RFA form process.</p>
 
                                 <div class="attachment-input">
                                     <label for="file-attachment-auditstep2"><i class="bi bi-paperclip"></i> Attach file</label>
@@ -409,32 +409,37 @@
 
                                 <div class="comments-section">
                                     <div class="comment admin-comment">
-                                        <strong>Auditor:</strong> Confirm that corrective actions to comply with the RFA
-                                        form process have been successfully implemented.
+                                        <strong>Auditor:</strong> Confirm that corrective actions to comply with the RFA form process have been successfully implemented.
                                     </div>
                                     <div class="comment user-comment">
-                                        <strong>User (Auditee):</strong> Corrective actions have been proposed and are
-                                        in review.
+                                        <strong>User (Auditee):</strong> Corrective actions have been proposed and are in review.
                                     </div>
                                 </div>
 
-                                <div class="add-comment">
-                                    <input placeholder="Add a comment..." type="text">
-                                    <button type="button">Comment</button>
+                                <div class="add-comment d-flex">
+                                    <input placeholder="Add a comment..." type="text" class="form-control me-2">
+                                    <button type="button" class="btn btn-outline-secondary">
+                                        <i class="bi bi-send"></i> <!-- Send Icon -->
+                                    </button>
+                                </div>
+
+                                <!-- Complete Step Button -->
+                                <div class="mt-4">
+                                    <button type="button" class="btn btn-primary complete-step-btn" data-step="2">Complete Step</button>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Step 3 -->
                         <div class="progress-step">
-                            <h6>
-                                <a aria-controls="auditStep3Content" aria-expanded="false" class="btn-link" data-bs-toggle="collapse"
-                                   href="#auditStep3Content" role="button">
+                            <h6 class="d-flex justify-content-between align-items-center">
+                                <a aria-controls="auditStep3Content" aria-expanded="false" class="btn-link" data-bs-toggle="collapse" href="#auditStep3Content" role="button">
                                     Step 3: Review Final Documentation
                                 </a>
+                                <i class="bi bi-check-circle text-success" id="step3-check" style="display: none;"></i> <!-- Check Icon -->
                             </h6>
                             <div class="collapse" id="auditStep3Content">
-                                <p class="text-muted">Review final RFA forms submitted after corrective actions to
-                                    ensure compliance with all steps.</p>
+                                <p class="text-muted">Review final RFA forms submitted after corrective actions to ensure compliance with all steps.</p>
 
                                 <div class="attachment-input">
                                     <label for="file-attachment-auditstep3"><i class="bi bi-paperclip"></i> Attach file</label>
@@ -443,32 +448,37 @@
 
                                 <div class="comments-section">
                                     <div class="comment admin-comment">
-                                        <strong>Auditor:</strong> Confirm that the final RFA forms are fully compliant
-                                        with all procedural steps.
+                                        <strong>Auditor:</strong> Confirm that the final RFA forms are fully compliant with all procedural steps.
                                     </div>
                                     <div class="comment user-comment">
-                                        <strong>User (Auditee):</strong> Final RFA forms have been submitted for audit
-                                        review.
+                                        <strong>User (Auditee):</strong> Final RFA forms have been submitted for audit review.
                                     </div>
                                 </div>
 
-                                <div class="add-comment">
-                                    <input placeholder="Add a comment..." type="text">
-                                    <button type="button">Comment</button>
+                                <div class="add-comment d-flex">
+                                    <input placeholder="Add a comment..." type="text" class="form-control me-2">
+                                    <button type="button" class="btn btn-outline-secondary">
+                                        <i class="bi bi-send"></i> <!-- Send Icon -->
+                                    </button>
+                                </div>
+
+                                <!-- Complete Step Button -->
+                                <div class="mt-4">
+                                    <button type="button" class="btn btn-primary complete-step-btn" data-step="3">Complete Step</button>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Step 4 -->
                         <div class="progress-step">
-                            <h6>
-                                <a aria-controls="auditStep4Content" aria-expanded="false" class="btn-link" data-bs-toggle="collapse"
-                                   href="#auditStep4Content" role="button">
+                            <h6 class="d-flex justify-content-between align-items-center">
+                                <a aria-controls="auditStep4Content" aria-expanded="false" class="btn-link" data-bs-toggle="collapse" href="#auditStep4Content" role="button">
                                     Step 4: Management Review
                                 </a>
+                                <i class="bi bi-check-circle text-success" id="step4-check" style="display: none;"></i> <!-- Check Icon -->
                             </h6>
                             <div class="collapse" id="auditStep4Content">
-                                <p class="text-muted">Ensure that management reviews and approves the final
-                                    documentation and confirms compliance with the RFA form process.</p>
+                                <p class="text-muted">Ensure that management reviews and approves the final documentation and confirms compliance with the RFA form process.</p>
 
                                 <div class="attachment-input">
                                     <label for="file-attachment-auditstep4"><i class="bi bi-paperclip"></i> Attach file</label>
@@ -477,32 +487,37 @@
 
                                 <div class="comments-section">
                                     <div class="comment admin-comment">
-                                        <strong>Auditor:</strong> Ensure that management has reviewed the compliance
-                                        with RFA form processes and signed off.
+                                        <strong>Auditor:</strong> Ensure that management has reviewed the compliance with RFA form processes and signed off.
                                     </div>
                                     <div class="comment user-comment">
-                                        <strong>User (Auditee):</strong> Awaiting management approval for final
-                                        documentation.
+                                        <strong>User (Auditee):</strong> Awaiting management approval for final documentation.
                                     </div>
                                 </div>
 
-                                <div class="add-comment">
-                                    <input placeholder="Add a comment..." type="text">
-                                    <button type="button">Comment</button>
+                                <div class="add-comment d-flex">
+                                    <input placeholder="Add a comment..." type="text" class="form-control me-2">
+                                    <button type="button" class="btn btn-outline-secondary">
+                                        <i class="bi bi-send"></i> <!-- Send Icon -->
+                                    </button>
+                                </div>
+
+                                <!-- Complete Step Button -->
+                                <div class="mt-4">
+                                    <button type="button" class="btn btn-primary complete-step-btn" data-step="4">Complete Step</button>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Step 5 -->
                         <div class="progress-step">
-                            <h6>
-                                <a aria-controls="auditStep5Content" aria-expanded="false" class="btn-link" data-bs-toggle="collapse"
-                                   href="#auditStep5Content" role="button">
+                            <h6 class="d-flex justify-content-between align-items-center">
+                                <a aria-controls="auditStep5Content" aria-expanded="false" class="btn-link" data-bs-toggle="collapse" href="#auditStep5Content" role="button">
                                     Step 5: Compliance Training
                                 </a>
+                                <i class="bi bi-check-circle text-success" id="step5-check" style="display: none;"></i> <!-- Check Icon -->
                             </h6>
                             <div class="collapse" id="auditStep5Content">
-                                <p class="text-muted">Provide training to the process owners on the importance of
-                                    following the step-by-step procedure as outlined in the RFA form.</p>
+                                <p class="text-muted">Provide training to the process owners on the importance of following the step-by-step procedure as outlined in the RFA form.</p>
 
                                 <div class="attachment-input">
                                     <label for="file-attachment-auditstep5"><i class="bi bi-paperclip"></i> Attach file</label>
@@ -511,32 +526,37 @@
 
                                 <div class="comments-section">
                                     <div class="comment admin-comment">
-                                        <strong>Auditor:</strong> Ensure that training on proper adherence to the RFA
-                                        form process is scheduled and conducted for process owners.
+                                        <strong>Auditor:</strong> Ensure that training on proper adherence to the RFA form process is scheduled and conducted for process owners.
                                     </div>
                                     <div class="comment user-comment">
-                                        <strong>User (Auditee):</strong> Training for process owners is scheduled for
-                                        next week.
+                                        <strong>User (Auditee):</strong> Training for process owners is scheduled for next week.
                                     </div>
                                 </div>
 
-                                <div class="add-comment">
-                                    <input placeholder="Add a comment..." type="text">
-                                    <button type="button">Comment</button>
+                                <div class="add-comment d-flex">
+                                    <input placeholder="Add a comment..." type="text" class="form-control me-2">
+                                    <button type="button" class="btn btn-outline-secondary">
+                                        <i class="bi bi-send"></i> <!-- Send Icon -->
+                                    </button>
+                                </div>
+
+                                <!-- Complete Step Button -->
+                                <div class="mt-4">
+                                    <button type="button" class="btn btn-primary complete-step-btn" data-step="5">Complete Step</button>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Step 6 -->
                         <div class="progress-step">
-                            <h6>
-                                <a aria-controls="auditStep6Content" aria-expanded="false" class="btn-link" data-bs-toggle="collapse"
-                                   href="#auditStep6Content" role="button">
+                            <h6 class="d-flex justify-content-between align-items-center">
+                                <a aria-controls="auditStep6Content" aria-expanded="false" class="btn-link" data-bs-toggle="collapse" href="#auditStep6Content" role="button">
                                     Step 6: Final Compliance Audit
                                 </a>
+                                <i class="bi bi-check-circle text-success" id="step6-check" style="display: none;"></i> <!-- Check Icon -->
                             </h6>
                             <div class="collapse" id="auditStep6Content">
-                                <p class="text-muted">Conduct a final compliance audit to verify that process owners are
-                                    adhering to the RFA form and following all steps as required.</p>
+                                <p class="text-muted">Conduct a final compliance audit to verify that process owners are adhering to the RFA form and following all steps as required.</p>
 
                                 <div class="attachment-input">
                                     <label for="file-attachment-auditstep6"><i class="bi bi-paperclip"></i> Attach file</label>
@@ -545,22 +565,29 @@
 
                                 <div class="comments-section">
                                     <div class="comment admin-comment">
-                                        <strong>Auditor:</strong> Schedule a follow-up audit to verify compliance with
-                                        the RFA form process across all departments.
+                                        <strong>Auditor:</strong> Schedule a follow-up audit to verify compliance with the RFA form process across all departments.
                                     </div>
                                     <div class="comment user-comment">
                                         <strong>User (Auditee):</strong> Awaiting the scheduling of the final audit.
                                     </div>
                                 </div>
 
-                                <div class="add-comment">
-                                    <input placeholder="Add a comment..." type="text">
-                                    <button type="button">Comment</button>
+                                <div class="add-comment d-flex">
+                                    <input placeholder="Add a comment..." type="text" class="form-control me-2">
+                                    <button type="button" class="btn btn-outline-secondary">
+                                        <i class="bi bi-send"></i> <!-- Send Icon -->
+                                    </button>
+                                </div>
+
+                                <!-- Complete Step Button -->
+                                <div class="mt-4">
+                                    <button type="button" class="btn btn-primary complete-step-btn" data-step="6">Complete Step</button>
                                 </div>
                             </div>
                         </div>
 
                     </div>
+
                 </div>
             </div>
             <div class="modal-footer">

@@ -404,45 +404,45 @@
 
 
     <div class="container" id="taskSection">
-        <div class="row d-flex justify-content-center align-items-center">
-            <div class="col col-xl-10">
-                <!-- Title and Subtitle -->
-                <div class="task-header">
-                    <h1>To Do</h1>
-                    <div class="task-info-below-header">10 tasks</div> <!-- Moved task count here -->
-                    <h4>Tasks Assigned to Me</h4>
-                </div>
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col col-xl-10">
+            <!-- Title and Subtitle -->
+            <div class="task-header">
+                <h1>To Do</h1>
+                <!-- Add id to the task-info element -->
+                <div id="taskCount" class="task-info-below-header">0 tasks</div>
+                <h4>Tasks Assigned to Me</h4>
+            </div>
 
-                <!-- Search Bar and Sort Dropdown -->
-                <div class="search-bar-container mb-4">
-                    <input class="form-control" placeholder="Search task" type="text"/>
-                    <select class="form-select sort-dropdown">
-                        <option selected>Sort by Date</option>
-                        <option value="1">Newest First</option>
-                        <option value="2">Oldest First</option>
-                    </select>
-                </div>
+            <!-- Search Bar and Sort Dropdown -->
+            <div class="search-bar-container mb-4">
+                <input id="searchInput" class="form-control" placeholder="Search task" type="text"/>
+                <select id="sortDropdown" class="form-select sort-dropdown">
+                    <option value="date-desc" selected>Sort by Date (Newest First)</option>
+                    <option value="date-asc">Sort by Date (Oldest First)</option>
+                </select>
+            </div>
 
-                <!-- To-do List -->
-                <div class="card todo-card" data-bs-target="#task1Modal" data-bs-toggle="modal">
-                    <div class="todo-content">
-                        <div class="task-details">
-                            <h5 class="card-title">Task 1: Finish Dashboard</h5>
-                            <p class="card-text"><small class="text-muted">Due: Sep 14, 2024, 10:00 AM</small></p>
-                        </div>
-                        <div class="badge-container"><span class="urgent-badge">Urgent</span></div>
+            <!-- To-do List -->
+            <div class="card todo-card" data-bs-target="#task1Modal" data-bs-toggle="modal">
+                <div class="todo-content">
+                    <div class="task-details">
+                        <h5 class="card-title">Task 1: Finish Dashboard</h5>
+                        <p class="card-text"><small class="text-muted">Due: Sep 14, 2024, 10:00 AM</small></p>
                     </div>
+                    <div class="badge-container"><span class="urgent-badge">Urgent</span></div>
                 </div>
+            </div>
 
-                <div class="card todo-card" data-bs-target="#task2Modal" data-bs-toggle="modal">
-                    <div class="todo-content">
-                        <div class="task-details">
-                            <h5 class="card-title">Task 2: Review Documentation</h5>
-                            <p class="card-text"><small class="text-muted">Due: Sep 15, 2024, 12:00 PM</small></p>
-                        </div>
-                        <div class="badge-container"><span class="on-process-badge">On Process</span></div>
+            <div class="card todo-card" data-bs-target="#task2Modal" data-bs-toggle="modal">
+                <div class="todo-content">
+                    <div class="task-details">
+                        <h5 class="card-title">Task 2: Review Documentation</h5>
+                        <p class="card-text"><small class="text-muted">Due: Sep 15, 2024, 12:00 PM</small></p>
                     </div>
+                    <div class="badge-container"><span class="on-process-badge">On Process</span></div>
                 </div>
+            </div>
 
                 <!-- Task 1 Modal -->
                 <div aria-hidden="true" aria-labelledby="task1ModalLabel" class="modal fade" id="task1Modal"
@@ -480,8 +480,8 @@
                                             <small class="text-muted">Category (Major/Minor):
                                                 <strong>Major</strong></small> <br>
 
-                                            <p class="text-red" style="padding-top:20px;">Immediate
-                                                Action/Correction:</p>
+                                            <p class="text-red" style="padding-top:20px; font-size: 20px;"><strong>Immediate
+                                                Action/Correction:</strong></p>
                                             <p>
                                                 <small class="text-muted">Encourage the faculty members concerned to
                                                     take the Midwifery Licensure Examinations since they are both
@@ -1048,7 +1048,6 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-
         // Check if the greeting has already been shown
         if (localStorage.getItem('greetingShown')) {
             // Hide the greeting section if it has been shown before
@@ -1057,8 +1056,61 @@
             // Set the localStorage flag to indicate the greeting has been shown
             localStorage.setItem('greetingShown', 'true');
         }
+    });
+    document.addEventListener("DOMContentLoaded", function() {
+        const tasks = document.querySelectorAll('.todo-card');
+        const taskCountElement = document.getElementById('taskCount');
+        const searchInput = document.getElementById('searchInput');
+        const sortDropdown = document.getElementById('sortDropdown');
 
+        // Function to update task count
+        function updateTaskCount() {
+            const visibleTasks = document.querySelectorAll('.todo-card:not([style*="display: none"])');
+            taskCountElement.textContent = `${visibleTasks.length} tasks`;
+        }
 
+        // Function to filter tasks by search input
+        function filterTasks() {
+            const searchValue = searchInput.value.toLowerCase();
+            tasks.forEach(task => {
+                const taskTitle = task.querySelector('.card-title').textContent.toLowerCase();
+                if (taskTitle.includes(searchValue)) {
+                    task.style.display = '';
+                } else {
+                    task.style.display = 'none';
+                }
+            });
+            updateTaskCount();
+        }
+
+        // Function to sort tasks by date
+        function sortTasks() {
+            const sortValue = sortDropdown.value;
+            const tasksArray = Array.from(tasks);
+
+            tasksArray.sort((a, b) => {
+                const dateA = new Date(a.querySelector('.card-text small').textContent.split(': ')[1]);
+                const dateB = new Date(b.querySelector('.card-text small').textContent.split(': ')[1]);
+
+                if (sortValue === 'date-desc') {
+                    return dateB - dateA;  // Newest first
+                } else if (sortValue === 'date-asc') {
+                    return dateA - dateB;  // Oldest first
+                }
+            });
+
+            // Re-arrange the tasks in the DOM
+            tasksArray.forEach(task => {
+                task.parentElement.appendChild(task);
+            });
+        }
+
+        // Event listeners for search and sort
+        searchInput.addEventListener('input', filterTasks);
+        sortDropdown.addEventListener('change', sortTasks);
+
+        // Initial update of task count
+        updateTaskCount();
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
