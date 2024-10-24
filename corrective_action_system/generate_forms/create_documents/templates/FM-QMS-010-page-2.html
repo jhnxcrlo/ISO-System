@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Request for Action Form Page 2</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        // Function to disable/enable New RFA input based on "Close" effectiveness
+        function toggleRFAField() {
+            var effective = document.getElementById('action_taken_effective').checked;
+            var newRfaInput = document.getElementById('new_rfa_no');
+            if (effective) {
+                newRfaInput.disabled = true;  // Disable New RFA when "Close (Effective)" is selected
+                newRfaInput.value = '';       // Clear the value when disabled
+            } else {
+                newRfaInput.disabled = false; // Enable when "Close (Not Effective)" is selected
+            }
+        }
+
+        // Function to disable/enable Reason textarea based on acceptance
+        function toggleReasonField() {
+            var accepted = document.getElementById('accepted').checked;
+            var reasonTextarea = document.getElementById('state_reason');
+            if (accepted) {
+                reasonTextarea.disabled = true;  // Disable Reason textarea when "Accepted" is selected
+                reasonTextarea.value = '';       // Clear the value when disabled
+            } else {
+                reasonTextarea.disabled = false; // Enable when "Not Accepted" is selected
+            }
+        }
+
+        // Attach event listeners on page load
+        window.onload = function() {
+            // Call functions initially to handle pre-selected radio buttons
+            toggleRFAField();
+            toggleReasonField();
+
+            // Add event listeners to radio buttons
+            document.getElementById('action_taken_effective').addEventListener('change', toggleRFAField);
+            document.getElementById('action_taken_not_effective').addEventListener('change', toggleRFAField);
+            document.getElementById('accepted').addEventListener('change', toggleReasonField);
+            document.getElementById('not_accepted').addEventListener('change', toggleReasonField);
+        };
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <form action="/submit" method="POST">
+        <table>
+            <tr>
+                <td colspan="6"></td>
+                <th class="nc-data" colspan="6">REVIEW OF ACTION PLAN</th>
+            </tr>
+            <tr>
+                <td colspan="9" rowspan="3" style="height: 200px;">
+                    <div class="checkboxes">
+                        <div class="form-group mt-4">
+                            <!-- Radio buttons for Accepted or Not Accepted -->
+                            <label for="accepted">
+                                <input id="accepted" name="accepted_not_accepted" type="radio" value="Accepted" required>Accepted
+                            </label>
+                            <label for="not_accepted">
+                                <input id="not_accepted" name="accepted_not_accepted" type="radio" value="Not Accepted" required>Not Accepted
+                            </label><br><br>
+
+                            <!-- Label and textarea for stating the reason -->
+                            <label id="reason_label" for="state_reason">(If not accepted, state reasons):</label>
+                            <textarea cols="50" id="state_reason" name="state_reason" rows="5"
+                                      style="resize: none; width: 100%; height: 200px;"></textarea>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" style="height: 150px;">
+                    <label for="reviewed_by">Reviewed by:</label>
+                    <input id="reviewed_by" name="reviewed_by" required type="text">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <label for="reviewed_date">Date:</label>
+                    <input id="reviewed_date" name="reviewed_date" required type="date">
+                </td>
+            </tr>
+
+            <tr>
+                <th colspan="6">PART 5: Have you followed up your solution implementation?</th>
+                <th class="nc-data" colspan="6">FOLLOW UP</th>
+            </tr>
+            <tr>
+                <td colspan="7">
+                    <label for="status">Status:</label>
+                </td>
+                <td colspan="3">
+                    <label for="initials_resp">Initials / Responsibility:</label>
+                </td>
+                <td colspan="2">
+                    <label for="status_date">Date:</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="7" style="height: 200px;">
+                    <textarea id="status" name="status" placeholder="Enter status" rows="4"
+                              style="width: 100%; resize: none;"></textarea>
+                </td>
+                <td colspan="3" style="height: 200px;">
+                    <input id="initials_resp" name="initials_resp" placeholder="Enter initials / responsibility"
+                           style="width: 100%;" type="text">
+                </td>
+                <td colspan="2" style="height: 200px;">
+                    <input id="status_date" name="status_date" style="width: 100%;" type="date">
+                </td>
+            </tr>
+
+
+            <tr>
+                <th colspan="6">PART 6: Were you able to establish the effectiveness of the implemented actions?</th>
+                <th class="nc-data" colspan="6">VERIFICATION</th>
+            </tr>
+            <tr>
+                <td colspan="12" style="text-align: center;">
+                    <strong>Verification of Effectiveness of Implemented Actions</strong>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <label for="nvisits">No. of Visits:</label>
+                </td>
+                <td colspan="2">
+                    <label for="vdate">Date:</label>
+                </td>
+                <td colspan="4">
+                    <label for="follow_up_audit_result">Follow-up Audit Result (Objective Evidences):</label>
+                </td>
+                <td colspan="2">
+                    <label for="ntdate">New Target Date:</label>
+                </td>
+                <td colspan="3">
+                    <label>Status:</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <input id="nvisits" min="0" name="nvisits" type="number">
+                </td>
+                <td colspan="2">
+                    <input id="vdate" name="vdate" type="date">
+                </td>
+                <td colspan="4">
+                    <textarea cols="40" id="follow_up_audit_result" name="follow_up_audit_result" rows="2" style="resize: none;"></textarea>
+                </td>
+                <td colspan="2">
+                    <input id="ntdate" name="ntdate" type="date">
+                </td>
+
+                <td colspan="3">
+                    Was Action Taken Effective?
+                    <div class="checkboxes">
+                        <div class="form-group mt-4">
+                            <label for="action_taken_effective">
+                                <input id="action_taken_effective" name="action_taken_effective" type="radio"
+                                       value="Yes"> Close (Effective)
+                            </label><br>
+                            <label for="action_taken_not_effective">
+                                <input id="action_taken_not_effective" name="action_taken_effective" type="radio"
+                                       value="No"> Close (Not Effective)
+                            </label><br><br>
+                            <label for="new_rfa_no">New RFA #:</label>
+                            <input id="new_rfa_no" name="new_rfa_no" required type="text">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <th colspan="6">PART 7: What is the current status of this corrective/preventive action?</th>
+                <th class="nc-data" colspan="6">CLOSE OUT</th>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <label>Auditor:</label>
+                </td>
+                <td colspan="5">
+                    <label for="auditor_name">Name:</label>
+                    <input id="auditor_name" name="auditor_name" required type="text">
+                </td>
+                <td colspan="2">
+                    <label for="a_date">Date:</label>
+                    <input id="a_date" name="a_date" required type="date">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <label>Process Owner:</label>
+                </td>
+                <td colspan="5">
+                    <label for="processowner_name">Name:</label>
+                    <input id="processowner_name" name="processowner_name" required type="text">
+                </td>
+                <td colspan="2">
+                    <label for="po_date">Date:</label>
+                    <input id="po_date" name="po_date" required type="date">
+                </td>
+            </tr>
+        </table>
+
+        <br>
+
+        <div class="table-container">
+            <table class="doc_code" style="font-size:small;">
+                <tr>
+                    <td><label>Doc. Code:</label></td>
+                    <td><strong>FM-QMS-010</strong></td> <!-- Static text -->
+                    <td><label for="p2_effectivity">Effectivity:</label></td>
+                    <td><input id="p2_effectivity" name="p2_effectivity" type="date"></td>
+                </tr>
+                <tr>
+                    <td><label for="p2_rev_no">Revision No.:</label></td>
+                    <td><input id="p2_rev_no" name="p2_rev_no" type="text"></td>
+                    <td><label>Page No.:</label></td>
+                    <td><strong>2 of 2</strong></td> <!-- Static text -->
+                </tr>
+            </table>
+        </div>
+
+        <br>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+</body>
+</html>

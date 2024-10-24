@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Request for Action Form</title>
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="header-container">
+        <div class="logo">
+            <img alt="sorsu Logo" src="{{ url_for('static', filename='Sorulogo.png') }}">
+        </div>
+
+        <div class="text-container">
+            <p class="republic">Republic of the Philippines</p>
+            <p class="university"><strong>SORSOGON STATE UNIVERSITY</strong></p>
+            <p class="address"><em>Magsaysay Street, Salog (Pob.), Sorsogon City, Sorsogon</em></p>
+            <p class="contact">Tel No.: 056 211-0103; Email Add.: qa.iso@sorsu.edu.ph</p>
+            <div class="separator"></div>
+
+        </div>
+       <div class="second-logo">
+            <img alt="Logo" src="{{ url_for('static', filename='bagong-pilipinas-logo.png') }}">
+        </div>
+       </div>
+
+
+    <!-- Set the action and method to send data to Flask's "/submit" route -->
+    <form action="/submit" method="POST">
+        <table>
+            <tr>
+                <td colspan="9" rowspan="3">
+                    <h1 style="font-size: 75px;">REQUEST FOR ACTION</h1>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="3">
+                    <label for="rfa_ref_no">RFA Ref. No.</label><br>
+                    <input id="lead_auditor" name="auditor_type" type="radio" value="lead">
+                    <label for="lead_auditor" style="font-size: medium;">Lead Auditor</label>
+                    <input id="internal_auditor" name="auditor_type" type="radio" value="internal">
+                    <label for="internal_auditor" style="font-size: medium;">Internal Auditor</label><br>
+                    <input id="rfa_ref_no" name="rfa_ref_no" required type="text">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <label for="date_issued">Date Issued</label> <br>
+                    <input id="date_issued" name="date_issued" required type="date">
+                </td>
+            </tr>
+
+            <tr>
+                <th colspan="6">PART 1: What is wrong?</th>
+                <th class="nc-data" colspan="6">NON-CONFORMITY (NC) DATA</th>
+            </tr>
+            <tr>
+                <td colspan="3">Originator’s Name/ID No.<input name="originator_name" required type="text"></td>
+                <td colspan="3">Unit/Department
+
+                    <select id="unitDropdown" name="unit_department" required style="width: 100%;">
+                        <option disabled selected value="">Select Unit/Department</option>
+                        <option value="Campus Director (Ma. Elena C. Demdam)">Campus Director (Ma. Elena C. Demdam)
+                        </option>
+                        <option value="Records Office">Records Office</option>
+                        <option value="Administrative Office">Administrative Office</option>
+                        <option value="Human Resource Management Office">Human Resource Management Office</option>
+                        <option value="Accounting Office">Accounting Office</option>
+                        <option value="Budget Office">Budget Office</option>
+                        <option value="Cashier’s Office">Cashier’s Office</option>
+                        <option value="Registrars Office (Renibec Balaguer)">Registrars Office (Renibec Balaguer)
+                        </option>
+                        <option value="Quality Assurance Office (Mark Anthony Dipad)">Quality Assurance Office (Mark
+                            Anthony Dipad)
+                        </option>
+                        <option value="International Relations Office (Corazon G. Bongalosa)">International Relations
+                            Office (Corazon G. Bongalosa)
+                        </option>
+                        <option value="Gender & Development Office">Gender & Development Office</option>
+                        <option value="Planning Office">Planning Office</option>
+                        <option value="Library (Grace Q. Marilla)">Library (Grace Q. Marilla)</option>
+                        <option value="General Services & Maintenance">General Services & Maintenance</option>
+                        <option value="Supply Office">Supply Office</option>
+                        <option value="Bids and Awards Committee">Bids and Awards Committee</option>
+                        <option value="ILDO/Placement Office">ILDO/Placement Office</option>
+                        <option value="Research and Development Office (Mary Ann D. Especial)">Research and Development
+                            Office (Mary Ann D. Especial)
+                        </option>
+                        <option value="Extension & Training Office">Extension & Training Office</option>
+                        <option value="Student Development Services Office (Rytzz M. Obsum)">Student Development
+                            Services Office (Rytzz M. Obsum)
+                        </option>
+                        <option value="Scholarship Office (Renibec Balaguer)">Scholarship Office (Renibec Balaguer)
+                        </option>
+                        <option value="Medical and Health Office">Medical and Health Office</option>
+                        <option value="Sports, Culture and Arts Office">Sports, Culture and Arts Office</option>
+                        <option value="Guidance and Counselling Office">Guidance and Counselling Office</option>
+                        <option value="Disaster Risk Reduction and Climate Change Office">Disaster Risk Reduction and
+                            Climate Change Office
+                        </option>
+                        <option value="Dean of CICT (Rey C. Rodrigueza)">Dean of CICT (Rey C. Rodrigueza)</option>
+                        <option value="Dean of BME (Diana V. Sales)">Dean of BME (Diana V. Sales)</option>
+                        <option value="Program Chair of BSIT">Program Chair of BSIT</option>
+                        <option value="Program Chair of BSCS">Program Chair of BSCS</option>
+                        <option value="Program Chair of BSIS">Program Chair of BSIS</option>
+                        <option value="Program Chair of BTVTEd">Program Chair of BTVTEd</option>
+                        <option value="Program Chair of BSA/BSAIS">Program Chair of BSA/BSAIS</option>
+                        <option value="Program Chair of BSEntrep">Program Chair of BSEntrep</option>
+                        <option value="Program Chair of BPublicAd">Program Chair of BPublicAd</option>
+                    </select>
+                </td>
+                <td colspan="3">Phone<input name="phone" required type="tel"></td>
+                <td colspan="3">Email<input name="email" required type="email"></td>
+            </tr>
+            <tr>
+                <td colspan="6"> This RFA is intended to:
+                    <div class="checkboxes">
+                        <label><input name="rfa_intent" type="checkbox" value="correct_nc"> Correct a NC / eliminate
+                            source of non-conformance</label>
+                        <label><input name="rfa_intent" type="checkbox" value="prevent_nc"> Prevent a potential NC /
+                            mitigate risk</label>
+                        <label><input name="rfa_intent" type="checkbox" value="improvement"> For Improvement</label>
+                    </div>
+                </td>
+                <td colspan="6">Department (where NC exists) <input name="department" required type="text"></td>
+            </tr>
+
+            <!-- Inside the table -->
+<tr>
+    <td colspan="12">
+        <label for="description_of_nonconformance">Description Of the Non-Conformance</label> <br>
+
+        <!-- Selected items display area (above the dropdown) -->
+        <div id="selectedItemsContainer" style="font-size: 16px; color: #333; margin-bottom: 10px;">
+            None selected
+        </div>
+
+        <!-- Dropdown Button -->
+        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" onclick="toggleDropdown()" style="display: flex; align-items: center; padding: 10px; width: 380px;">
+            <span style="flex-grow: 1; text-align: left;">Select Description of Non-Conformance</span>
+            <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+        </button>
+
+        <!-- Dropdown Content with Checkboxes -->
+        <div id="dropdownMenu" class="dropdown-menu-container" style="display: none;">
+            <div class="dropdown-item">
+                <label>
+                    <input type="checkbox" class="dropdown-checkbox" value="Quality Issue" onchange="updateSelectedItems()"> Quality Issue
+                </label>
+            </div>
+            <div class="dropdown-item">
+                <label>
+                    <input type="checkbox" class="dropdown-checkbox" value="Process Deviation" onchange="updateSelectedItems()"> Process Deviation
+                </label>
+            </div>
+            <div class="dropdown-item">
+                <label>
+                    <input type="checkbox" class="dropdown-checkbox" value="Safety Violation" onchange="updateSelectedItems()"> Safety Violation
+                </label>
+            </div>
+            <div class="dropdown-item">
+                <label>
+                    <input type="checkbox" class="dropdown-checkbox" value="Environmental Issue" onchange="updateSelectedItems()"> Environmental Issue
+                </label>
+            </div>
+            <div class="dropdown-item">
+                <label>
+                    <input type="checkbox" class="dropdown-checkbox" value="Documentation Error" onchange="updateSelectedItems()"> Documentation Error
+                </label>
+            </div>
+            <div class="dropdown-item">
+                <label>
+                    <input type="checkbox" class="dropdown-checkbox" id="otherCheckbox" value="Other" onchange="toggleOtherInput()"> Other (Please specify)
+                </label>
+            </div>
+        </div>
+
+        <!-- Input field for 'Other' option -->
+        <input type="text" id="otherInput" placeholder="Please specify" style="display: none; margin-top: 10px; width: 380px;" onchange="updateSelectedItems()">
+    </td>
+</tr>
+
+
+            <tr>
+                <td colspan="9" rowspan="3">
+                    <div class="form-group mt-4">
+                        <label for="description_of_nonconformance" style="font-size: xx-large;">
+                            <strong>Description Of the Non-Conformance</strong>
+                        </label>
+                        <p style="font-size: 15px;">(Existing or potential; specify the objective evidence)</p>
+                        <textarea cols="50" id="description_of_nonconformance" name="immediate_action" rows="5"
+                                  style="resize: none; width: 100%; height: 200px;"></textarea>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="3">
+                    <label for="iso_clause_ref">ISO Clause / Reference:</label>
+                    <input id="iso_clause_ref" name="iso_clause_ref" required type="text">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <label for="category">Category:</label>
+                    <select id="category" name="category" required>
+                        <option value="Major">Major</option>
+                        <option value="Minor">Minor</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="9" rowspan="3">
+                    <div class="form-group mt-4">
+                        <label for="textarea-lg" style="font-size: xx-large;"><strong>Immediate
+                            Action/Correction:</strong></label> <br>
+                        <textarea cols="50" id="immediate_action" name="immediate_action" rows="5"
+                                  style="resize: none; width: 100%; height: 150px;"></textarea>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <label for="acknowledge_by">Acknowledged by:</label>
+                    <input id="acknowledge_by" name="acknowledge_by" required type="text">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <label for="date_acknowledge">Date</label>
+                    <input id="date_acknowledge" name="date_acknowledge" required type="date">
+                </td>
+            </tr>
+
+            <tr>
+                <th colspan="6">PART 2: What is the root cause?</th>
+                <th class="nc-data" colspan="6">CAUSE ANALYSIS DATA</th>
+            </tr>
+
+            <tr>
+                <td colspan="9" rowspan="4">
+                    <div class="form-group mt-4">
+                        <label for="textarea-lg" style="font-size: xx-large;">
+                            <strong>CAUSE OF NON-CONFORMANCE</strong>
+                        </label>
+                        <p style="font-size: 15px;">Note: Attach copy (if necessary) of root cause analysis</p>
+                        <textarea cols="50" id="textarea-lg" name="immediate_action" rows="5"
+                                  style="resize: none; width: 100%; height: 150px;"></textarea>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <label for="date_ca">Date</label>
+                    <input id="date_ca" name="date_ca" required type="date">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <label for="acknowledge_by">Responsible Officer:</label>
+                    <input id="responsible_officer" name="acknowledge_by" required type="text">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <label for="date_close">Estimated Close Out Date:</label>
+                    <input id="date_close" name="date_close" required type="date">
+                </td>
+            </tr>
+
+            <tr>
+                <th colspan="6">PART 3 : What solutions can we formulate?</th>
+                <th class="nc-data" colspan="6">SOLUTION DATA</th>
+            </tr>
+
+
+            <tr>
+                <th colspan="1" rowspan="19">
+                    <div class="container_ap">
+                        <h1 style="writing-mode: vertical-rl; transform: rotate(-180deg);letter-spacing: 1rem;"> ACTION
+                            PLANS</h1>
+                    </div>
+                </th>
+            </tr>
+
+            <tr>
+                <td colspan="8"> Note: Please use continuation sheet if necessary</td>
+                <td colspan="3" style="text-align: center;"><strong>CONFIRMATION OF EFFECTS OF COUNTERMEASURES</strong>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="3">
+                    <h2>Step-by-Step Activities</h2>
+                </th>
+                <th colspan="2">
+                    <h2>Responsible Person/Unit</h2>
+                </th>
+                <th colspan="1">
+                    <h2>Time Frame</h2>
+                </th>
+                <th colspan="2">
+                    <h2>Resources Needed</h2>
+                </th>
+                <th colspan="3">
+                    <h2>Result</h2>
+                </th>
+            </tr>
+
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2"></td>
+                <td colspan="1"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2"></td>
+                <td colspan="1"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2"></td>
+                <td colspan="1"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2"></td>
+                <td colspan="1"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2"></td>
+                <td colspan="1"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2"></td>
+                <td colspan="1"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2"></td>
+                <td colspan="1"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2"></td>
+                <td colspan="1"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2"></td>
+                <td colspan="1"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2"></td>
+                <td colspan="1"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2"></td>
+                <td colspan="1"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2"></td>
+                <td colspan="1"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2"></td>
+                <td colspan="1"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2"></td>
+                <td colspan="1"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2"></td>
+                <td colspan="1"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+            </tr>
+
+            <tr>
+                <td colspan="5" style="font-size: 18px; font-weight: bold; color: #333;">
+                    “I certify that the aforesaid action plans have been reviewed and authorized for implementation. I, therefore, support the implementation of said action plans”.
+                </td>
+                <td colspan="2">
+                    Signature: <br> <br>
+                    <button  class="styled-btn-red"  style="font-size:16px;" type="submit">Upload Signature</button>
+                </td>
+                <td colspan="4">
+
+                </td>
+            </tr>
+        </table>
+        <br>
+        <div class="doc_code_table">
+            <table class="doc_table">
+                <tr>
+                    <td><label>Doc. Code:</label></td>
+                    <td><strong>FM-QMS-010</strong></td>
+                    <td><label for="effectivity">Effectivity:</label></td>
+                    <td><strong><input id="effectivity" name="effectivity" required type="date"></strong></td>
+                </tr>
+                <tr>
+                    <td><label for="revision_no">Revision No.:</label></td>
+                    <td><strong><input id="revision_no" name="revision_no" placeholder="Enter revision number" type="text"></strong></td>
+                    <td><label>Page No.:</label></td>
+                    <td><strong>1 of 2</strong></td>
+                </tr>
+            </table>
+        </div>
+    </form>
+    <form id="submitForm" action="/submit" method="POST">
+        <button class="styled-btn-red" style="background-color:#8B0000" type="button" onclick="openModal()">Submit</button>
+    </form>
+
+    <!-- Modal Structure -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                Confirm Submission
+            </div>
+            <p>Are you sure you want to submit this form? Please review all the information to ensure its accuracy before proceeding.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn confirm-btn" onclick="confirmSubmit()">Yes, Submit</button>
+                <button class="modal-btn cancel-btn" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- JavaScript to Toggle Dropdown -->
+<script>
+       function toggleDropdown() {
+        var dropdown = document.getElementById("dropdownMenu");
+        var arrowIcon = document.querySelector(".fa-chevron-down");
+
+        // Toggle dropdown visibility
+        if (dropdown.style.display === "none" || dropdown.style.display === "") {
+            dropdown.style.display = "block";
+            arrowIcon.classList.add("rotate");
+        } else {
+            dropdown.style.display = "none";
+            arrowIcon.classList.remove("rotate");
+        }
+    }
+
+    function toggleOtherInput() {
+        var otherCheckbox = document.getElementById("otherCheckbox");
+        var otherInput = document.getElementById("otherInput");
+
+        // Toggle the 'Other' input field based on checkbox state
+        if (otherCheckbox.checked) {
+            otherInput.style.display = "block";
+        } else {
+            otherInput.value = ""; // Clear the input value if unchecked
+            otherInput.style.display = "none";
+        }
+
+        updateSelectedItems(); // Update the selected items
+    }
+
+    function updateSelectedItems() {
+        var selectedItems = [];
+        var checkboxes = document.querySelectorAll(".dropdown-checkbox:checked");
+        var otherInput = document.getElementById("otherInput");
+
+        // Collect selected checkbox values
+        checkboxes.forEach(function (checkbox) {
+            if (checkbox.value === "Other") {
+                if (otherInput.value) {
+                    selectedItems.push(otherInput.value);
+                }
+            } else {
+                selectedItems.push(checkbox.value);
+            }
+        });
+
+        // Display selected items above the dropdown
+        document.getElementById("selectedItemsContainer").textContent = selectedItems.length > 0 ? selectedItems.join(', ') : 'None selected';
+    }
+
+    // Close the dropdown if clicked outside
+    window.onclick = function (event) {
+        var dropdown = document.getElementById("dropdownMenu");
+        var button = document.getElementById("dropdownMenuButton");
+
+        if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.style.display = "none";
+            var arrowIcon = document.querySelector(".fa-chevron-down");
+            arrowIcon.classList.remove("rotate");
+        }
+    };
+
+
+        // Open the modal
+        function openModal() {
+            document.getElementById("confirmationModal").style.display = "flex";
+        }
+
+        // Close the modal
+        function closeModal() {
+            document.getElementById("confirmationModal").style.display = "none";
+        }
+
+        // Confirm submission
+        function confirmSubmit() {
+            document.getElementById("submitForm").submit(); // Submit the form
+        }
+    </script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
