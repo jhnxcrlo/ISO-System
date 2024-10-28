@@ -1,0 +1,359 @@
+.custom-background.announcement-section {
+      min-height: 50vh; /* Minimum height of 50% of the viewport */
+      height: auto; /* Ensure it grows if the content overflows */
+      padding: 40px 20px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+  }
+    /* Style for announcement section */
+  .announcement-header h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .announcement-card {
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+
+  .announcement-card h5 {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .announcement-card .card-text {
+    font-size: 1rem;
+    color: #555;
+  }
+
+  /* Main background update to a softer white for better contrast and shadow */
+  .custom-background {
+    background-color: #ffffff;
+    color: #333;
+    min-height: 100vh;
+    padding: 40px 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+  }
+
+  /* Task cards - updated background color to light gray and text to black for better readability */
+  .todo-card {
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .todo-card:hover {
+    transform: translateY(-5px);
+  }
+
+  /* Badge styling for better color contrast */
+  .urgent-badge {
+    background-color: #dc3545;
+    color: white;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    margin-top: 100px;
+  }
+
+  .on-process-badge {
+    background-color: #ffc107;
+    color: #333;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    border-radius: 5px;
+  }
+
+  .completed-badge {
+    background-color: #28a745;
+    color: white;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    border-radius: 5px;
+  }
+
+  .task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+  }
+
+  .task-header h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .task-header h4 {
+    font-size: 1.2rem;
+    color: #666;
+  }
+
+  /* Search bar and task info styling for clean, minimal look */
+  .search-bar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  .search-bar-container input,
+  .search-bar-container .sort-dropdown {
+    flex: 1;
+    margin-right: 10px;
+  }
+
+  .search-bar-container input {
+    width: 60%;
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .sort-dropdown {
+    margin-left: 20px;
+  }
+
+  /* Modal styling with white background for better readability */
+
+   .modal-lg-custom {
+    max-width: 80% !important;
+  }
+
+  .modal-content {
+    background-color: #fff;
+    color: #333;
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .modal-header h2 {
+    font-size: 2rem;
+    color: #272F3F;
+    margin-bottom: 15px;
+    font-weight: 900;
+  }
+
+  .modal-header h3 {
+    font-size: 1.5rem;
+    color: #c70039;
+  }
+
+  .modal-footer {
+    padding: 20px;
+    border-top: 1px solid #ddd;
+  }
+
+  /* Move number of tasks below 'To Do' heading */
+  .task-info-below-header {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    color: #666;
+  }
+
+ /* Progress steps with improved padding, borders, and background for clarity */
+.progress-container {
+    margin-top: 30px;
+  }
+
+  .progress-step {
+    background-color: #f8f8f8;
+    border-left: 4px solid #7E1F1F;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .progress-step h6 {
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: bold;
+  }
+
+  .progress-step p {
+    color: #666;
+  }
+
+  /* File sample styling */
+  .file-samples {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+
+  .file-sample {
+    padding: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+  }
+
+  .file-name {
+    color: #333;
+    font-weight: bold;
+  }
+
+  /* Attachment input style */
+  .attachment-input {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .attachment-input label {
+    margin-right: 10px;
+    cursor: pointer;
+    color: #007bff;
+  }
+
+  .attachment-input input[type="file"] {
+    display: none;
+  }
+
+  .comments-section {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+
+  .comment {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
+  .admin-comment {
+    color: #dc3545;
+    font-weight: bold;
+  }
+
+  .user-comment {
+    color: #333;
+  }
+
+  /* Add comment input styling */
+  .add-comment {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .add-comment input[type="text"] {
+    flex-grow: 1;
+    margin-right: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+
+  .add-comment button {
+    padding: 6px 12px;
+    background-color: #7E1F1F;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .add-comment button:hover {
+    background-color: #5a1717;
+  }
+
+  /* Improved button and input styling */
+  .form-control, .form-select {
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+  }
+
+ .greeting-section {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      border: 2px solid #8E2524;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 30px;
+      transition: transform 0.3s ease;
+  }
+
+  .greeting-section h1 {
+      color: #8E2524;
+      font-size: 2.5rem; /
+      font-weight: bold;
+  }
+
+  .greeting-section strong {
+      color: #203040;
+  }
+
+  /* Add animation to make the div more dynamic */
+  .greeting-section:hover {
+      transform: translateY(-5px); /* Slightly elevate the div on hover */
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      color: white;
+  }
+
+  .greeting-section:hover::before {
+      transform: skewX(-20deg) translateX(0);
+
+  }
+
+.greeting-section:hover .greeting-link {
+  transform: scale(1.2); /* Scale up the link */
+  color: #7E1F1F; /* Ensure link text stays white */
+}
+.greeting-link {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: transform 0.3s ease, background-color 0.3s ease; /* Add smooth transition for scaling and color */
+}
+
+.greeting-link:hover {
+    color: #FFD700;
+    text-decoration: underline;
+}
+
+.progress-step .text-muted {
+  color: #666 !important;
+}
+
+/* Make the link appear as black and remove the default blue color and underline */
+.progress-step a.btn-link {
+  color: #000 !important; /* Black color */
+  text-decoration: none;  /* Remove underline */
+}
+
+.progress-step a.btn-link:hover {
+  text-decoration: underline; /* Optionally add underline on hover */
+  color: #333; /* Slightly lighter on hover */
+}
+
+  html {
+  scroll-behavior: smooth;
+}

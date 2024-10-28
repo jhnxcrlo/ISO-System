@@ -1,0 +1,223 @@
+/* Greeting Section */
+.greeting-section {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #8E2524;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease;
+}
+
+.greeting-section h1 {
+    color: #8E2524;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.greeting-section strong {
+    color: #203040;
+}
+
+.greeting-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    color: white;
+}
+
+.greeting-link {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.greeting-link:hover {
+    color: #FFD700;
+    text-decoration: underline;
+    transform: scale(1.2);
+}
+
+/* Announcement Section */
+.announcement-header h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.announcement-header p {
+    font-size: 1rem;
+    color: #666;
+}
+
+.announcement-card {
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.announcement-card h5 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.announcement-card .card-text {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Dashboard Section */
+.dashboard-section .dashboard-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.dashboard-icon {
+    font-size: 40px;
+    color: #272F3E;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.stat-title {
+    font-size: 1.25rem;
+}
+
+.stat-subtitle {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Audit Section */
+.chart-container {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.chart-info {
+    width: 60%;
+}
+
+.chart-info h2 {
+    font-weight: bold;
+}
+
+.chart-info ul {
+    list-style-type: none;
+    padding: 0;
+    margin-right: 30px;
+}
+
+.chart-info ul li {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.chart-info ul li span {
+    font-weight: bold;
+}
+
+.chart-canvas {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chart-canvas canvas {
+    width: 250px;
+    height: 250px;
+}
+
+/* ISO Audit Report Section */
+.report-container {
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+.report-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #203040;
+    display: flex;
+    align-items: center;
+}
+
+.report-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.report-lines {
+    list-style: none;
+    padding: 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.report-lines li {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.report-lines li:hover {
+    background-color: #f2f2f2;
+}
+
+.report-expand-content {
+    display: none;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+/* Button Styling */
+.btn-tertiary {
+    background-color: transparent;
+    color: #A33331;
+    border: none;
+    cursor: pointer;
+    padding: 10px 15px;
+    font-weight: normal;
+    font-size: 1rem;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.btn-tertiary:hover {
+    color: #7E1F1F;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-tertiary:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+    text-shadow: none;
+}

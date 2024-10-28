@@ -1,0 +1,269 @@
+/* Primary Button (Dark Red) */
+.btn-primary {
+    background-color: #8E2524 !important; /* Dark red */
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important; /* Slightly less rounded for modern look */
+    padding: 12px 24px !important; /* More balanced padding */
+    font-weight: bold !important;
+    font-size: 1rem !important; /* Ensure consistent font size */
+    cursor: pointer !important;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important; /* Add subtle shadow */
+}
+
+.btn-primary:hover {
+    background-color: #A33331 !important; /* Slightly lighter red on hover */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15) !important; /* Enhance shadow on hover */
+    color: white;
+}
+
+.btn-primary:disabled {
+    background-color: #d3d3d3 !important;
+    color: #777 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}
+
+/* Secondary Button (Lighter Red) */
+.btn-secondary {
+    background-color: #E6A5A4 !important; /* Lighter red */
+    color: #8E2524 !important; /* Darker red text */
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 8px 24px !important;
+    font-weight: bold !important;
+    font-size: 1rem !important;
+    cursor: pointer !important;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-secondary:hover {
+    background-color: #E6A5A4 !important; /* Slightly darker on hover */
+    color: white;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15) !important;
+}
+
+.btn-secondary:disabled {
+    background-color: #f0f0f0 !important;
+    color: #777 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}
+
+/* Tertiary Button (Minimal Red) */
+.btn-tertiary {
+    background-color: transparent !important; /* No background */
+    color: #A33331 !important; /* Use primary red for text */
+    border: none !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    padding: 10px 15px !important;
+    font-weight: normal !important;
+    font-size: 1rem !important;
+    transition: color 0.3s ease, text-shadow 0.3s ease !important;
+}
+
+.btn-tertiary:hover {
+    color: #7e1f1f !important; /* Slightly darker red on hover */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) !important; /* Add a soft text shadow */
+}
+
+.btn-tertiary:disabled {
+    color: #ccc !important;
+    cursor: not-allowed !important;
+    text-shadow: none !important;
+}
+
+/* Progress Steps */
+.progress-step {
+    background-color: #f8f8f8;
+    border-left: 4px solid #8E2524;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    position: relative;
+    cursor: pointer;
+}
+
+.progress-step h6 {
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.progress-step p {
+    color: #666;
+}
+
+/* Modal Styling */
+.modal-content {
+    background-color: #fff;
+    color: #333;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.modal-header h2 {
+    font-size: 2rem;
+    color: #8E2524;
+    margin-bottom: 15px;
+    font-weight: 900;
+}
+
+.modal-header h3 {
+    font-size: 1.5rem;
+    color: #8E2524;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid #ddd;
+}
+
+/* Table Styling */
+.table {
+    margin-top: 20px;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+    color: #333;
+}
+
+.table th {
+    color: #203040;
+    font-weight: bold;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f2f2f2;
+}
+
+/* Avatar Group */
+.avatar-group {
+    display: flex;
+    align-items: center;
+}
+
+.avatar-group img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-right: -10px;
+    border: 2px solid #fff;
+}
+
+/* Badge Styling */
+.badge-status {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    border-radius: 12px;
+}
+
+.badge-completed {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-ongoing {
+    background-color: #007bff;
+    color: white;
+}
+
+.badge-critical {
+    background-color: #dc3545;
+    color: white;
+}
+
+.badge-inactive {
+    background-color: #ffc107;
+    color: white;
+}
+
+/* Search Bar Container */
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 350px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #ddd;
+    transition: border-color 0.3s ease;
+}
+
+/* Search Input */
+.search-input {
+    flex-grow: 1;
+    padding: 10px 20px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    border-radius: 30px 0 0 30px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #8E2524;
+}
+
+/* Search Button */
+.input-group-text {
+    padding: 13px 20px;
+    background-color: white; /* Dark Red */
+    color: #8E2524;
+    border: 2px solid #8E2524;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    border-radius: 0 5px 5px 0;
+}
+
+.input-group-text:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Pagination Styling */
+.pagination-red .page-link {
+    color: #8E2524; /* Dark Red */
+    font-weight: bold;
+}
+
+.pagination-red .page-link:hover {
+    background-color: #8E2524;
+    color: #fff; /* White text on hover */
+}
+
+.pagination-red .page-item.active .page-link {
+    background-color: #8E2524;
+    border-color: #8E2524;
+    color: #fff; /* White text when active */
+}
+
+.pagination-red .page-item.disabled .page-link {
+    color: #d3d3d3; /* Disabled item color */
+    pointer-events: none;
+    background-color: #f0f0f0;
+}
+
+/* View All Link */
+.view-all-link {
+    font-weight: bold;
+    color: #A33331;
+    transition: color 0.3s;
+    text-decoration: none;
+}
+
+.view-all-link:hover {
+    color: #8E2524; /* Darker red on hover */
+    text-decoration: underline;
+}
+
+.nav-link i.fa-angle-right {
+    color: #A33331;
+}

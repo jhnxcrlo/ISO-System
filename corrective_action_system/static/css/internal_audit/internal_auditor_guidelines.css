@@ -1,0 +1,63 @@
+/* External Resource Links */
+.external-resources-links a {
+    color: #800000; /* Maroon color for links */
+    text-decoration: none; /* No underline */
+    transition: color 0.3s ease;
+}
+
+.external-resources-links a:hover {
+    color: #5a1f1f; /* Darker maroon on hover */
+    text-decoration: underline; /* Optional underline on hover */
+}
+
+/* Card Header */
+.card-header {
+    background-color: #f8f9fa; /* Light background for the header */
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 8px 8px 0 0;
+}
+
+.card-header h3 {
+    margin: 0;
+    color: #203040; /* Dark gray-blue for the header text */
+    font-weight: bold;
+}
+
+/* Card Body */
+.card-body {
+    padding: 20px;
+    background-color: white;
+    border-radius: 0 0 8px 8px;
+    border: 1px solid #e9ecef;
+}
+
+.card-body p, .card-body ol li {
+    color: #666; /* Light gray for the text */
+    font-size: 1rem; /* Ensure consistent font size */
+    margin-bottom: 10px;
+}
+
+.card-body ol {
+    padding-left: 20px; /* Space for ordered list */
+}
+
+.card-body ol li {
+    margin-bottom: 5px;
+}
+
+/* General Layout */
+.container-fluid {
+    padding: 20px;
+}
+
+h1 {
+    color: #203040;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Spacing between cards */
+.card + .card {
+    margin-top: 20px;
+}

@@ -1,0 +1,189 @@
+body {
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+    label {
+    font-size: 20px; /* Adjust the font size to your preference */
+    font-weight: normal; /* Optional: Adjust font weight if needed */
+}
+  .header-container {
+      display: flex;
+      margin: 10px;
+  }
+  
+  .logo {
+      size: 20px;
+      margin-right: 20px; 
+  }
+  .second-logo {
+      height: 200px;
+      margin-left: auto;
+  }
+  
+  .text-container {
+      text-align: left; 
+      line-height: .2;
+      margin-right:200x ;
+  }
+  .separator {
+  border-bottom: 3px solid #000000; 
+  padding-top: 40px;
+  margin: 10px 0; 
+}
+  
+  .republic {
+      font-size:xx-large;
+  }
+  
+  .university {
+      font-size:xx-large;
+      text-transform: uppercase; 
+      font-weight: bold;
+  }
+  
+  .address {
+      font-size:larger;
+      font-style: italic;
+  }
+  
+  .contact {
+      font-size:larger;
+  }
+  
+  .container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: white;
+    padding: 100px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  h1 {
+    text-align: center; 
+    color: rgb(0, 0, 0);
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+  h2{
+      text-align: center;   
+      color: rgb(0, 0, 0);
+      font-size: x-large; 
+  }
+  .header_sorsu{
+      text-align: left; 
+      font-size: xx-large;
+  }
+
+  table { 
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    table-layout: fixed; 
+  }
+
+  .table-container {
+      display: flex;
+      justify-content: flex-end; 
+  }
+  .doc_code{
+      width: 33%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      table-layout: fixed; 
+  }
+  th, td {
+    border: 1px solid #000000;
+    padding: 10px;
+    text-align: left;
+    word-wrap: break-word;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  th {
+    color: black;
+    font-size:xx-large;
+  }
+  .nc-data {
+    background-color: #8B0000;
+    color: white;
+    text-align: center;
+  }
+  input[type="text"], input[type="email"], input[type="tel"], input[type="date"] {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+  }
+  .checkboxes {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+  }
+  .checkboxes label {
+    margin-right: 10px;
+  }
+  .container_ap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+  }
+  .btn {
+      background-color: #fff;
+      color: #8B0000;
+      border: 1px solid #8B0000;
+      border-radius: 4px;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  }
+  .btn:hover {
+      background-color: #fff; 
+      color: #8B0000; 
+      border: 1px solid #8B0000; 
+  }
+  
+  .btn:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 38, 38, 0.5);
+  }
+
+  form-control.textarea-lg {
+    width: 200px;
+    height: 50px;
+  }
+
+  select {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+select:focus {
+    outline: none;
+    border-color: #8B0000;
+    box-shadow: 0 0 5px rgba(139, 0, 0, 0.5);
+}
+
+.save-button-container {
+        text-align: right;
+        margin-top: 20px;
+    }
+
+    .save-button {
+        background-color: #8B0000;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 50px;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
