@@ -3,5 +3,5 @@ venv/
 .idea/
 media/
 staticfiles/
-static/
+#static/
 db.sqlite3
