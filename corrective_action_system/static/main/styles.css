@@ -1,94 +1,195 @@
+/* General Page Style */
 body, html {
     height: 100%;
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #5C0915; /* Adjust the background color if needed */
+
+    /* Background image and gradient combined */
+    background: linear-gradient(135deg, rgba(255, 0, 0, 0.7), rgba(111, 0, 29, 0.7), rgba(31, 0, 89, 0.7)),
+                url('{% static "main/Background.png" %}');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
+/* Container for login form centering */
 .container {
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100%;
+    padding: 0 20px; /* Add side padding for smaller screens */
 }
 
+/* Login Box Styles */
 .login-container {
     width: 100%;
-    max-width: 400px; /* Increased max-width for a larger form */
+    max-width: 450px; /* Slightly reduce max-width for a sleeker look */
     background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Adjusted shadow for better depth */
-    padding: 40px; /* Increased padding for better spacing */
+    border-radius: 15px; /* Softer border radius */
+    border: 1px solid #ddd; /* Add a light border */
+    /* Enhanced shadow effect */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 12px 24px rgba(0, 0, 0, 0.15);
+    padding: 50px 30px; /* Increased padding for spacious feel */
     animation: fadeIn 0.5s ease-out;
 }
 
+/* Fade In Animation */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* Logo Styling */
 .logo img {
-    width: 65px; /* Adjust size based on your preference */
+    width: 90px; /* Adjusted for better proportion */
+    margin-bottom: 20px; /* Space below logo */
+    filter: drop-shadow(0 0 20px white);
 }
 
-.form-control, .btn-primary {
+
+/* System Name Styling */
+.system-name {
+    font-size: calc(1.8rem + 1vw);
+    font-family: 'Arial Black', sans-serif; /* Set the font to Arial Black */
+    color: #ffffff; /* Set the font color to white */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Optional: Add a slight black shadow for contrast */
+    filter: drop-shadow(0 0 10px black);
+}
+
+/* Welcome Text Styling */
+.welcome-text {
+    font-family: 'Freestyle Script', 'Dancing Script', cursive;
+    font-size: 2.8rem;
+    font-weight: bold;
+    color: black;
+    position: absolute;
+    top: 280px;
+    left: 60px;
+    transform: rotate(-15deg);
+    z-index: 2;
+}
+
+/* Form Fields Styling */
+.form-control {
     border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 12px; /* Increase padding for a comfortable feel */
+    font-size: 1rem;
+    margin-bottom: 15px; /* Space between inputs */
 }
 
+/* Submit Button Styling */
 .btn-primary {
     width: 100%;
     color: #fff;
-    background-color: ##8E2524 ; /* Bootstrap primary color */
+    background-color: #007bff;
     border: none;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+    transform: translateY(-2px); /* Lift effect */
+}
+
+/* Checkbox Styling */
 .form-check-input {
     margin-top: 0.3em;
 }
 
-
+/* Labels inside form fields */
 .form-group label {
     float: left;
+    font-weight: 600; /* Bold labels for readability */
 }
 
-/* Additional Link Styles */
+/* Forgot Password Link */
 .forgot-password {
     display: block;
-    margin-top: 0.5rem; /* Reduced margin */
+    margin-top: 0.5rem;
     color: #007bff;
+    font-weight: 500;
     cursor: pointer;
+    text-align: right;
 }
 
 .forgot-password:hover {
-    text-decoration: underline; /* Underline on hover for clear interactivity */
+    text-decoration: underline;
 }
 
-/* Custom styles for the chat */
-    #chat2 .form-control {
-      border-color: transparent;
+/* Custom Chat Styles */
+#chat2 .form-control {
+    border-color: transparent;
+}
+
+#chat2 .form-control:focus {
+    border-color: transparent;
+    box-shadow: inset 0px 0px 0px 1px transparent;
+}
+
+/* Divider Styling */
+.divider:after,
+.divider:before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #eee;
+}
+
+/* Card Footer Input Styling */
+.card-footer .form-control {
+    border: none;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+/* Allow chat body to scroll */
+.card-body {
+    overflow-y: auto;
+}
+
+/* Responsive Design Adjustments */
+@media (max-width: 768px) {
+    .login-container {
+        max-width: 300px;
     }
 
-    #chat2 .form-control:focus {
-      border-color: transparent;
-      box-shadow: inset 0px 0px 0px 1px transparent;
+    .logo img {
+        width: 50px;
     }
+}
 
-    .divider:after,
-    .divider:before {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: #eee;
-    }
+/* Don't Have Account Section Styling */
+.signup-container {
+    background-color: #f1f1f1;
+    padding: 15px;
+    text-align: center;
+    border-radius: 0 0 10px 10px;
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
 
-    .card-footer .form-control {
-      border: none;
-    }
+.signup-container a {
+    color: #00a8a8;
+    font-weight: bold;
+    text-decoration: none;
+}
 
-    .card-footer {
-      background-color: #f8f9fa;
-    }
+.signup-container a:hover {
+    text-decoration: underline;
+}
 
-    .card-body {
-      overflow-y: auto;
-    }
-
+/* Styling for copyright text inside login container */
+.login-container .text-muted {
+    font-size: 0.85rem; /* Smaller font size */
+    color: #888; /* Light gray color */
+    margin-top: 40px; /* Space above the text */
+}

@@ -2,61 +2,83 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Login - Sorsogon State University</title>
     {% load static %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'main/styles.css' %}">
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.css">
+
+    <!-- Bootstrap and MDB UI Kit CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+    <link href="{% static 'main/styles.css' %}" rel="stylesheet">
 </head>
 <body>
-    <div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="login-container text-center p-4">
-            <div class="logo mb-3">
-                <img src="{% static 'main/img2.png' %}" alt="Sorsogon State University Logo">
+<div class="container-fluid d-flex align-items-center vh-100">
+    <div class="row w-100">
+        <!-- Left side with the logo and text -->
+        <div class="col-md-6 d-flex flex-column align-items-center justify-content-center text-center">
+            <h1 class="welcome-text">Welcome to!</h1> <!-- Inside the same container as system-name -->
+            <div class="logo mb-4">
+                <img alt="Sorsogon State University Logo" src="{% static 'main/img2.png' %}" style="width: 300px;">
             </div>
-            <h4 class="mb-3">Sign In</h4>
+            <h2 class="system-name">CORRECTIVE ACTION<br>MANAGEMENT SYSTEM</h2>
+        </div>
 
-            {% if error %}
-            <div class="alert alert-danger">
-                {{ error }}
-            </div>
-            {% endif %}
 
-            <form action="{% url 'login' %}" method="post">
-                {% csrf_token %}
-                 <!-- Updated Username Input -->
-                <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter Username" required autofocus>
-                    <label class="form-label" for="username">Username</label>
+        <!-- Right side with the login form -->
+        <div class="col-md-6 d-flex align-items-center justify-content-center">
+            <div class="login-container text-center p-5">
+                <h4 class="mb-4">Sign In</h4>
+
+                {% if error %}
+                <div class="alert alert-danger">
+                    {{ error }}
                 </div>
+                {% endif %}
 
-                <!-- Updated Password Input -->
-                <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter Password" required>
-                    <label class="form-label" for="password">Password</label>
-                </div>
-                <!-- 2 column grid layout for inline styling -->
-                <div class="row mb-4">
-                    <div class="col d-flex justify-content-center">
-                        <!-- Checkbox -->
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
-                            <label class="form-check-label" for="form2Example31"> Remember me </label>
+                <form action="{% url 'login' %}" method="post">
+                    {% csrf_token %}
+                    <!-- Username Input -->
+                    <div class="form-outline mb-4" data-mdb-input-init>
+                        <input autofocus class="form-control" id="username" name="username" required type="text">
+                        <label class="form-label" for="username">Username</label>
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="form-outline mb-4" data-mdb-input-init>
+                        <input class="form-control" id="password" name="password" required type="password">
+                        <label class="form-label" for="password">Password</label>
+                    </div>
+
+                    <!-- Remember me and Forgot Password -->
+                    <div class="row mb-4">
+                        <div class="col d-flex justify-content-center">
+                            <!-- Checkbox -->
+                            <div class="form-check">
+                                <input checked class="form-check-input" id="form2Example31" type="checkbox">
+                                <label class="form-check-label" for="form2Example31"> Remember me </label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <!-- Password Reset -->
+                            <a href="{% url 'password_reset' %}">Forgot Password?</a>
                         </div>
                     </div>
 
-                    <div class="col">
-                        <!-- Simple link to password reset -->
-                        <a href="{% url 'password_reset' %}">Forgot Password?</a>
-                    </div>
+                    <!-- Submit Button -->
+                    <button class="btn btn-primary btn-block" type="submit">Log In</button>
+                </form>
+                <!-- Copyright Text -->
+                <div class="mt-4 text-muted small">
+                    &copy; 2024 CAMS. All rights reserved |<a> SorSU Bulan Campus</a>
                 </div>
-
-                <button type="submit" class="btn btn-primary">Log In</button>
-            </form>
+            </div>
         </div>
     </div>
+</div>
 
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.js"></script>
+<!-- MDB UI Kit JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.js" type="text/javascript"></script>
 </body>
 </html>
