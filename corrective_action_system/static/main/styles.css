@@ -13,6 +13,70 @@ body, html {
     background-attachment: fixed;
 }
 
+/* Custom Margin for Row */
+.custom-margin {
+    margin: 10px 100px; /* Adjust these values as needed */
+}
+
+/* Welcome Text Styling */
+.welcome-text {
+    font-family: 'Freestyle Script', 'Dancing Script', cursive;
+    font-size: 2.8rem;
+    font-weight: bold;
+    color: black;
+    position: absolute;
+    top: 300px;
+    left: 0px;
+    transform: rotate(-15deg);
+    z-index: 2;
+}
+
+/* Styling for the arrow GIF below welcome text */
+.welcome-arrow {
+    width: 40px; /* Adjust size as needed */
+    margin-top: 10px; /* Space between the text and arrow */
+    animation: bounce 1.5s infinite; /* Add a bounce effect if desired */
+    position: absolute;
+    top: 360px; /* Adjust this value to control the vertical position */
+    left: 0px; /* Adjust this value to control the horizontal position */
+    transform: rotate(180deg); /* Rotate the arrow to point downwards towards the logo */
+}
+
+/* Optional bounce animation for the arrow */
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px); /* Adjust the bounce height */
+    }
+}
+
+/* Styling for the new GIF */
+.corner-gif {
+    position: absolute;
+    top: -40px; /* Adjust as needed */
+    right: 20px; /* Adjust as needed */
+    width: 100px; /* Adjust size as needed */
+}
+
+/* Logo Styling */
+.logo img {
+    width: 90px; /* Adjusted for better proportion */
+    margin-bottom: 20px; /* Space below logo */
+    filter: drop-shadow(0 0 20px white);
+}
+
+/* System Name Styling */
+.system-name {
+    font-size: calc(1.8rem + 1vw);
+    font-family: 'Arial Black', sans-serif; /* Set the font to Arial Black */
+    color: #ffffff; /* Set the font color to white */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Optional: Add a slight black shadow for contrast */
+    filter: drop-shadow(0 0 10px black);
+    margin-top: 30px; /* Space above the text */
+}
+
 /* Container for login form centering */
 .container {
     display: flex;
@@ -41,55 +105,23 @@ body, html {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Logo Styling */
-.logo img {
-    width: 90px; /* Adjusted for better proportion */
-    margin-bottom: 20px; /* Space below logo */
-    filter: drop-shadow(0 0 20px white);
+/* Consistent height for input fields and login button */
+.form-control,
+.btn-primary {
+    height: 45px; /* Set desired height */
+    font-size: 1.1rem; /* Ensure font size is consistent */
+    padding: 0 15px; /* Add side padding for input fields */
+    border-radius: 5px; /* Optional: Adjust to match button shape */
+    box-sizing: border-box; /* Ensures padding doesn't alter height */
 }
 
-
-/* System Name Styling */
-.system-name {
-    font-size: calc(1.8rem + 1vw);
-    font-family: 'Arial Black', sans-serif; /* Set the font to Arial Black */
-    color: #ffffff; /* Set the font color to white */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Optional: Add a slight black shadow for contrast */
-    filter: drop-shadow(0 0 10px black);
-}
-
-/* Welcome Text Styling */
-.welcome-text {
-    font-family: 'Freestyle Script', 'Dancing Script', cursive;
-    font-size: 2.8rem;
-    font-weight: bold;
-    color: black;
-    position: absolute;
-    top: 280px;
-    left: 60px;
-    transform: rotate(-15deg);
-    z-index: 2;
-}
-
-/* Form Fields Styling */
-.form-control {
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    padding: 12px; /* Increase padding for a comfortable feel */
-    font-size: 1rem;
-    margin-bottom: 15px; /* Space between inputs */
-}
-
-/* Submit Button Styling */
+/* Login button specific styling */
 .btn-primary {
     width: 100%;
     color: #fff;
     background-color: #007bff;
     border: none;
-    padding: 12px;
-    font-size: 1rem;
     font-weight: bold;
-    border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
