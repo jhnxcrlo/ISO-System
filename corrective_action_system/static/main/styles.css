@@ -33,22 +33,22 @@ body, html {
 
 /* Styling for the arrow GIF below welcome text */
 .welcome-arrow {
-    width: 40px; /* Adjust size as needed */
-    margin-top: 10px; /* Space between the text and arrow */
-    animation: bounce 1.5s infinite; /* Add a bounce effect if desired */
+    width: 40px;
+    margin-top: 10px;
+    animation: bounce 1.5s infinite;
     position: absolute;
-    top: 360px; /* Adjust this value to control the vertical position */
-    left: 0px; /* Adjust this value to control the horizontal position */
-    transform: rotate(180deg); /* Rotate the arrow to point downwards towards the logo */
+    top: 360px;
+    left: 0px;
+    transform: rotate(180deg);
 }
 
-/* Optional bounce animation for the arrow */
+
 @keyframes bounce {
     0%, 100% {
         transform: translateY(0);
     }
     50% {
-        transform: translateY(-5px); /* Adjust the bounce height */
+        transform: translateY(-5px);
     }
 }
 
@@ -89,11 +89,10 @@ body, html {
 /* Login Box Styles */
 .login-container {
     width: 100%;
-    max-width: 450px; /* Slightly reduce max-width for a sleeker look */
+    max-width: 450px;
     background: #ffffff;
-    border-radius: 15px; /* Softer border radius */
-    border: 1px solid #ddd; /* Add a light border */
-    /* Enhanced shadow effect */
+    border-radius: 15px;
+    border: 1px solid #ddd;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 12px 24px rgba(0, 0, 0, 0.15);
     padding: 50px 30px; /* Increased padding for spacious feel */
     animation: fadeIn 0.5s ease-out;
@@ -108,11 +107,11 @@ body, html {
 /* Consistent height for input fields and login button */
 .form-control,
 .btn-primary {
-    height: 45px; /* Set desired height */
-    font-size: 1.1rem; /* Ensure font size is consistent */
-    padding: 0 15px; /* Add side padding for input fields */
-    border-radius: 5px; /* Optional: Adjust to match button shape */
-    box-sizing: border-box; /* Ensures padding doesn't alter height */
+    height: 45px;
+    font-size: 1.1rem;
+    padding: 0 15px;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
 /* Login button specific styling */
