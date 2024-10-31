@@ -834,6 +834,15 @@
             font-weight: bold;
         }
 
+        #projectsTable tbody td a {
+        text-decoration: none ; /* Removes underline */
+        color: #203040 !important; /* Ensures consistent color */
+    }
+    #projectsTable tbody td a:hover{
+        text-decoration: underline ; /* Removes underline */
+        color: #203040 !important; /* Ensures consistent color */
+    }
+
         .table-hover tbody tr:hover {
             background-color: #f2f2f2;
         }

@@ -811,3 +811,20 @@
     html {
     scroll-behavior: smooth;
   }
+
+      /* Card shadow and hover effect */
+    .guideline-card {
+        transition: box-shadow 0.3s ease, border 0.3s ease;
+    }
+    .guideline-card:hover {
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        border: 1px solid black !important;
+    }
+
+    /* Styling for card headers */
+    .card-header {
+        background-color: #f8f9fa;
+        font-size: 1.1rem;
+        color: #333;
+        font-weight: bold;
+    }
