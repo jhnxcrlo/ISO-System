@@ -25,6 +25,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 
+
+
     <style>
 
     </style>
@@ -74,9 +76,26 @@
             <nav class="navbar navbar-expand-lg">
                 <div class="container-fluid">
                     <div class="d-flex ms-auto align-items-center">
-                        <div class="notification-icon me-3">
-                            <a href="#"><i class="fas fa-bell"></i></a>
+                        <div class="notification-icon me-3 position-relative">
+                            <!-- Notification icon that triggers the dropdown -->
+                            <a href="#" class="nav-link hidden-arrow" id="navbarNotification" role="button"
+                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" alt="Notifications">
+                                <i class="fas fa-bell"></i> <!-- Notification Bell Icon -->
+                            </a>
+
+                            <!-- Dropdown menu for notifications -->
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarNotification" style="width: 250px;">
+                                <li>
+                                    <a gtm-id="Notifications" class="dropdown-item text-wrap"
+                                       data-notification-date="06/26/2024 08:00" href=""
+                                       target="_blank" rel="nofollow">
+                                        <p class="small text-uppercase mb-2">06/26/2024</p>
+                                        <p class="mb-0">🛈 New notification message here</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
+
                         <div class="dropdown">
                             <button aria-expanded="false" class="btn btn-light dropdown-toggle"
                                     data-bs-toggle="dropdown" id="userMenu" type="button">
@@ -98,7 +117,7 @@
             </nav>
 
             <!-- Content Block -->
-            <div class="container-fluid my-4">
+            <div class="container-fluid my-4 ">
                 {% block content %}
                 {% endblock %}
             </div>

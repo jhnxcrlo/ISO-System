@@ -29,6 +29,11 @@
     color: #F1F1F1;
 }
 
+.notification-icon .dropdown-menu {
+    top: 47px; /* Adjusts vertical offset */
+
+}
+
 /* ========== Button Styling ========== */
 .navbar .btn {
     background-color: transparent;
@@ -62,6 +67,7 @@
 .dropdown-menu {
     right: 0;
     left:  auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* ========== Sidebar Styling ========== */
@@ -188,6 +194,7 @@
     width: 95px;
 }
 
+
 .sidebar-collapsed .nav-link {
     justify-content: center;
     padding: 10px;
@@ -202,6 +209,7 @@
 .sidebar-collapsed .system-title {
     display: none;
 }
+
 
 /* ========== Chatbox and Button Styling ========== */
 .chat-button {
@@ -389,7 +397,7 @@
 }
 
 .main-content-expanded {
-    margin-left: 80px;
+    margin-left: 189px;
 }
 
 /* ========== Responsive Behavior ========== */
