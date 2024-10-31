@@ -65,60 +65,60 @@
         }
 
         /* ========== Sidebar Styling ========== */
-        .sidenav {
-            background: white;
-            height: 100vh;
-            width: 250px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
-            z-index: 999;
-            padding: 20px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
+.sidenav {
+    background: white;
+    height: 100vh;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    padding: 20px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
 
-        .sidenav .nav-item {
-            margin-bottom: 15px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+.sidenav .nav-item {
+    margin-bottom: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-        .sidenav .nav-link {
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            color: #333;
-            background-color: #f1f1f1;
-            border: 2px solid #272F3F;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+.sidenav .nav-link {
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    color: #333;
+    background-color: #f1f1f1;
+    border: 2px solid #272F3F;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-        .sidenav .nav-link i {
-            margin-right: 10px;
-            font-size: 1.5rem;
-        }
+.sidenav .nav-link i {
+    margin-right: 10px;
+    font-size: 1.5rem;
+}
 
-        .sidenav .nav-link:hover {
-            background-color: #f1f1f1;
-            color: #272F3F;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transform: translateY(-2px);
-            border: 2px solid #272F3F;
-        }
+.sidenav .nav-link:hover {
+    background-color: #f1f1f1;
+    color: #272F3F;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    border: 2px solid #272F3F;
+}
 
-        /* Active State Styling */
-        .sidenav .nav-link.active {
-            background-color: white;
-            color: #272F3F;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            border: 2px solid #272F3F;
-            border-left: 6px solid #8E2524;
-        }
+/* Active State Styling */
+.sidenav .nav-link.active {
+    background-color: white !important;
+    color: #272F3F !important;
+    font-weight: bold !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    border: 2px solid #272F3F !important;
+    border-left: 6px solid #8E2524 !important;
+}
 
         /* Sidebar Logo */
         .system-title {
@@ -188,6 +188,15 @@
 
         .sidebar-collapsed .system-title {
             display: none;
+        }
+
+        /* Stop transitions for elements when navigating away */
+        .no-transition * {
+            transition: none !important;
+        }
+        /* Remove transition for sidebar */
+        .sidenav, .sidebar-collapsed {
+            transition: none !important;
         }
 
         /* ========== Chatbox and Button Styling ========== */

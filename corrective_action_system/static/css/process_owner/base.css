@@ -109,15 +109,28 @@
     transform: translateY(-2px);
     border: 2px solid #272F3F;
 }
+/* Stop transitions for elements when navigating away */
+.no-transition * {
+    transition: none !important;
+}
+/* Remove transition for sidebar */
+.sidenav, .sidebar-collapsed {
+    transition: none !important;
+}
 
 /* Active State Styling */
 .sidenav .nav-link.active {
-    background-color: white;
-    color: #272F3F;
-    font-weight: bold;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border: 2px solid #272F3F;
-    border-left: 6px solid #8E2524;
+    background-color: white !important;
+    color: #272F3F !important;
+    font-weight: bold !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    border: 2px solid #272F3F !important;
+    border-left: 6px solid #8E2524 !important;
+}
+
+/* Disable transition temporarily */
+.no-transition {
+    transition: none;
 }
 
 /* Sidebar Logo */
