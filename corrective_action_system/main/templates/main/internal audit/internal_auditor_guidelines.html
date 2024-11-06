@@ -32,7 +32,7 @@
                         <!-- Show edit and delete buttons only for Internal Auditor -->
                         <div class="card-footer bg-light border-0 d-flex justify-content-between">
                             {% if user.profile.role == 'Internal Auditor' %}
-                                <a href="{% url 'edit_guideline' guideline.id %}" class="btn btn-sm btn-outline-warning">
+                                <a href="{% url 'edit_guideline' guideline.id %}" class="btn btn-sm btn-outline-dark">
                                     <i class="fas fa-edit"></i> Edit
                                 </a>
                                 <a href="{% url 'delete_guideline' guideline.id %}" class="btn btn-sm btn-outline-danger">
@@ -70,7 +70,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="file" class="form-label fw-bold">Upload File</label>
-                                <input type="file" class="form-control" id="file" name="file">
+                                <input type="file" class="form-control" id="file" name="file" required>
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Upload</button>
                         </form>
