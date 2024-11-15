@@ -1,0 +1,128 @@
+{% extends 'main/process owner/base.html' %}
+{% load custom_tags %}
+{% block title %}Non-Conformity Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Non-Conformity Details</h3>
+
+    <!-- Non-Conformity Details Card -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4 class="card-title">{{ task.non_conformity }}</h4>
+            <div class="row">
+                <!-- Details Columns -->
+                <div class="col-md-6">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Assignees:</strong> {{ task.assignees }}</li>
+                        <li class="list-group-item"><strong>Originator Name:</strong> {{ task.originator_name }}</li>
+                        <li class="list-group-item"><strong>Unit/Department:</strong> {{ task.unit_department }}</li>
+                        <li class="list-group-item"><strong>Phone:</strong> {{ task.phone }}</li>
+                        <li class="list-group-item"><strong>Email:</strong> {{ task.email }}</li>
+                        <li class="list-group-item"><strong>RFA Intent:</strong> {{ task.get_rfa_intent_display }}</li>
+                        <li class="list-group-item"><strong>Department:</strong> {{ task.department }}</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Non-Conformance Category:</strong> {{ task.get_non_conformance_category_display }}</li>
+                        <li class="list-group-item"><strong>Description of Non-Conformance:</strong> {{ task.description_of_non_conformance }}</li>
+                        <li class="list-group-item"><strong>ISO Clause:</strong> {{ task.iso_clause }}</li>
+                        <li class="list-group-item"><strong>Category:</strong> {{ task.get_category_display }}</li>
+                        <li class="list-group-item"><strong>Task Number:</strong> {{ task.task }}</li>
+                        <li class="list-group-item"><strong>Start Date:</strong> {{ task.start_date }}</li>
+                        <li class="list-group-item"><strong>Deadline:</strong> {{ task.deadline }}</li>
+                        <li class="list-group-item"><strong>Status:</strong> {{ task.get_status_display }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conditional Forms -->
+    {% if not task.immediate_action %}
+        <!-- Immediate Action/Correction Form -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h4 class="card-title">Immediate Action/Correction</h4>
+                <form method="post" action="{% url 'add_immediate_action' task.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="immediateAction" class="form-label">Provide Immediate Action/Correction:</label>
+                        <textarea class="form-control" id="immediateAction" name="immediate_action" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Immediate Action</button>
+                </form>
+            </div>
+        </div>
+    {% elif not task.root_cause_analysis.root_cause_completed %}
+        <!-- Root Cause Analysis Form -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h4 class="card-title">Root Cause Analysis</h4>
+                <form method="post" action="{% url 'add_root_cause_analysis' task.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="rootCause" class="form-label">Cause of Non-Conformance:</label>
+                        <textarea class="form-control" id="rootCause" name="root_cause" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="rcaDate" class="form-label">Date:</label>
+                        <input type="date" class="form-control" id="rcaDate" name="rca_date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="responsibleOfficer" class="form-label">Responsible Officer:</label>
+                        <input type="text" class="form-control" id="responsibleOfficer" name="responsible_officer" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="estimatedCloseDate" class="form-label">Estimated Close Out Date:</label>
+                        <input type="date" class="form-control" id="estimatedCloseDate" name="estimated_close_date">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Root Cause Analysis</button>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <!-- Corrective Action Plan Form -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h4 class="card-title">Corrective Action Plan</h4>
+                <form method="post" action="{% url 'corrective_action_plan' task.id %}">
+                    {% csrf_token %}
+                    <table class="table table-bordered mt-3">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Step-by-Step Activities</th>
+                                <th>Responsible Person/Unit</th>
+                                <th>Time Frame</th>
+                                <th>Resources Needed</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cap in corrective_action_plans %}
+                            <tr>
+                                <td><input type="text" name="activity_{{ forloop.counter }}" class="form-control" value="{{ cap.activity }}" required></td>
+                                <td><input type="text" name="responsible_person_{{ forloop.counter }}" class="form-control" value="{{ cap.responsible_person }}" required></td>
+                                <td><input type="text" name="time_frame_{{ forloop.counter }}" class="form-control" value="{{ cap.time_frame }}" required></td>
+                                <td><input type="text" name="resources_needed_{{ forloop.counter }}" class="form-control" value="{{ cap.resources_needed }}" required></td>
+                                <td><input type="text" name="result_{{ forloop.counter }}" class="form-control" value="{{ cap.result }}"></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td><input type="text" name="activity_1" class="form-control" required></td>
+                                <td><input type="text" name="responsible_person_1" class="form-control" required></td>
+                                <td><input type="text" name="time_frame_1" class="form-control" required></td>
+                                <td><input type="text" name="resources_needed_1" class="form-control" required></td>
+                                <td><input type="text" name="result_1" class="form-control"></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <button type="submit" class="btn btn-primary mt-3">Save Corrective Action Plan</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

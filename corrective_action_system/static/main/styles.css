@@ -6,7 +6,7 @@ body, html {
 
     /* Background image and gradient combined */
     background: linear-gradient(135deg, rgba(255, 0, 0, 0.7), rgba(111, 0, 29, 0.7), rgba(31, 0, 89, 0.7)),
-                url('{% static "main/Background.png" %}');
+    url('{% static "main/Background.png" %}');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -100,8 +100,14 @@ body, html {
 
 /* Fade In Animation */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Consistent height for input fields and login button */

@@ -1,189 +1,107 @@
-body {
-    font-family: Arial, sans-serif;
-    font-size: 18px;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-  }
-    label {
-    font-size: 20px; /* Adjust the font size to your preference */
-    font-weight: normal; /* Optional: Adjust font weight if needed */
-}
-  .header-container {
-      display: flex;
-      margin: 10px;
-  }
-  
-  .logo {
-      size: 20px;
-      margin-right: 20px; 
-  }
-  .second-logo {
-      height: 200px;
-      margin-left: auto;
-  }
-  
-  .text-container {
-      text-align: left; 
-      line-height: .2;
-      margin-right:200x ;
-  }
-  .separator {
-  border-bottom: 3px solid #000000; 
-  padding-top: 40px;
-  margin: 10px 0; 
-}
-  
-  .republic {
-      font-size:xx-large;
-  }
-  
-  .university {
-      font-size:xx-large;
-      text-transform: uppercase; 
-      font-weight: bold;
-  }
-  
-  .address {
-      font-size:larger;
-      font-style: italic;
-  }
-  
-  .contact {
-      font-size:larger;
-  }
-  
-  .container {
-    width: 80%;
-    margin: 20px auto;
-    background-color: white;
-    padding: 100px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  h1 {
-    text-align: center; 
-    color: rgb(0, 0, 0);
-    padding: 10px;
+/* Adjustments to fix overlapping header */
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 20px;
-  }
-  h2{
-      text-align: center;   
-      color: rgb(0, 0, 0);
-      font-size: x-large; 
-  }
-  .header_sorsu{
-      text-align: left; 
-      font-size: xx-large;
-  }
+    padding: 10px 0;
+}
 
-  table { 
+.logo{
+    height: 220px; /* Adjust the height to fit your design */
+    width: auto;
+}
+.second-logo {
+    height: 150px; /* Adjust the height to fit your design */
+    width: auto;
+}
+
+.text-container {
+    text-align: center;
+    line-height: 1.2; /* Spacing between lines for clarity */
+    margin: 0 20px;
+    flex-grow: 1; /* Allows the text container to take up available space */
+}
+
+.republic {
+    font-size: 1.5rem; /* Adjust size as needed */
+    margin: 0;
+}
+
+.university {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 5px 0; /* Add spacing between elements */
+}
+
+.address, .contact {
+    font-size: 1rem;
+    font-style: italic;
+    margin: 3px 0; /* Add spacing between lines */
+}
+
+/* Table Styling */
+table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
-    table-layout: fixed; 
-  }
+    margin-top: 20px;
+    table-layout: fixed;
+}
 
-  .table-container {
-      display: flex;
-      justify-content: flex-end; 
-  }
-  .doc_code{
-      width: 33%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-      table-layout: fixed; 
-  }
-  th, td {
-    border: 1px solid #000000;
-    padding: 10px;
+th, td {
+    border: 1px solid #000;
+    padding: 8px;
     text-align: left;
-    word-wrap: break-word;
-    font-size: 20px;
+    font-size: 16px;
+}
+
+th {
+    font-size: 18px;
+    background-color: #f8f8f8;
     font-weight: bold;
-  }
-  th {
-    color: black;
-    font-size:xx-large;
-  }
-  .nc-data {
-    background-color: #8B0000;
-    color: white;
-    text-align: center;
-  }
-  input[type="text"], input[type="email"], input[type="tel"], input[type="date"] {
+}
+
+/* Form input styling */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+textarea {
     width: 100%;
     padding: 8px;
     box-sizing: border-box;
-  }
-  .checkboxes {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+textarea {
+    resize: none;
+    height: 100px; /* Adjust height as necessary */
+}
+
+.checkbox-group {
     display: flex;
     flex-direction: column;
-    padding: 10px 0;
-  }
-  .checkboxes label {
-    margin-right: 10px;
-  }
-  .container_ap {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-  }
-  .btn {
-      background-color: #fff;
-      color: #8B0000;
-      border: 1px solid #8B0000;
-      border-radius: 4px;
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-  }
-  .btn:hover {
-      background-color: #fff; 
-      color: #8B0000; 
-      border: 1px solid #8B0000; 
-  }
-  
-  .btn:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(255, 38, 38, 0.5);
-  }
-
-  form-control.textarea-lg {
-    width: 200px;
-    height: 50px;
-  }
-
-  select {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    border: 1px solid #000000;
-    border-radius: 4px;
-    background-color: #f9f9f9;
 }
 
-select:focus {
-    outline: none;
-    border-color: #8B0000;
-    box-shadow: 0 0 5px rgba(139, 0, 0, 0.5);
-}
-
+/* Submit Button Styling */
 .save-button-container {
-        text-align: right;
-        margin-top: 20px;
-    }
+    text-align: center;
+    margin-top: 20px;
+}
 
-    .save-button {
-        background-color: #8B0000;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        padding: 10px 50px;
-        font-size: 1.5rem;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
+.save-button {
+    background-color: #8B0000;
+    color: white;
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
+.save-button:hover {
+    background-color: #a80000;
+}

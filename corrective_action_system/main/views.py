@@ -7,13 +7,13 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from itsdangerous import URLSafeTimedSerializer
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import LoginEvent, UserProfile
-from .forms import UserCreationForm, UserUpdateForm
+from .models import LoginEvent, UserProfile, ImmediateAction, RootCauseAnalysis, CorrectiveActionPlan
+from .forms import UserCreationForm, UserUpdateForm, RootCauseAnalysisForm, ImmediateActionForm, \
+    CorrectiveActionPlanForm
 from django.http import HttpResponse, FileResponse, Http404
-from .models import TemplateModel, Guideline, Announcement
+from .models import TemplateModel, Guideline, Announcement, NonConformity
 from .forms import GuidelineForm, AnnouncementForm, CustomPasswordChangeForm
 from itsdangerous import SignatureExpired, BadSignature
-from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
 import logging
 
@@ -57,7 +57,8 @@ def internal_auditor_dashboard_view(request):
 
 @login_required
 def process_owner_dashboard_view(request):
-    return render(request, 'main/process owner/process_owner_dashboard.html')
+    tasks = NonConformity.objects.filter(assigned_to=request.user, status='pending')
+    return render(request, 'main/process owner/process_owner_dashboard.html', {'tasks': tasks})
 
 
 logger = logging.getLogger(__name__)
@@ -507,24 +508,180 @@ def process_owner_guideline_list(request):
     return render(request, 'main/process owner/list.html', {'guidelines': guidelines})
 
 
-@login_required
-def add_project(request):
-    if request.method == "POST":
+def add_non_conformity(request):
+    if request.method == 'POST':
+        # Get form data
         non_conformity = request.POST.get('non_conformity')
         assignees = request.POST.get('assignees')
-        campus = request.POST.get('campus')
+        originator_name = request.POST.get('originator_name')
+        unit_department = request.POST.get('unit_department')
+        phone = request.POST.get('phone')
+        email = request.POST.get('email')
+        rfa_intent = request.POST.get('rfa_intent')
+        department = request.POST.get('department')
+        non_conformance_category = request.POST.get('non_conformance_category')
+        description_of_non_conformance = request.POST.get('description_of_non_conformance')
+        iso_clause = request.POST.get('iso_clause')
+        category = request.POST.get('category')
+        task = request.POST.get('task')
         start_date = request.POST.get('start_date')
         deadline = request.POST.get('deadline')
-        task = request.POST.get('task')
+        assigned_to_id = request.POST.get('assigned_to')
 
-        # Add logic for saving the project
+        # Get the assigned process owner
+        assigned_to = User.objects.get(id=assigned_to_id)
 
-        messages.success(request, 'Project added successfully.')
-        return redirect('internal_auditor_monitoring_log')  # Redirect after adding project
+        # Create NonConformity instance
+        NonConformity.objects.create(
+            non_conformity=non_conformity,
+            assignees=assignees,
+            originator_name=originator_name,
+            unit_department=unit_department,
+            phone=phone,
+            email=email,
+            rfa_intent=rfa_intent,
+            department=department,
+            non_conformance_category=non_conformance_category,
+            description_of_non_conformance=description_of_non_conformance,
+            iso_clause=iso_clause,
+            category=category,
+            task=task,
+            start_date=start_date,
+            deadline=deadline,
+            assigned_to=assigned_to,  # Assign to selected process owner
+            status='pending'
+        )
 
-    # If not POST request, render the form to add a project
-    return render(request, 'main/internal audit/internal_auditor_add_new_nc.html')
+        return redirect('internal_auditor_monitoring_log')  # Redirect to the process owner's dashboard
+
+    # Fetch all process owners for dropdown
+    process_owners = User.objects.filter(userprofile__role='Process Owner')
+    return render(request, 'main/internal audit/add_non_conformity.html', {
+        'process_owners': process_owners
+    })
 
 def fm_qms_010_page_1(request):
     return render(request, 'main/internal audit/fm_qms_010_page_1.html')
 
+
+def task_detail(request, task_id):
+    task = get_object_or_404(NonConformity, id=task_id)
+
+    # Check if ImmediateAction already exists
+    immediate_action = ImmediateAction.objects.filter(non_conformity=task).first()
+    root_cause_analysis = RootCauseAnalysis.objects.filter(non_conformity=task).first()
+
+    context = {
+        'task': task,
+        'immediate_action': immediate_action,
+        'root_cause_analysis': root_cause_analysis,
+    }
+
+    if immediate_action:
+        # Show only Root Cause Analysis form if Immediate Action exists
+        context['form'] = RootCauseAnalysisForm(instance=root_cause_analysis)
+        context['form_action_url'] = 'add_root_cause_analysis'
+    else:
+        # Show Immediate Action form if it doesn't exist
+        context['form'] = ImmediateActionForm(instance=immediate_action)
+        context['form_action_url'] = 'add_immediate_action'
+
+    return render(request, 'main/process owner/task_detail.html', context)
+
+# View for saving Immediate Action
+def add_immediate_action(request, task_id):
+    task = get_object_or_404(NonConformity, id=task_id)
+
+    if request.method == 'POST':
+        # Retrieve or create the related ImmediateAction instance
+        immediate_action, created = ImmediateAction.objects.get_or_create(non_conformity=task)
+
+        # Update the action description with the posted data
+        immediate_action.action_description = request.POST.get('immediate_action')
+        immediate_action.save()  # Save the ImmediateAction instance
+
+        return redirect('task_detail', task_id=task.id)
+
+    # If GET request, load the page (not typically needed for this form processing view)
+    return redirect('task_detail', task_id=task.id)
+
+# View for saving Root Cause Analysis
+def add_root_cause_analysis(request, task_id):
+    # Retrieve the associated NonConformity instance
+    task = get_object_or_404(NonConformity, id=task_id)
+
+    if request.method == 'POST':
+        # Get or create the related RootCauseAnalysis instance
+        root_cause_analysis, created = RootCauseAnalysis.objects.get_or_create(non_conformity=task)
+
+        # Update fields with POST data
+        root_cause_analysis.cause_description = request.POST.get('root_cause', '')
+        root_cause_analysis.rca_date = request.POST.get('rca_date')
+        root_cause_analysis.responsible_officer = request.POST.get('responsible_officer', '')
+        root_cause_analysis.estimated_close_date = request.POST.get('estimated_close_date')
+
+        # Validate mandatory fields
+        if not root_cause_analysis.cause_description or not root_cause_analysis.rca_date:
+            messages.error(request, "Root cause description and date are required.")
+            return redirect('task_detail', task_id=task.id)
+
+        # Process '5 Whys' data
+        five_whys_data = {f'why{i}': request.POST.get(f'five_whys[why{i}]', '') for i in range(1, 6)}
+        root_cause_analysis.five_whys = five_whys_data  # Ensure field is JSONField
+
+        # Mark the root cause analysis as completed
+        root_cause_analysis.root_cause_completed = True
+
+        # Save the instance
+        root_cause_analysis.save()
+
+        # Notify the user of success
+        messages.success(request, "Root cause analysis submitted successfully.")
+
+        # Redirect to the task detail page
+        return redirect('task_detail', task_id=task.id)
+
+    # Redirect for non-POST requests (optional)
+    return redirect('task_detail', task_id=task.id)
+
+
+def corrective_action_plan(request, task_id):
+    task = get_object_or_404(NonConformity, id=task_id)
+
+    if request.method == 'POST':
+        # Delete existing plans to replace with new ones
+        CorrectiveActionPlan.objects.filter(non_conformity=task).delete()
+
+        # Process each row of the corrective action plan form
+        row_count = len([key for key in request.POST.keys() if key.startswith('activity_')])
+        for i in range(1, row_count + 1):
+            activity = request.POST.get(f'activity_{i}')
+            responsible_person = request.POST.get(f'responsible_person_{i}')
+            time_frame = request.POST.get(f'time_frame_{i}')
+            resources_needed = request.POST.get(f'resources_needed_{i}')
+            result = request.POST.get(f'result_{i}', '')
+
+            # Only save rows with required fields filled
+            if activity and responsible_person and time_frame and resources_needed:
+                CorrectiveActionPlan.objects.create(
+                    non_conformity=task,
+                    activity=activity,
+                    responsible_person=responsible_person,
+                    time_frame=time_frame,
+                    resources_needed=resources_needed,
+                    result=result
+                )
+
+        return redirect('task_detail', task_id=task.id)
+
+    # Prepopulate existing corrective action plans for display in the template
+    corrective_action_plans = CorrectiveActionPlan.objects.filter(non_conformity=task)
+    context = {
+        'task': task,
+        'corrective_action_plans': corrective_action_plans,
+    }
+    return render(request, 'main/process owner/task_detail.html', context)
+
+
+def rfa_create(request):
+    return None

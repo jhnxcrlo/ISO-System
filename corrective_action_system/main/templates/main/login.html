@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Login - Sorsogon State University</title>
+    <title>Login</title>
     {% load static %}
     <link rel="icon" href="{% static 'main/img2.png' %}" type="image/png">
     <!-- Bootstrap and MDB UI Kit CSS -->
@@ -29,57 +29,57 @@
 
         <!-- Right side with the login form -->
         <!-- Right side with the login form -->
-<div class="col-md-6 d-flex align-items-center justify-content-center position-relative">
-    <div class="login-container text-center p-4">
-        <h4 class="mb-5">Sign In</h4>
+        <div class="col-md-6 d-flex align-items-center justify-content-center position-relative">
+            <div class="login-container text-center p-4">
+                <h4 class="mb-5">Sign In</h4>
 
-        {% if error %}
-        <div class="alert alert-danger">
-            {{ error }}
-        </div>
-        {% endif %}
-
-        <form action="{% url 'login' %}" method="post">
-            {% csrf_token %}
-            <!-- Username Input -->
-            <div class="form-outline mb-4" data-mdb-input-init>
-                <input autofocus class="form-control" id="username" name="username" required type="text">
-                <label class="form-label" for="username">Username</label>
-            </div>
-
-            <!-- Password Input -->
-            <div class="form-outline mb-4" data-mdb-input-init>
-                <input class="form-control" id="password" name="password" required type="password">
-                <label class="form-label" for="password">Password</label>
-            </div>
-
-            <!-- Remember me and Forgot Password -->
-            <div class="row mb-4">
-                <div class="col d-flex justify-content-center">
-                    <!-- Checkbox -->
-                    <div class="form-check">
-                        <input checked class="form-check-input" id="form2Example31" type="checkbox">
-                        <label class="form-check-label" for="form2Example31"> Remember me </label>
+                {% if error %}
+                    <div class="alert alert-danger">
+                        {{ error }}
                     </div>
-                </div>
-                <div class="col">
-                    <!-- Password Reset -->
-                    <a href="{% url 'password_reset' %}">Forgot Password?</a>
+                {% endif %}
+
+                <form action="{% url 'login' %}" method="post">
+                    {% csrf_token %}
+                    <!-- Username Input -->
+                    <div class="form-outline mb-4" data-mdb-input-init>
+                        <input autofocus class="form-control" id="username" name="username" required type="text">
+                        <label class="form-label" for="username">Username</label>
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="form-outline mb-4" data-mdb-input-init>
+                        <input class="form-control" id="password" name="password" required type="password">
+                        <label class="form-label" for="password">Password</label>
+                    </div>
+
+                    <!-- Remember me and Forgot Password -->
+                    <div class="row mb-4">
+                        <div class="col d-flex justify-content-center">
+                            <!-- Checkbox -->
+                            <div class="form-check">
+                                <input checked class="form-check-input" id="form2Example31" type="checkbox">
+                                <label class="form-check-label" for="form2Example31"> Remember me </label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <!-- Password Reset -->
+                            <a href="{% url 'password_reset' %}">Forgot Password?</a>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button class="btn btn-primary btn-block" type="submit">Log In</button>
+                </form>
+                <!-- Copyright Text -->
+                <div class="mt-5 text-muted small">
+                    &copy; 2024 CAMS. All rights reserved |<a> SorSU Bulan Campus</a>
                 </div>
             </div>
 
-            <!-- Submit Button -->
-            <button class="btn btn-primary btn-block" type="submit">Log In</button>
-        </form>
-        <!-- Copyright Text -->
-        <div class="mt-5 text-muted small">
-            &copy; 2024 CAMS. All rights reserved |<a> SorSU Bulan Campus</a>
+            <!-- New GIF Positioned in the Upper Right -->
+            <img src="{% static 'main/source1.gif' %}" alt="Animated decoration" class="corner-gif">
         </div>
-    </div>
-
-    <!-- New GIF Positioned in the Upper Right -->
-    <img src="{% static 'main/source1.gif' %}" alt="Animated decoration" class="corner-gif">
-</div>
     </div>
 </div>
 

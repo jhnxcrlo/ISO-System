@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
-from .models import TemplateModel, Guideline, Announcement
+from .models import TemplateModel, Guideline, Announcement, NonConformity, ImmediateAction, RootCauseAnalysis, CorrectiveActionPlan
 
 
 class UserCreationForm(forms.ModelForm):
@@ -120,3 +120,48 @@ class CustomPasswordChangeForm(PasswordChangeForm):
             user.save()
             user_profile.save()
         return user
+
+
+class NonConformityForm(forms.ModelForm):
+    class Meta:
+        model = NonConformity
+        fields = [
+            'non_conformity', 'assignees', 'originator_name', 'unit_department', 'phone', 'email',
+            'rfa_intent', 'department', 'non_conformance_category', 'description_of_non_conformance',
+            'iso_clause', 'category', 'task', 'start_date', 'deadline', 'status', 'assigned_to'
+        ]
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'deadline': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+
+# Form for Immediate Action
+class ImmediateActionForm(forms.ModelForm):
+    class Meta:
+        model = ImmediateAction
+        fields = ['action_description']
+        widgets = {
+            'action_description': forms.Textarea(attrs={'rows': 4}),
+        }
+
+
+# Form for Root Cause Analysis
+class RootCauseAnalysisForm(forms.ModelForm):
+    class Meta:
+        model = RootCauseAnalysis
+        fields = ['cause_description', 'rca_date', 'responsible_officer', 'estimated_close_date', 'fishbone_data', 'five_whys']
+        widgets = {
+            'cause_description': forms.Textarea(attrs={'rows': 4}),
+            'rca_date': forms.DateInput(attrs={'type': 'date'}),
+            'estimated_close_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+class CorrectiveActionPlanForm(forms.ModelForm):
+    class Meta:
+        model = CorrectiveActionPlan
+        fields = ['activity', 'responsible_person', 'time_frame', 'resources_needed', 'result']
+        widgets = {
+            'activity': forms.Textarea(attrs={'rows': 3}),
+            'result': forms.Textarea(attrs={'rows': 2}),
+        }

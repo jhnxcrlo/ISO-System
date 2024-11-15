@@ -1,62 +1,48 @@
 {% extends 'main/process owner/base.html' %}
 {% block title %}To Do{% endblock %}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
 
 {% block content %}
-<style>
+<div class="container">
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col col-xl-10">
+            <!-- Greeting Section -->
+            <div id="greeting-section" class="greeting-section text-left mb-4">
+                <h1>Hi, <strong>{{ user.username }}!</strong></h1>
+                <a class="greeting-link" href="#taskSection">Proceed to do task</a>
+            </div>
 
-
-
-</style>
-
-
-    <div class="container">
-        <div class="row d-flex justify-content-center align-items-center">
-            <div class="col col-xl-10">
-
-                <div id="greeting-section" class="greeting-section text-left mb-4">
-                    <h1>Hi, <strong>{{ user.username }}!</strong></h1>
-                    <a class="greeting-link" href="#taskSection"> Proceed to do task</a>
-                </div>
-                <!-- Announcement Header -->
-                <div class="announcement-header">
-                    <h2>Latest Announcements</h2>
-                    <p class="text-muted">Stay updated with the latest news and information</p>
-                </div>
-
-                <!-- Announcement List -->
-                <div class="announcement-list mt-4">
-                    {% for announcement in announcements %}
+            <!-- Announcements -->
+            <div class="announcement-header">
+                <h2>Latest Announcements</h2>
+                <p class="text-muted">Stay updated with the latest news and information</p>
+            </div>
+            <div class="announcement-list mt-4">
+                {% for announcement in announcements %}
                     <div class="card mb-4 announcement-card">
                         <div class="card-body">
                             <h5 class="card-title">{{ announcement.title }}</h5>
                             <p class="card-text">{{ announcement.body }}</p>
-                            <p class="card-text"><small class="text-muted">Posted on {{ announcement.date_posted|date:"Fd, Y"}}</small></p>
+                            <p class="card-text"><small class="text-muted">Posted on {{ announcement.date_posted|date:"Fd, Y" }}</small></p>
                         </div>
                     </div>
-                    {% empty %}
+                {% empty %}
                     <p>No announcements to show at the moment.</p>
-                    {% endfor %}
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
+</div>
 
-
-
-    <div class="container" id="taskSection">
+<!-- Task Section -->
+<div class="container" id="taskSection">
     <div class="row d-flex justify-content-center align-items-center">
         <div class="col col-xl-10">
-            <!-- Title and Subtitle -->
             <div class="task-header">
                 <h1>To Do</h1>
-                <!-- Add id to the task-info element -->
-                <div id="taskCount" class="task-info-below-header">0 tasks</div>
+                <div id="taskCount" class="task-info-below-header">{{ tasks.count }} tasks</div>
                 <h4>Tasks Assigned to Me</h4>
             </div>
 
-            <!-- Search Bar and Sort Dropdown -->
             <div class="search-bar-container mb-4">
                 <input id="searchInput" class="form-control" placeholder="Search task" type="text"/>
                 <select id="sortDropdown" class="form-select sort-dropdown">
@@ -65,698 +51,72 @@
                 </select>
             </div>
 
-            <!-- To-do List -->
-            <div class="card todo-card" data-bs-target="#task1Modal" data-bs-toggle="modal">
-                <div class="todo-content">
-                    <div class="task-details">
-                        <h5 class="card-title">Task 1: Finish Dashboard</h5>
-                        <p class="card-text"><small class="text-muted">Due: Sep 14, 2024, 10:00 AM</small></p>
-                    </div>
-                    <div class="badge-container"><span class="urgent-badge">Urgent</span></div>
-                </div>
-            </div>
-
-            <div class="card todo-card" data-bs-target="#task2Modal" data-bs-toggle="modal">
-                <div class="todo-content">
-                    <div class="task-details">
-                        <h5 class="card-title">Task 2: Review Documentation</h5>
-                        <p class="card-text"><small class="text-muted">Due: Sep 15, 2024, 12:00 PM</small></p>
-                    </div>
-                    <div class="badge-container"><span class="on-process-badge">On Process</span></div>
-                </div>
-            </div>
-
-                <!-- Task 1 Modal -->
-                <div aria-hidden="true" aria-labelledby="task1ModalLabel" class="modal fade" id="task1Modal"
-                     tabindex="-1">
-                    <div class="modal-dialog modal-lg modal-lg-custom">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h2 class="modal-title" id="task1ModalLabel">TASK 1: FINISH DASHBOARD</h2>
-                                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
-                                        type="button"></button>
+            <!-- To-Do List -->
+            <div id="taskList">
+                {% for task in tasks %}
+                <div class="card todo-card">
+                    <!-- Link to the task detail page instead of opening a modal -->
+                    <a href="{% url 'task_detail' task.id %}" class="stretched-link text-decoration-none">
+                        <div class="todo-content">
+                            <div class="task-details">
+                                <h5 class="card-title">{{ task.non_conformity }}</h5>
+                                <p class="card-text"><small class="text-muted">Due: {{ task.deadline }}</small></p>
                             </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <!-- Left-side content -->
-                                    <div class="col-md-6">
-                                        <div class="left-content">
-                                            <h4 class="text-red"><strong>Description of Non-Conformance</strong></h4>
-                                            <br>
-
-                                            <p class="text-red">(Existing or potential; specify the objective
-                                                evidence).</p>
-                                            <p>
-                                                <small class="text-muted">The control of operations related to faculty
-                                                    competency was not effective.
-                                                    Evidence: The following personnel competency were noted not
-                                                    registered midwife as per the requirement of CHED CMO No. 3 and No.
-                                                    33:<br><br>
-                                                    1. Aaron Funa, RN (Teaching M100, Mid. Research 2, CP PHC2,
-                                                    MEPM)<br>
-                                                    2. Robert Jamisola, RN (Teaching M100, Anatomy)
-                                                </small>
-                                            </p>
-                                            <small class="text-muted"> ISO Clause/Reference:<strong> (ISO Clause
-                                                7.3.1)</strong></small> <br>
-                                            <small class="text-muted">Category (Major/Minor):
-                                                <strong>Major</strong></small> <br>
-
-                                            <p class="text-red" style="padding-top:20px; font-size: 20px;"><strong>Immediate
-                                                Action/Correction:</strong></p>
-                                            <p>
-                                                <small class="text-muted">Encourage the faculty members concerned to
-                                                    take the Midwifery Licensure Examinations since they are both
-                                                    qualified to take the exam.
-                                                    Prioritize the hiring of new faculty members in the 2024 Annual
-                                                    Operational Plan.
-                                                </small>
-                                            </p>
-
-                                            <div class="container mt-4 p-4 border rounded bg-light">
-                                                <h4 class="mb-4">Other Information</h4>
-
-                                                <!-- Status -->
-                                                <div class="mb-3">
-                                                    <h6 class="text-muted">Status</h6>
-                                                    <p class="fs-5 fw-bold mb-1">Pending</p> <!-- Display the selected status here -->
-                                                    <hr>
-                                                </div>
-
-                                                <!-- Due Date -->
-                                                <div class="mb-3">
-                                                    <h6 class="text-muted">Due Date</h6>
-                                                    <p class="fs-5 fw-bold mb-1">2024-12-31</p> <!-- Replace with the actual due date -->
-                                                    <hr>
-                                                </div>
-
-                                                <!-- Reminder Time -->
-                                                <div class="mb-3">
-                                                    <h6 class="text-muted">Reminder</h6>
-                                                    <p class="fs-5 fw-bold mb-1">14:00</p> <!-- Replace with the actual reminder time -->
-                                                    <hr>
-                                                </div>
-
-                                                <!-- Tags -->
-                                                <div class="mb-3">
-                                                    <h6 class="text-muted">Tags</h6>
-                                                    <p class="fs-5 fw-bold mb-1">Tag1, Tag2, Tag3</p> <!-- Replace with the actual tags -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Right-side progress steps -->
-                                    <div class="col-md-6">
-                                        <div class="progress-step">
-                                            <h6>
-                                                <a aria-controls="task1Step1Content" aria-expanded="false" class="btn-link"
-                                                   data-bs-toggle="collapse" href="#task1Step1Content"
-                                                   role="button">
-                                                    Step 1: Gather Requirements
-                                                </a>
-                                            </h6>
-                                            <div class="collapse" id="task1Step1Content">
-                                                <p class="text-muted">Ensure all specifications are clear and
-                                                    complete.</p>
-
-                                                <div class="attachment-input">
-                                                    <label for="file-attachment-task1step1"><i
-                                                            class="bi bi-paperclip"></i> Attach file</label>
-                                                    <input id="file-attachment-task1step1" type="file">
-                                                </div>
-
-                                                <div class="comments-section">
-                                                    <div class="comment admin-comment">
-                                                        <strong>Admin:</strong> Please ensure the client signs off on
-                                                        the requirements before proceeding.
-                                                    </div>
-                                                    <div class="comment user-comment">
-                                                        <strong>User:</strong> We are waiting for the client's feedback.
-                                                        Expected by tomorrow.
-                                                    </div>
-                                                </div>
-
-                                                <div class="add-comment">
-                                                    <input placeholder="Add a comment..." type="text">
-                                                    <button type="button">Comment</button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="progress-step">
-                                            <h6>
-                                                <a aria-controls="task1Step2Content" aria-expanded="false" class="btn-link"
-                                                   data-bs-toggle="collapse" href="#task1Step2Content"
-                                                   role="button">
-                                                    Step 2: Design the UI
-                                                </a>
-                                            </h6>
-                                            <div class="collapse" id="task1Step2Content">
-                                                <p class="text-muted">Create wireframes and prototypes for approval.</p>
-
-                                                <div class="attachment-input">
-                                                    <label for="file-attachment-task1step2"><i
-                                                            class="bi bi-paperclip"></i> Attach file</label>
-                                                    <input id="file-attachment-task1step2" type="file">
-                                                </div>
-
-                                                <div class="comments-section">
-                                                    <div class="comment admin-comment">
-                                                        <strong>Admin:</strong> Make sure the design is aligned with the
-                                                        branding guidelines.
-                                                    </div>
-                                                    <div class="comment user-comment">
-                                                        <strong>User:</strong> Initial design draft is ready for review.
-                                                    </div>
-                                                </div>
-
-                                                <div class="add-comment">
-                                                    <input placeholder="Add a comment..." type="text">
-                                                    <button type="button">Comment</button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="progress-step">
-                                            <h6>
-                                                <a aria-controls="task1Step3Content" aria-expanded="false" class="btn-link"
-                                                   data-bs-toggle="collapse" href="#task1Step3Content"
-                                                   role="button">
-                                                    Step 3: Implement Features
-                                                </a>
-                                            </h6>
-                                            <div class="collapse" id="task1Step3Content">
-                                                <p class="text-muted">Develop core functionalities and test the
-                                                    features.</p>
-
-                                                <div class="attachment-input">
-                                                    <label for="file-attachment-task1step3"><i
-                                                            class="bi bi-paperclip"></i> Attach file</label>
-                                                    <input id="file-attachment-task1step3" type="file">
-                                                </div>
-
-                                                <div class="comments-section">
-                                                    <div class="comment admin-comment">
-                                                        <strong>Admin:</strong> Ensure the features are tested
-                                                        thoroughly before moving forward.
-                                                    </div>
-                                                    <div class="comment user-comment">
-                                                        <strong>User:</strong> Features have passed initial tests,
-                                                        moving to integration testing.
-                                                    </div>
-                                                </div>
-
-                                                <div class="add-comment">
-                                                    <input placeholder="Add a comment..." type="text">
-                                                    <button type="button">Comment</button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="progress-step">
-                                            <h6>
-                                                <a aria-controls="task1Step4Content" aria-expanded="false" class="btn-link"
-                                                   data-bs-toggle="collapse" href="#task1Step4Content"
-                                                   role="button">
-                                                    Step 4: Test and Debug
-                                                </a>
-                                            </h6>
-                                            <div class="collapse" id="task1Step4Content">
-                                                <p class="text-muted">Run through testing cycles and resolve any bugs
-                                                    found during testing.</p>
-
-                                                <div class="attachment-input">
-                                                    <label for="file-attachment-task1step4"><i
-                                                            class="bi bi-paperclip"></i> Attach file</label>
-                                                    <input id="file-attachment-task1step4" type="file">
-                                                </div>
-
-                                                <div class="comments-section">
-                                                    <div class="comment admin-comment">
-                                                        <strong>Admin:</strong> Make sure to prioritize critical bugs
-                                                        before the release deadline.
-                                                    </div>
-                                                    <div class="comment user-comment">
-                                                        <strong>User:</strong> All major bugs have been fixed, awaiting
-                                                        final tests.
-                                                    </div>
-                                                </div>
-
-                                                <div class="add-comment">
-                                                    <input placeholder="Add a comment..." type="text">
-                                                    <button type="button">Comment</button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="progress-step">
-                                            <h6>
-                                                <a aria-controls="task1Step5Content" aria-expanded="false" class="btn-link"
-                                                   data-bs-toggle="collapse" href="#task1Step5Content"
-                                                   role="button">
-                                                    Step 5: Final Review
-                                                </a>
-                                            </h6>
-                                            <div class="collapse" id="task1Step5Content">
-                                                <p class="text-muted">Conduct a final review to ensure everything is
-                                                    functioning as expected.</p>
-
-                                                <div class="attachment-input">
-                                                    <label for="file-attachment-task1step5"><i
-                                                            class="bi bi-paperclip"></i> Attach file</label>
-                                                    <input id="file-attachment-task1step5" type="file">
-                                                </div>
-
-                                                <div class="comments-section">
-                                                    <div class="comment admin-comment">
-                                                        <strong>Admin:</strong> Double-check that all acceptance
-                                                        criteria are met before closing the task.
-                                                    </div>
-                                                    <div class="comment user-comment">
-                                                        <strong>User:</strong> Final review is complete, all criteria
-                                                        are met.
-                                                    </div>
-                                                </div>
-
-                                                <div class="add-comment">
-                                                    <input placeholder="Add a comment..." type="text">
-                                                    <button type="button">Comment</button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="progress-step">
-                                            <h6>
-                                                <a aria-controls="task1Step6Content" aria-expanded="false" class="btn-link"
-                                                   data-bs-toggle="collapse" href="#task1Step6Content"
-                                                   role="button">
-                                                    Step 6: Deployment
-                                                </a>
-                                            </h6>
-                                            <div class="collapse" id="task1Step6Content">
-                                                <p class="text-muted">Deploy the project to the production environment
-                                                    and monitor performance.</p>
-
-                                                <div class="attachment-input">
-                                                    <label for="file-attachment-task1step6"><i
-                                                            class="bi bi-paperclip"></i> Attach file</label>
-                                                    <input id="file-attachment-task1step6" type="file">
-                                                </div>
-
-                                                <div class="comments-section">
-                                                    <div class="comment admin-comment">
-                                                        <strong>Admin:</strong> Ensure smooth deployment with rollback
-                                                        options in case of any failures.
-                                                    </div>
-                                                    <div class="comment user-comment">
-                                                        <strong>User:</strong> Deployment completed successfully, no
-                                                        issues reported.
-                                                    </div>
-                                                </div>
-
-                                                <div class="add-comment">
-                                                    <input placeholder="Add a comment..." type="text">
-                                                    <button type="button">Comment</button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="badge-container"><span class="{{ task.status|lower }}-badge">{{ task.status|title }}</span></div>
                         </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-                        </div>
-                    </div>
+                    </a>
                 </div>
-            </div>
-
-            <!-- Task 2 Modal -->
-            <div aria-hidden="true" aria-labelledby="task2ModalLabel" class="modal fade" id="task2Modal" tabindex="-1">
-                <div class="modal-dialog modal-lg modal-lg-custom">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2 class="modal-title" id="task2ModalLabel">TASK 2: REVIEW DOCUMENTATION</h2>
-                            <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <!-- Left-side content -->
-                                <div class="col-md-6">
-                                    <div class="left-content">
-                                        <h4 class="text-red"><strong>Description of Non-Conformance</strong></h4> <br>
-
-                                        <p class="text-red">(Detailed description of the task)</p>
-                                        <p>
-                                            <small class="text-muted">The task is to review the latest version of the
-                                                documentation and ensure that the changes made are accurate and align
-                                                with the codebase. Key sections to focus on include API changes and new
-                                                feature documentation.<br><br>
-                                                Make sure to communicate any discrepancies with the technical writer and
-                                                provide feedback for corrections.
-                                            </small>
-                                        </p>
-                                        <small class="text-muted">ISO Clause/Reference:<strong> (ISO Clause
-                                            8.2.2)</strong></small> <br>
-                                        <small class="text-muted">Category (Major/Minor): <strong>Minor</strong></small>
-                                        <br>
-
-                                        <p class="text-red" style="padding-top:20px;">Immediate Action:</p>
-                                        <p>
-                                            <small class="text-muted">Provide immediate feedback on any critical errors
-                                                or sections that are unclear. Ensure that all team members are informed
-                                                about the changes before the next project milestone.
-                                            </small>
-                                        </p>
-
-                                        <!-- Other Information Section -->
-                                        <div class="container mt-4 p-4 border rounded bg-light">
-                                            <h4 class="mb-4">Other Information</h4>
-
-                                            <!-- Status -->
-                                            <div class="mb-3">
-                                                <h6 class="text-muted">Status</h6>
-                                                <p class="fs-5 fw-bold mb-1">Pending</p> <!-- Display the selected status here -->
-                                                <hr>
-                                            </div>
-
-                                            <!-- Due Date -->
-                                            <div class="mb-3">
-                                                <h6 class="text-muted">Due Date</h6>
-                                                <p class="fs-5 fw-bold mb-1">2024-12-31</p> <!-- Replace with the actual due date -->
-                                                <hr>
-                                            </div>
-
-                                            <!-- Reminder Time -->
-                                            <div class="mb-3">
-                                                <h6 class="text-muted">Reminder</h6>
-                                                <p class="fs-5 fw-bold mb-1">14:00</p> <!-- Replace with the actual reminder time -->
-                                                <hr>
-                                            </div>
-
-                                            <!-- Tags -->
-                                            <div class="mb-3">
-                                                <h6 class="text-muted">Tags</h6>
-                                                <p class="fs-5 fw-bold mb-1">Tag1, Tag2, Tag3</p> <!-- Replace with the actual tags -->
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                <!-- Right-side progress steps -->
-                                <div class="col-md-6">
-                                    <div class="progress-step">
-                                        <h6>
-                                            <a aria-controls="task2Step1Content" aria-expanded="false" class="btn-link"
-                                               data-bs-toggle="collapse" href="#task2Step1Content" role="button">
-                                                Step 1: Gather Requirements
-                                            </a>
-                                        </h6>
-                                        <div class="collapse" id="task2Step1Content">
-                                            <p class="text-muted">Ensure all specifications are clear and complete.</p>
-
-                                            <div class="attachment-input">
-                                                <label for="file-attachment-task2step1"><i class="bi bi-paperclip"></i>
-                                                    Attach file</label>
-                                                <input id="file-attachment-task2step1" type="file">
-                                            </div>
-
-                                            <div class="comments-section">
-                                                <div class="comment admin-comment">
-                                                    <strong>Admin:</strong> Please ensure the client signs off on the
-                                                    requirements before proceeding.
-                                                </div>
-                                                <div class="comment user-comment">
-                                                    <strong>User:</strong> We are waiting for the client's feedback.
-                                                    Expected by tomorrow.
-                                                </div>
-                                            </div>
-
-                                            <div class="add-comment">
-                                                <input placeholder="Add a comment..." type="text">
-                                                <button type="button">Comment</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="progress-step">
-                                        <h6>
-                                            <a aria-controls="task2Step2Content" aria-expanded="false" class="btn-link"
-                                               data-bs-toggle="collapse" href="#task2Step2Content" role="button">
-                                                Step 2: Design the UI
-                                            </a>
-                                        </h6>
-                                        <div class="collapse" id="task2Step2Content">
-                                            <p class="text-muted">Create wireframes and prototypes for approval.</p>
-
-                                            <div class="attachment-input">
-                                                <label for="file-attachment-task2step2"><i class="bi bi-paperclip"></i>
-                                                    Attach file</label>
-                                                <input id="file-attachment-task2step2" type="file">
-                                            </div>
-
-                                            <div class="comments-section">
-                                                <div class="comment admin-comment">
-                                                    <strong>Admin:</strong> Make sure the design is aligned with the
-                                                    branding guidelines.
-                                                </div>
-                                                <div class="comment user-comment">
-                                                    <strong>User:</strong> Initial design draft is ready for review.
-                                                </div>
-                                            </div>
-
-                                            <div class="add-comment">
-                                                <input placeholder="Add a comment..." type="text">
-                                                <button type="button">Comment</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="progress-step">
-                                        <h6>
-                                            <a aria-controls="task2Step3Content" aria-expanded="false" class="btn-link"
-                                               data-bs-toggle="collapse" href="#task2Step3Content" role="button">
-                                                Step 3: Implement Features
-                                            </a>
-                                        </h6>
-                                        <div class="collapse" id="task2Step3Content">
-                                            <p class="text-muted">Develop core functionalities and test the
-                                                features.</p>
-
-                                            <div class="attachment-input">
-                                                <label for="file-attachment-task2step3"><i class="bi bi-paperclip"></i>
-                                                    Attach file</label>
-                                                <input id="file-attachment-task2step3" type="file">
-                                            </div>
-
-                                            <div class="comments-section">
-                                                <div class="comment admin-comment">
-                                                    <strong>Admin:</strong> Ensure the features are tested thoroughly
-                                                    before moving forward.
-                                                </div>
-                                                <div class="comment user-comment">
-                                                    <strong>User:</strong> Features have passed initial tests, moving to
-                                                    integration testing.
-                                                </div>
-                                            </div>
-
-                                            <div class="add-comment">
-                                                <input placeholder="Add a comment..." type="text">
-                                                <button type="button">Comment</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="progress-step">
-                                        <h6>
-                                            <a aria-controls="task2Step4Content" aria-expanded="false" class="btn-link"
-                                               data-bs-toggle="collapse" href="#task2Step4Content" role="button">
-                                                Step 4: Test and Debug
-                                            </a>
-                                        </h6>
-                                        <div class="collapse" id="task2Step4Content">
-                                            <p class="text-muted">Run through testing cycles and resolve any bugs found
-                                                during testing.</p>
-
-                                            <div class="attachment-input">
-                                                <label for="file-attachment-task2step4"><i class="bi bi-paperclip"></i>
-                                                    Attach file</label>
-                                                <input id="file-attachment-task2step4" type="file">
-                                            </div>
-
-                                            <div class="comments-section">
-                                                <div class="comment admin-comment">
-                                                    <strong>Admin:</strong> Make sure to prioritize critical bugs before
-                                                    the release deadline.
-                                                </div>
-                                                <div class="comment user-comment">
-                                                    <strong>User:</strong> All major bugs have been fixed, awaiting
-                                                    final tests.
-                                                </div>
-                                            </div>
-
-                                            <div class="add-comment">
-                                                <input placeholder="Add a comment..." type="text">
-                                                <button type="button">Comment</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="progress-step">
-                                        <h6>
-                                            <a aria-controls="task2Step5Content" aria-expanded="false" class="btn-link"
-                                               data-bs-toggle="collapse" href="#task2Step5Content" role="button">
-                                                Step 5: Final Review
-                                            </a>
-                                        </h6>
-                                        <div class="collapse" id="task2Step5Content">
-                                            <p class="text-muted">Conduct a final review to ensure everything is
-                                                functioning as expected.</p>
-
-                                            <div class="attachment-input">
-                                                <label for="file-attachment-task2step5"><i class="bi bi-paperclip"></i>
-                                                    Attach file</label>
-                                                <input id="file-attachment-task2step5" type="file">
-                                            </div>
-
-                                            <div class="comments-section">
-                                                <div class="comment admin-comment">
-                                                    <strong>Admin:</strong> Double-check that all acceptance criteria
-                                                    are met before closing the task.
-                                                </div>
-                                                <div class="comment user-comment">
-                                                    <strong>User:</strong> Final review is complete, all criteria are
-                                                    met.
-                                                </div>
-                                            </div>
-
-                                            <div class="add-comment">
-                                                <input placeholder="Add a comment..." type="text">
-                                                <button type="button">Comment</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="progress-step">
-                                        <h6>
-                                            <a aria-controls="task2Step6Content" aria-expanded="false" class="btn-link"
-                                               data-bs-toggle="collapse" href="#task2Step6Content" role="button">
-                                                Step 6: Deployment
-                                            </a>
-                                        </h6>
-                                        <div class="collapse" id="task2Step6Content">
-                                            <p class="text-muted">Deploy the project to the production environment and
-                                                monitor performance.</p>
-
-                                            <div class="attachment-input">
-                                                <label for="file-attachment-task2step6"><i class="bi bi-paperclip"></i>
-                                                    Attach file</label>
-                                                <input id="file-attachment-task2step6" type="file">
-                                            </div>
-
-                                            <div class="comments-section">
-                                                <div class="comment admin-comment">
-                                                    <strong>Admin:</strong> Ensure smooth deployment with rollback
-                                                    options in case of any failures.
-                                                </div>
-                                                <div class="comment user-comment">
-                                                    <strong>User:</strong> Deployment completed successfully, no issues
-                                                    reported.
-                                                </div>
-                                            </div>
-
-                                            <div class="add-comment">
-                                                <input placeholder="Add a comment..." type="text">
-                                                <button type="button">Comment</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
-
+</div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Check if the greeting has already been shown
-        if (localStorage.getItem('greetingShown')) {
-            // Hide the greeting section if it has been shown before
-            document.getElementById('greeting-section').style.display = 'none';
-        } else {
-            // Set the localStorage flag to indicate the greeting has been shown
-            localStorage.setItem('greetingShown', 'true');
-        }
-    });
-    document.addEventListener("DOMContentLoaded", function() {
-        const tasks = document.querySelectorAll('.todo-card');
-        const taskCountElement = document.getElementById('taskCount');
-        const searchInput = document.getElementById('searchInput');
-        const sortDropdown = document.getElementById('sortDropdown');
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById('searchInput');
+    const sortDropdown = document.getElementById('sortDropdown');
 
-        // Function to update task count
-        function updateTaskCount() {
-            const visibleTasks = document.querySelectorAll('.todo-card:not([style*="display: none"])');
-            taskCountElement.textContent = `${visibleTasks.length} tasks`;
-        }
-
-        // Function to filter tasks by search input
-        function filterTasks() {
-            const searchValue = searchInput.value.toLowerCase();
-            tasks.forEach(task => {
-                const taskTitle = task.querySelector('.card-title').textContent.toLowerCase();
-                if (taskTitle.includes(searchValue)) {
-                    task.style.display = '';
-                } else {
-                    task.style.display = 'none';
-                }
-            });
-            updateTaskCount();
-        }
-
-        // Function to sort tasks by date
-        function sortTasks() {
-            const sortValue = sortDropdown.value;
-            const tasksArray = Array.from(tasks);
-
-            tasksArray.sort((a, b) => {
-                const dateA = new Date(a.querySelector('.card-text small').textContent.split(': ')[1]);
-                const dateB = new Date(b.querySelector('.card-text small').textContent.split(': ')[1]);
-
-                if (sortValue === 'date-desc') {
-                    return dateB - dateA;  // Newest first
-                } else if (sortValue === 'date-asc') {
-                    return dateA - dateB;  // Oldest first
-                }
-            });
-
-            // Re-arrange the tasks in the DOM
-            tasksArray.forEach(task => {
-                task.parentElement.appendChild(task);
-            });
-        }
-
-        // Event listeners for search and sort
-        searchInput.addEventListener('input', filterTasks);
-        sortDropdown.addEventListener('change', sortTasks);
-
-        // Initial update of task count
+    // Function to filter tasks by search input
+    function filterTasks() {
+        const searchValue = searchInput.value.toLowerCase();
+        document.querySelectorAll('.todo-card').forEach(task => {
+            const taskTitle = task.querySelector('.card-title').textContent.toLowerCase();
+            task.style.display = taskTitle.includes(searchValue) ? '' : 'none';
+        });
         updateTaskCount();
-    });
+    }
+
+    // Function to sort tasks by date
+    function sortTasks() {
+        const sortValue = sortDropdown.value;
+        const tasksArray = Array.from(document.querySelectorAll('.todo-card'));
+
+        tasksArray.sort((a, b) => {
+            const dateA = new Date(a.querySelector('.card-text small').textContent.split(': ')[1]);
+            const dateB = new Date(b.querySelector('.card-text small').textContent.split(': ')[1]);
+
+            return sortValue === 'date-desc' ? dateB - dateA : dateA - dateB;
+        });
+
+        tasksArray.forEach(task => {
+            task.parentElement.appendChild(task);
+        });
+    }
+
+    // Function to update task count
+    function updateTaskCount() {
+        const visibleTasks = document.querySelectorAll('.todo-card:not([style*="display: none"])');
+        document.getElementById('taskCount').textContent = `${visibleTasks.length} tasks`;
+    }
+
+    // Event listeners for search and sort
+    searchInput.addEventListener('input', filterTasks);
+    sortDropdown.addEventListener('change', sortTasks);
+
+    // Initial update of task count
+    updateTaskCount();
+});
 </script>
-<!-- JavaScript Libraries -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
+
 {% endblock %}
