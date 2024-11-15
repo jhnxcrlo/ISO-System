@@ -55,14 +55,14 @@ body, html {
 /* Styling for the new GIF */
 .corner-gif {
     position: absolute;
-    top: -40px; /* Adjust as needed */
-    right: 20px; /* Adjust as needed */
+    top: -60px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
     width: 100px; /* Adjust size as needed */
 }
 
 /* Logo Styling */
 .logo img {
-    width: 90px; /* Adjusted for better proportion */
+    width: 90px;
     margin-bottom: 20px; /* Space below logo */
     filter: drop-shadow(0 0 20px white);
 }
