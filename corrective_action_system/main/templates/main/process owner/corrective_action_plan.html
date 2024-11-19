@@ -1,0 +1,17 @@
+{% extends 'main/process owner/base.html' %}
+{% block title %}Corrective Action Plan{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Corrective Action Plan for {{ task.non_conformity }}</h3>
+    <div class="card mt-4">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Save Corrective Action Plan</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

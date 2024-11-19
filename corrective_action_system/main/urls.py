@@ -33,16 +33,14 @@ urlpatterns = [
     path('internal-auditor/guidelines/upload/', views.internal_auditor_upload_guideline,name='internal_auditor_upload_guideline'),
     path('internal-auditor/guidelines/edit/<int:pk>/', views.internal_auditor_edit_guideline,name='internal_auditor_edit_guideline'),
     path('internal-auditor/guidelines/delete/<int:pk>/', views.internal_auditor_delete_guideline,name='internal_auditor_delete_guideline'),
-    path('add-project/', views.add_project, name='add_project'),
+    path('non-conformity/add/', views.add_non_conformity, name='add_non_conformity'),
     path('internal-auditor-monitoring-log/', views.internal_auditor_monitoring_log, name='monitoring_log'),  # Your monitoring log view
     path('fm-qms-010-page-1/', views.fm_qms_010_page_1, name='fm_qms_010_page_1'),
+    path('rfa-form/', views.rfa_create, name='create_rfa'),
 
 
                   # Process Owner views (view only)
-    path('process-owner/guidelines/', views.process_owner_guideline_list,name='process_owner_guideline_list'),
-
-
-    path('forms/', views.forms_view, name='forms'),
+    path('process-owner/guidelines/', views.process_owner_guideline_list,name='process_owner_guideline_list'),    path('forms/', views.forms_view, name='forms'),
     path('upload-template/', views.upload_template, name='upload_template'),
     path('download-template/<int:pk>/', views.download_template, name='download_template'),
     path('forms/<int:pk>/delete/', views.delete_template, name='delete_template'),
@@ -50,6 +48,10 @@ urlpatterns = [
     path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name='main/administrator/registration/password_reset_done.html'), name='password_reset_done'),
     path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='main/administrator/registration/password_reset_confirm.html'),name='password_reset_confirm'),
     path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='main/administrator/registration/password_reset_complete.html'), name='password_reset_complete'),
+    path('task/<int:task_id>/', views.task_detail, name='task_detail'),
+    path('task/<int:task_id>/add_immediate_action/', views.add_immediate_action, name='add_immediate_action'),
+    path('task/<int:task_id>/root-cause-analysis/', views.add_root_cause_analysis, name='add_root_cause_analysis'),
+    path('task/<int:task_id>/corrective-action-plan/', views.corrective_action_plan, name='corrective_action_plan'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

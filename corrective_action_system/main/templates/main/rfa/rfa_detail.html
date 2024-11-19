@@ -1,0 +1,20 @@
+{% extends "main/internal audit/base.html" %}
+{% block content %}
+  <h2>Request for Action (RFA) Detail</h2>
+  <p><strong>Reference Number:</strong> {{ rfa.ref_number }}</p>
+  <p><strong>Date Issued:</strong> {{ rfa.date_issued }}</p>
+  <p><strong>Originator:</strong> {{ rfa.originator }}</p>
+  <p><strong>Department:</strong> {{ rfa.unit_department }}</p>
+  <p><strong>Description:</strong> {{ rfa.non_conformance_description }}</p>
+  <p><strong>Category:</strong> {{ rfa.category }}</p>
+  <p><strong>Immediate Action:</strong> {{ rfa.immediate_action }}</p>
+
+  <h3>Sections</h3>
+  <ul>
+    <li><a href="{% url 'update_cause_analysis' rfa.id %}">Update Cause Analysis</a></li>
+    <li><a href="{% url 'update_action_plan' rfa.id %}">Update Action Plan</a></li>
+    <li><a href="{% url 'update_review' rfa.id %}">Review Action Plan</a></li>
+    <li><a href="{% url 'update_follow_up' rfa.id %}">Follow-Up</a></li>
+    <li><a href="{% url 'update_verification' rfa.id %}">Verification of Effectiveness</a></li>
+  </ul>
+{% endblock %}

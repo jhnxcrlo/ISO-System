@@ -1,0 +1,152 @@
+{% extends 'main/internal audit/base.html' %}
+{% load static %}
+{% block title %}Request for Action Form{% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+<link href="{% static 'css/internal_audit/fm-qms-010-page-1.css' %}" rel="stylesheet">
+    {% csrf_token %}
+    <table>
+        <div class="header-container">
+            <img alt="Sorsogon State University Logo" class="logo" src="{% static 'main/iso-sorsu-logo.png' %}">
+            <div class="text-container">
+                <p class="republic">Republic of the Philippines</p>
+                <p class="university"><strong>SORSOGON STATE UNIVERSITY</strong></p>
+                <p class="address"><em>Magsaysay Street, Salog (Pob.), Sorsogon City, Sorsogon</em></p>
+                <p class="contact">Tel No.: 056 211-0103; Email Add.: qa.iso@sorsu.edu.ph</p>
+            </div>
+            <img alt="Another Logo" class="second-logo" src="{% static 'main/bagong-pilipinas-logo.png' %}">
+        </div>
+
+        <tr>
+            <td colspan="9"><h1 style="font-size: 75px;">REQUEST FOR ACTION</h1></td>
+        </tr>
+        
+        <tr>
+            <td colspan="3">RFA Ref. No.</td>
+            <td colspan="9">{{ form.rfa_ref_no }}</td>
+        </tr>
+        <tr>
+            <td colspan="3">Date Issued</td>
+            <td colspan="9">{{ form.date_issued }}</td>
+        </tr>
+
+        <tr>
+            <th colspan="6">PART 1: What is wrong?</th>
+            <th class="nc-data" colspan="6">NON-CONFORMITY (NC) DATA</th>
+        </tr>
+
+        <tr>
+            <td colspan="3">Originator’s Name/ID No.</td>
+            <td colspan="9">{{ form.originator_name }}</td>
+        </tr>
+        <tr>
+            <td colspan="3">Unit/Department</td>
+            <td colspan="9">{{ form.unit_department }}</td>
+        </tr>
+        <tr>
+            <td colspan="3">Phone</td>
+            <td colspan="9">{{ form.phone }}</td>
+        </tr>
+        <tr>
+            <td colspan="3">Email</td>
+            <td colspan="9">{{ form.email }}</td>
+        </tr>
+
+        <tr>
+            <td colspan="6">This RFA is intended to:</td>
+            <td colspan="6">
+                <div class="checkboxes">
+                    <label>{{ form.rfa_intent }}</label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">Department (where NC exists)</td>
+            <td colspan="9">{{ form.department }}</td>
+        </tr>
+        <tr>
+            <td colspan="3">Description of the Non-Conformance</td>
+            <td colspan="9">{{ form.description_nc }}</td>
+        </tr>
+        <tr>
+            <td colspan="12">
+                <div class="form-group">
+                    <label>Description of the Non-Conformance (Specify evidence):</label><br>
+                    {{ form.nc_details }}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">ISO Clause / Reference:</td>
+            <td colspan="9">{{ form.iso_clause_ref }}</td>
+        </tr>
+        <tr>
+            <td colspan="3">Category</td>
+            <td colspan="9">{{ form.category_type }}</td>
+        </tr>
+
+        <tr>
+            <th colspan="6">PART 2: What is the root cause?</th>
+            <th class="nc-data" colspan="6">CAUSE ANALYSIS DATA</th>
+        </tr>
+        <tr>
+            <td colspan="12">
+                <label>Cause of Non-Conformance (Attach if necessary):</label><br>
+                {{ form.root_cause_analysis }}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">Date</td>
+            <td colspan="9">{{ form.cause_date }}</td>
+        </tr>
+        <tr>
+            <td colspan="3">Responsible Officer</td>
+            <td colspan="9">{{ form.responsible_officer }}</td>
+        </tr>
+        <tr>
+            <td colspan="3">Estimated Close Out Date</td>
+            <td colspan="9">{{ form.estimated_close_date }}</td>
+        </tr>
+
+        <tr>
+            <th colspan="6">PART 3: What solutions can we formulate?</th>
+            <th class="nc-data" colspan="6">SOLUTION DATA</th>
+        </tr>
+        <tr>
+            <td colspan="12">
+                <label>Action Plans:</label><br>
+                {{ form.action_plans }}
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="5">
+                “I certify that the aforesaid action plans have been reviewed and authorized for implementation.”
+            </td>
+            <td colspan="2">
+                <label for="signature">Signature:</label>
+                {{ form.signature }}
+            </td>
+        </tr>
+
+        <!-- Submit Button -->
+        <tr>
+            <td colspan="12" class="save-button-container">
+                <button type="submit" class="save-button">Submit</button>
+            </td>
+        </tr>
+    </table>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // JavaScript for displaying selected file name in the signature field
+    const signatureUpload = document.getElementById('id_signature');
+    const fileChosen = document.getElementById('file-chosen');
+    signatureUpload.addEventListener("change", function () {
+        fileChosen.textContent = signatureUpload.files[0].name;
+    });
+</script>
+{% endblock %}
