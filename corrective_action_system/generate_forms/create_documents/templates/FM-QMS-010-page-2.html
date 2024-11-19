@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Request for Action Form Page 2</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="styles.css">
     <script>
         // Function to disable/enable New RFA input based on "Close" effectiveness
         function toggleRFAField() {
@@ -32,17 +32,27 @@
 
         // Attach event listeners on page load
         window.onload = function() {
-            // Call functions initially to handle pre-selected radio buttons
             toggleRFAField();
             toggleReasonField();
 
-            // Add event listeners to radio buttons
             document.getElementById('action_taken_effective').addEventListener('change', toggleRFAField);
             document.getElementById('action_taken_not_effective').addEventListener('change', toggleRFAField);
             document.getElementById('accepted').addEventListener('change', toggleReasonField);
             document.getElementById('not_accepted').addEventListener('change', toggleReasonField);
         };
     </script>
+    <style>
+       
+        /* Input and Textarea Styling */
+        input[type="text"], input[type="date"], input[type="number"], textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            font-family: inherit;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>    
 </head>
 <body>
 
@@ -67,7 +77,7 @@
 
                             <!-- Label and textarea for stating the reason -->
                             <label id="reason_label" for="state_reason">(If not accepted, state reasons):</label>
-                            <textarea cols="50" id="state_reason" name="state_reason" rows="5"
+                            <textarea cols="50" id="state_reason" name="state_reason" rows="6"
                                       style="resize: none; width: 100%; height: 200px;"></textarea>
                         </div>
                     </div>
@@ -103,7 +113,7 @@
             </tr>
             <tr>
                 <td colspan="7" style="height: 200px;">
-                    <textarea id="status" name="status" placeholder="Enter status" rows="4"
+                    <textarea id="status" name="status" placeholder="Enter status" rows="11"
                               style="width: 100%; resize: none;"></textarea>
                 </td>
                 <td colspan="3" style="height: 200px;">
@@ -150,7 +160,7 @@
                     <input id="vdate" name="vdate" type="date">
                 </td>
                 <td colspan="4">
-                    <textarea cols="40" id="follow_up_audit_result" name="follow_up_audit_result" rows="2" style="resize: none;"></textarea>
+                    <textarea cols="40" id="follow_up_audit_result" name="follow_up_audit_result" rows="8" style="resize: none;"></textarea>
                 </td>
                 <td colspan="2">
                     <input id="ntdate" name="ntdate" type="date">
@@ -209,8 +219,8 @@
 
         <br>
 
-        <div class="table-container">
-            <table class="doc_code" style="font-size:small;">
+        <div class="doc_code_table">
+            <table class="doc_table">
                 <tr>
                     <td><label>Doc. Code:</label></td>
                     <td><strong>FM-QMS-010</strong></td> <!-- Static text -->
@@ -228,9 +238,45 @@
 
         <br>
 
-        <button type="submit">Submit</button>
+        <form id="submitForm" action="/submit" method="POST">
+            <button class="styled-btn-red" style="background-color:#8B0000" type="button" onclick="openModal()">Submit</button>
+        </form>
+    
+        <!-- Modal Structure -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Confirm Submission
+                </div>
+                <p>Are you sure you want to submit this form? Please review all the information to ensure its accuracy before proceeding.</p>
+                <div class="modal-buttons">
+                    <button class="modal-btn confirm-btn" onclick="confirmSubmit()">Yes, Submit</button>
+                    <button class="modal-btn cancel-btn" onclick="closeModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
+
+<script>
+// Open the modal
+function openModal() {
+    document.getElementById("confirmationModal").style.display = "flex";
+}
+
+// Close the modal
+function closeModal() {
+    document.getElementById("confirmationModal").style.display = "none";
+}
+
+// Confirm submission
+function confirmSubmit() {
+    document.getElementById("submitForm").submit(); // Submit the form
+}
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 </html>

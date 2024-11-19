@@ -1,166 +1,218 @@
 body {
     font-family: Arial, sans-serif;
-    font-size:x-large;
+    font-size: large;
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
-  }
+}
 
-  .header-container {
-      display: flex;
-      margin: 10px;
-  }
-  
-  .logo {
-      size: 20px;
-      margin-right: 20px; 
-  }
-  .second-logo {
-      height: 200px;
-      margin-left: auto;
-  }
-  
-  .text-container {
-      text-align: left; 
-      line-height: .2;
-      margin-right:200x ;
-  }
-  .separator {
-  border-bottom: 3px solid #000000; 
-  padding-top: 40px;
-  margin: 10px 0; 
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px;
 }
   
-  .republic {
-      font-size:xx-large;
-  }
-  
-  .university {
-      font-size:xx-large;
-      text-transform: uppercase; 
-      font-weight: bold;
-  }
-  
-  .address {
-      font-size:larger;
-      font-style: italic;
-  }
-  
-  .contact {
-      font-size:larger;
-  }
-  
-  .container {
-    width: 80%;
-    margin: 20px auto;
+
+.container {
+    width: 8.3in; /* A4 page width */
+    min-height: 11.7in; /* A4 page height */
     background-color: white;
-    padding: 100px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  h1 {
+    padding: 1in; /* Margins around the document */
+    margin: 0 auto;
+    border: 1px solid #000;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+  
+.logo {
+    size: 80px;
+    margin-right: 20px; 
+}
+.second-logo {
+    size:100px;
+    height: 200px;
+    margin-left: auto;
+    margin-top:20px;
+}
+
+.logo, .second-logo {
+    flex: 1;
+    text-align: center;
+}
+
+.logo img{
+    max-height:170px;
+    width:auto;
+}
+
+.second-logo img {
+    max-height: 120px;
+    width: auto;
+}
+  
+.text-container {
+    flex: 4;
+    text-align: center;
+    line-height: .2;
+    padding: 0px;
+}
+
+.text-container .republic {
+    font-size: 18px;
+    font-weight: normal;
+}
+
+.text-container .university {
+    font-size: 22px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.text-container .college {
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.text-container .campus {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.text-container .address {
+    font-size: 16px;
+    font-style: italic;
+}
+
+.text-container .contact {
+    font-size: 16px;
+}
+
+.separator {
+  border-bottom: 2px solid #000000; 
+  padding-top: 40px;
+  margin-bottom: 30px; 
+} 
+  
+
+
+.container {
+    width: 8.5in; /* A4 page width */
+    min-height: 14in; /* A4 page height */
+    background-color: white;
+    padding: 0.5in 1in; 
+    margin: 20px auto;
+    border: 1px solid #000;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+h1 {
     text-align: center; 
     color: rgb(0, 0, 0);
     padding: 10px;
     margin-bottom: 20px;
-  }
-  h2{
-      text-align: center;   
-      color: rgb(0, 0, 0);
-      font-size: x-large; 
-  }
-  .header_sorsu{
-      text-align: left; 
-      font-size: xx-large;
-  }
+    }
+h2{
+    text-align: center;   
+    color: rgb(0, 0, 0);
+    font-size: x-large; 
+}
 
-  table { 
+
+table { 
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
+    margin-top: 15px;
     table-layout: fixed; 
-  }
+}
 
-  .table-container {
-      display: flex;
-      justify-content: flex-end; 
-  }
-  .doc_code{
-      width: 33%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-      table-layout: fixed; 
-  }
-  th, td {
+.table-container {
+    display: flex;
+    justify-content: flex-end; 
+}
+.doc_code{
+    width: 33%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    table-layout: fixed; 
+}
+th, td {
     border: 1px solid #000000;
-    padding: 10px;
+    padding: 12px;
     text-align: left;
+    font-size: 14px;
+    vertical-align: center;
     word-wrap: break-word; 
-  }
-  th {
+}
+th {
     color: black;
-    font-size:xx-large;
-  }
-  .nc-data {
+    font-size:large;
+}
+.nc-data {
     background-color: #8B0000;
     color: white;
     text-align: center;
-  }
-  input[type="text"], input[type="email"], input[type="tel"], input[type="date"] {
+}
+/* Input and Textarea Styling */
+input[type="text"], input[type="date"], input[type="number"],input[type="phone"],input[type="email"] textarea {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     box-sizing: border-box;
-  }
-  .checkboxes {
+    font-family: inherit;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.checkboxes {
     display: flex;
     flex-direction: column;
     padding: 10px 0;
-  }
-  .checkboxes label {
+}
+.checkboxes label {
     margin-right: 10px;
+    font-size: 12px;
+}
+.container_ap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.btn{
+    color: #8B0000;
+    background-color: #fff;
+    border: 1px solid #8B0000;
+    padding: 0.75rem 1.5rem;
     font-size: 16px;
-  }
-  .container_ap {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-  }
-  .btn{
-  color: #8B0000;
-      background-color: #fff;
-      border: 1px solid #8B0000;
-      padding: 0.75rem 1.5rem;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-  }
-  .btn-secondary {
-      color: #8B0000;
-      background-color: #fff;
-      border: 1px solid #8B0000;
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-  }
-  .btn:hover {
-      background-color: #fff; 
-      color: #8B0000; 
-      border: 1px solid #8B0000; 
-  }
-  
-  .btn:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(255, 38, 38, 0.5);
-  }
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.btn-secondary {
+    color: #8B0000;
+    background-color: #fff;
+    border: 1px solid #8B0000;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.btn:hover {
+    background-color: #fff; 
+    color: #8B0000; 
+    border: 1px solid #8B0000; 
+}
 
-  form-control.textarea-lg {
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 38, 38, 0.5);
+}
+
+form-control.textarea-lg {
     width: 200px;
     height: 50px;
-  }
+}
 
-  select {
+select {
     width: 100%;
     padding: 8px;
     box-sizing: border-box;
@@ -175,84 +227,84 @@ select:focus {
     box-shadow: 0 0 5px rgba(139, 0, 0, 0.5);
 }
 
-
-/* Style for the multi-select dropdown with checkboxes */
-    .dropdown {
-      position: relative;
-      display: inline-block;
-      width: 100%;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: white;
-      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-      width: 100%;
-      padding: 10px;
-      z-index: 1;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-
-    .dropdown-content label {
-      display: block;
-      padding: 5px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .dropdown-content label input {
-      margin-right: 10px;
-    }
-
-    .dropdown .dropdown-btn {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      cursor: pointer;
-      background-color: white;
-    }
-
-    /* Show the dropdown when the button is clicked */
-    .dropdown.show .dropdown-content {
-      display: block;
-    }
-
-    .doc_code_table {
-    display: flex;
-    justify-content: flex-end; /* Align the table to the right */
-    width: 50%;
-    margin-bottom: 20px;
+label {
+    font-weight: bold;
 }
 
+
+/* Style for the multi-select dropdown with checkboxes */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    width: 100%;
+    padding: 10px;
+    z-index: 1;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.dropdown-content label {
+    display: block;
+    padding: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.dropdown-content label input {
+    margin-right: 10px;
+}
+
+.dropdown .dropdown-btn {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: white;
+}
+
+/* Show the dropdown when the button is clicked */
+.dropdown.show .dropdown-content {
+    display: block;
+}
+
+/* Document table  */
 .doc_code_table {
     float: right;
     width: 50%;
     margin-bottom: 20px;
+    margin-right: 40px;
 }
 
 .doc_table {
-    width: 100%;
+    width: 110%;
     border-collapse: collapse;
     font-size: medium;
 }
 
 .doc_table td {
+    text-align:center;
     border: 1px solid black;
-    padding: 5px;
+    padding: 0px;
     width: 25%;
 }
 
 .doc_table input[type="date"], .doc_table input[type="text"] {
     width: 100%;
-    height: 20px;
+    height: 14px;
 }
 
-
+/* Button for Submit */
 .styled-btn-red {
     background-color: #D32F2F; /* Red background */
     color: white; /* White text */
@@ -279,67 +331,95 @@ select:focus {
     background-color: #B71C1C; /* Darker red on click */
 }
 
+.styled-btn-red-sec {
+    background-color: #f4f4f4; /* Light gray background for secondary button */
+    color: #8B0000; /* Dark red text color */
+    border: 1px solid #8B0000; /* Border to indicate secondary style */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 20px; /* Padding for size */
+    font-size: 18px; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+}
+
+.styled-btn-red-sec:hover {
+    background-color: #e6e6e6; /* Slightly darker gray on hover */
+    color: #8B0000; /* Ensure text remains consistent */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+.styled-btn-red-sec:focus {
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 5px rgba(139, 0, 0, 0.5); /* Add a subtle red glow */
+}
+
+.styled-btn-red-sec:active {
+    transform: scale(0.98); /* Slightly shrink on click */
+    background-color: #dcdcdc; /* Even darker gray on click */
+}
+
+
  /* Modal Styling */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
-            justify-content: center;
-            align-items: center;
-        }
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+    justify-content: center;
+    align-items: center;
+}
 
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 400px;
-            text-align: center;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-        .modal-header {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
+.modal-header {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
 
-        .modal-buttons {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-        }
+.modal-buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
 
-        .modal-btn {
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+.modal-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
-        .confirm-btn {
-            background-color: #D32F2F;
-            color: white;
-            border: none;
-        }
+.confirm-btn {
+    background-color: #D32F2F;
+    color: white;
+    border: none;
+}
 
-        .confirm-btn:hover {
-            background-color: #C62828;
-        }
+.confirm-btn:hover {
+    background-color: #C62828;
+}
 
-        .cancel-btn {
-            background-color: #BDBDBD;
-            color: black;
-            border: none;
-        }
+.cancel-btn {
+    background-color: #BDBDBD;
+    color: black;
+    border: none;
+}
 
-        .cancel-btn:hover {
-            background-color: #9E9E9E;
-        }
+.cancel-btn:hover {
+    background-color: #9E9E9E;
+}
 
 
 /* Dropdown Container */
@@ -375,12 +455,12 @@ select:focus {
 
 /* Hover effect for dropdown items */
 .dropdown-item:hover {
-    background-color: #f1f3f4; /* Light gray background on hover, similar to Google Docs */
+    background-color: #f1f3f4; 
 }
 
 /* Dropdown Button Hover */
 .btn-light:hover {
-    background-color: #f1f3f4; /* Same hover effect for button as dropdown items */
+    background-color: #f1f3f4; 
 }
 
 /* Hover Effect for Button */
@@ -389,7 +469,7 @@ select:focus {
 }
 
 .btn:hover {
-    background-color: #f1f3f4; /* Same hover effect for button as Google Docs */
+    background-color: #f1f3f4; 
 }
 
 #selectedItems {
@@ -398,3 +478,46 @@ select:focus {
     color: #333;
 }
 
+
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* Tooltip text */
+.tooltip .tooltip-text {
+    visibility: hidden;
+    width: 100px;
+    background-color: #444;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 110%; /* Position above the button */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity .5s ease;
+    font-size: 10px;
+}
+
+/* Show the tooltip text when hovering */
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Print Styling */
+@media print {
+    .container {
+        page-break-after: always;
+    }
+    button[type="submit"] {
+        display: none;
+    }
+}
+    
