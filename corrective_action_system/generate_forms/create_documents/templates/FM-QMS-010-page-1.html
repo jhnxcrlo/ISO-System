@@ -6,35 +6,38 @@
     <title>Request for Action Form</title>
     <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
+</head> 
+
 <body>
 
 <div class="container">
     <div class="header-container">
+        <!-- Left Logo -->
         <div class="logo">
             <img alt="sorsu Logo" src="{{ url_for('static', filename='Sorulogo.png') }}">
         </div>
-
+    
+        <!-- Center Text -->
         <div class="text-container">
             <p class="republic">Republic of the Philippines</p>
             <p class="university"><strong>SORSOGON STATE UNIVERSITY</strong></p>
             <p class="address"><em>Magsaysay Street, Salog (Pob.), Sorsogon City, Sorsogon</em></p>
             <p class="contact">Tel No.: 056 211-0103; Email Add.: qa.iso@sorsu.edu.ph</p>
             <div class="separator"></div>
-
         </div>
-       <div class="second-logo">
+    
+        <!-- Right Logo -->
+        <div class="second-logo">
             <img alt="Logo" src="{{ url_for('static', filename='bagong-pilipinas-logo.png') }}">
         </div>
-       </div>
-
-
+    </div>
+    
     <!-- Set the action and method to send data to Flask's "/submit" route -->
     <form action="/submit" method="POST">
         <table>
             <tr>
                 <td colspan="9" rowspan="3">
-                    <h1 style="font-size: 75px;">REQUEST FOR ACTION</h1>
+                    <h1 style="font-size: 40px;">REQUEST FOR ACTION</h1>
                 </td>
             </tr>
 
@@ -42,9 +45,9 @@
                 <td colspan="3">
                     <label for="rfa_ref_no">RFA Ref. No.</label><br>
                     <input id="lead_auditor" name="auditor_type" type="radio" value="lead">
-                    <label for="lead_auditor" style="font-size: medium;">Lead Auditor</label>
+                    <label for="lead_auditor" style="font-size: x-small;">Lead Auditor</label><br>
                     <input id="internal_auditor" name="auditor_type" type="radio" value="internal">
-                    <label for="internal_auditor" style="font-size: medium;">Internal Auditor</label><br>
+                    <label for="internal_auditor" style="font-size: x-small;">Internal Auditor</label><br>
                     <input id="rfa_ref_no" name="rfa_ref_no" required type="text">
                 </td>
             </tr>
@@ -114,8 +117,8 @@
                         <option value="Program Chair of BPublicAd">Program Chair of BPublicAd</option>
                     </select>
                 </td>
-                <td colspan="3">Phone<input name="phone" required type="tel"></td>
-                <td colspan="3">Email<input name="email" required type="email"></td>
+                <td colspan="3">Phone<input name="phone" required type="text"></td>
+                <td colspan="3">Email<input name="email" required type="text"></td>
             </tr>
             <tr>
                 <td colspan="6"> This RFA is intended to:
@@ -189,7 +192,7 @@
             <tr>
                 <td colspan="9" rowspan="3">
                     <div class="form-group mt-4">
-                        <label for="description_of_nonconformance" style="font-size: xx-large;">
+                        <label for="description_of_nonconformance" style="font-size: x-large;">
                             <strong>Description Of the Non-Conformance</strong>
                         </label>
                         <p style="font-size: 15px;">(Existing or potential; specify the objective evidence)</p>
@@ -219,7 +222,7 @@
             <tr>
                 <td colspan="9" rowspan="3">
                     <div class="form-group mt-4">
-                        <label for="textarea-lg" style="font-size: xx-large;"><strong>Immediate
+                        <label for="textarea-lg" style="font-size: x-large;"><strong>Immediate
                             Action/Correction:</strong></label> <br>
                         <textarea cols="50" id="immediate_action" name="immediate_action" rows="5"
                                   style="resize: none; width: 100%; height: 150px;"></textarea>
@@ -247,7 +250,7 @@
             <tr>
                 <td colspan="9" rowspan="4">
                     <div class="form-group mt-4">
-                        <label for="textarea-lg" style="font-size: xx-large;">
+                        <label for="textarea-lg" style="font-size: x-large;">
                             <strong>CAUSE OF NON-CONFORMANCE</strong>
                         </label>
                         <p style="font-size: 15px;">Note: Attach copy (if necessary) of root cause analysis</p>
@@ -297,19 +300,19 @@
             </tr>
             <tr>
                 <th colspan="3">
-                    <h2>Step-by-Step Activities</h2>
+                    <h5>Step-by-Step Activities</h5>
                 </th>
                 <th colspan="2">
-                    <h2>Responsible Person/Unit</h2>
+                    <h5>Responsible Person/Unit</h5>
                 </th>
                 <th colspan="1">
-                    <h2>Time Frame</h2>
+                    <h5>Time Frame</h5>
                 </th>
                 <th colspan="2">
-                    <h2>Resources Needed</h2>
+                    <h5>Resources Needed</h5>
                 </th>
                 <th colspan="3">
-                    <h2>Result</h2>
+                    <h5>Result</h5>
                 </th>
             </tr>
 
@@ -420,12 +423,15 @@
             </tr>
 
             <tr>
-                <td colspan="5" style="font-size: 18px; font-weight: bold; color: #333;">
+                <td colspan="5" style="font-size: 14px; font-weight: bold; color: #333;">
                     “I certify that the aforesaid action plans have been reviewed and authorized for implementation. I, therefore, support the implementation of said action plans”.
                 </td>
                 <td colspan="2">
                     Signature: <br> <br>
-                    <button  class="styled-btn-red"  style="font-size:16px;" type="submit">Upload Signature</button>
+                    <button class="styled-btn-red-sec tooltip" style="font-size:16px;" type="submit">
+                        <i class="fas fa-pen"></i> 
+                        <span class="tooltip-text">Upload signature here</span>
+                    </button>
                 </td>
                 <td colspan="4">
 
@@ -443,7 +449,7 @@
                 </tr>
                 <tr>
                     <td><label for="revision_no">Revision No.:</label></td>
-                    <td><strong><input id="revision_no" name="revision_no" placeholder="Enter revision number" type="text"></strong></td>
+                    <td><strong><input id="revision_no" name="revision_no" type="text"></strong></td>
                     <td><label>Page No.:</label></td>
                     <td><strong>1 of 2</strong></td>
                 </tr>
@@ -535,20 +541,20 @@
     };
 
 
-        // Open the modal
-        function openModal() {
-            document.getElementById("confirmationModal").style.display = "flex";
-        }
+    // Open the modal
+    function openModal() {
+        document.getElementById("confirmationModal").style.display = "flex";
+    }
 
-        // Close the modal
-        function closeModal() {
-            document.getElementById("confirmationModal").style.display = "none";
-        }
+    // Close the modal
+    function closeModal() {
+        document.getElementById("confirmationModal").style.display = "none";
+    }
 
-        // Confirm submission
-        function confirmSubmit() {
-            document.getElementById("submitForm").submit(); // Submit the form
-        }
+    // Confirm submission
+    function confirmSubmit() {
+        document.getElementById("submitForm").submit(); // Submit the form
+    }
     </script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
