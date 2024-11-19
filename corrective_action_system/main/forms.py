@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
-from .models import TemplateModel, Guideline, Announcement, NonConformity, ImmediateAction, RootCauseAnalysis, CorrectiveActionPlan
+from .models import TemplateModel, Guideline, Announcement, NonConformity, ImmediateAction, RootCauseAnalysis, \
+    CorrectiveActionPlan, FollowUpAction, CorrectiveActionPlanReview, ActionVerification, CloseOut
 
 
 class UserCreationForm(forms.ModelForm):
@@ -128,11 +129,10 @@ class NonConformityForm(forms.ModelForm):
         fields = [
             'non_conformity', 'assignees', 'originator_name', 'unit_department', 'phone', 'email',
             'rfa_intent', 'department', 'non_conformance_category', 'description_of_non_conformance',
-            'iso_clause', 'category', 'task', 'start_date', 'deadline', 'status', 'assigned_to'
+            'iso_clause', 'category', 'start_date', 'status', 'assigned_to'
         ]
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
-            'deadline': forms.DateInput(attrs={'type': 'date'}),
         }
 
 
@@ -164,4 +164,49 @@ class CorrectiveActionPlanForm(forms.ModelForm):
         widgets = {
             'activity': forms.Textarea(attrs={'rows': 3}),
             'result': forms.Textarea(attrs={'rows': 2}),
+        }
+
+class CorrectiveActionPlanReviewForm(forms.ModelForm):
+    class Meta:
+        model = CorrectiveActionPlanReview
+        fields = ['effectiveness', 'reason']
+
+class FollowUpActionForm(forms.ModelForm):
+    class Meta:
+        model = FollowUpAction
+        fields = ['status', 'responsible_person', 'follow_up_date']
+        widgets = {
+            'follow_up_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+        labels = {
+            'status': 'Status',
+            'responsible_person': 'Initials / Responsibility',
+            'follow_up_date': 'Date',
+        }
+
+class ActionVerificationForm(forms.ModelForm):
+    class Meta:
+        model = ActionVerification
+        fields = [
+            "visit_number",
+            "date",
+            "follow_up_audit_result",
+            "new_target_date",
+            "status",
+            "new_rfa_number",
+        ]
+        widgets = {
+            "date": forms.DateInput(attrs={"type": "date"}),
+            "new_target_date": forms.DateInput(attrs={"type": "date"}),
+            "follow_up_audit_result": forms.Textarea(attrs={"rows": 3}),
+        }
+
+
+class CloseOutForm(forms.ModelForm):
+    class Meta:
+        model = CloseOut
+        fields = ['auditor_name', 'auditor_date', 'process_owner_name', 'process_owner_date']
+        widgets = {
+            'auditor_date': forms.DateInput(attrs={'type': 'date'}),
+            'process_owner_date': forms.DateInput(attrs={'type': 'date'}),
         }

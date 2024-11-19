@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from . import views
-from .views import change_password
+from .views import change_password, add_review
 
 urlpatterns = [
     path('login/', views.login_view, name='login'),
@@ -36,7 +36,11 @@ urlpatterns = [
     path('non-conformity/add/', views.add_non_conformity, name='add_non_conformity'),
     path('internal-auditor-monitoring-log/', views.internal_auditor_monitoring_log, name='monitoring_log'),  # Your monitoring log view
     path('fm-qms-010-page-1/', views.fm_qms_010_page_1, name='fm_qms_010_page_1'),
-    path('rfa-form/', views.rfa_create, name='create_rfa'),
+    path('non_conformity/<int:nc_id>/add_follow_up/', views.add_follow_up, name='add_follow_up'),
+    path('corrective_action_plan/<int:cap_id>/add_review/', views.add_review, name='add_review'),
+    path('close-out/<int:nc_id>/', views.close_out_action, name='close_out_action'),
+    path('non-conformity/<int:task_id>/complete_step/', views.complete_step, name='complete_step'),
+#path('rfa-form/', views.rfa_create, name='create_rfa'),
 
 
                   # Process Owner views (view only)
@@ -52,6 +56,11 @@ urlpatterns = [
     path('task/<int:task_id>/add_immediate_action/', views.add_immediate_action, name='add_immediate_action'),
     path('task/<int:task_id>/root-cause-analysis/', views.add_root_cause_analysis, name='add_root_cause_analysis'),
     path('task/<int:task_id>/corrective-action-plan/', views.corrective_action_plan, name='corrective_action_plan'),
+    #path for deleting corrective action
+    path('internal-audit/non-conformity/<int:nc_id>/', views.non_conformity_detail, name='non_conformity_detail'),
+    #path for corrective action verification
+    path('corrective_action_plan/<int:cap_id>/verification/', views.action_verification, name='action_verification'),
+
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

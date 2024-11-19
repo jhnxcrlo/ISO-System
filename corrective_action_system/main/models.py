@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
+
 
 
 class UserProfile(models.Model):
@@ -103,10 +105,7 @@ class NonConformity(models.Model):
 
     TASK_CATEGORY_CHOICES = [('major', 'Major'), ('minor', 'Minor'), ('others', 'Others')]
     category = models.CharField(max_length=20, choices=TASK_CATEGORY_CHOICES)
-
-    task = models.IntegerField()
     start_date = models.DateField()
-    deadline = models.DateField()
 
     STATUS_CHOICES = [('pending', 'Pending'), ('in_progress', 'In Progress'), ('completed', 'Completed')]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
@@ -121,10 +120,12 @@ class NonConformity(models.Model):
 class ImmediateAction(models.Model):
     non_conformity = models.OneToOneField(NonConformity, on_delete=models.CASCADE, related_name='immediate_action')
     action_description = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    acknowledged_by = models.CharField(max_length=255, default="Unknown")  # Add field for acknowledgment name
+    acknowledgment_date = models.DateField(null=True, blank=True)  # Add field for the acknowledgment date
 
     def __str__(self):
         return f"Immediate Action for {self.non_conformity.non_conformity}"
+
 
 
 # Model for Root Cause Analysis
@@ -152,3 +153,83 @@ class CorrectiveActionPlan(models.Model):
 
     def __str__(self):
         return f"Corrective Action for {self.non_conformity.non_conformity}"
+
+class CorrectiveActionPlanReview(models.Model):
+    corrective_action_plan = models.ForeignKey(
+        'CorrectiveActionPlan', on_delete=models.CASCADE, related_name='reviews'
+    )
+    effectiveness = models.CharField(
+        max_length=20,
+        choices=[('Accepted', 'Accepted'), ('Not Accepted', 'Not Accepted')],
+        verbose_name="Effectiveness"
+    )
+    reason = models.TextField(
+        blank=True, null=True, verbose_name="Reason (if Not Accepted)"
+    )
+    reviewer = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Reviewed By"
+    )
+    review_date = models.DateField(auto_now_add=True, verbose_name="Review Date")
+
+    restart_process = models.BooleanField(default=False, verbose_name="Restart Process Required")
+
+    def __str__(self):
+        return f"Review of {self.corrective_action_plan} by {self.reviewer}"
+
+class FollowUpAction(models.Model):
+    non_conformity = models.ForeignKey(
+        'NonConformity',
+        on_delete=models.CASCADE,
+        related_name='follow_up_actions'
+    )
+    status = models.CharField(
+        max_length=50,
+        choices=[
+            ('Pending', 'Pending'),
+            ('In Progress', 'In Progress'),
+            ('Completed', 'Completed')
+        ],
+        default='Pending'
+    )
+    responsible_person = models.CharField(max_length=100, verbose_name="Initials / Responsibility")
+    follow_up_date = models.DateField(verbose_name="Follow-Up Date")
+
+    def __str__(self):
+        return f"Follow-Up: {self.non_conformity.non_conformity} ({self.status})"
+
+
+class ActionVerification(models.Model):
+    corrective_action_plan = models.ForeignKey(
+        'CorrectiveActionPlan',
+        on_delete=models.CASCADE,
+        related_name='action_verifications'
+    )
+
+    visit_number = models.IntegerField(verbose_name="No. of Visits")
+    date = models.DateField()
+    follow_up_audit_result = models.TextField(verbose_name="Follow-up Audit Result (Objective Evidences)")
+    new_target_date = models.DateField(null=True, blank=True)
+    status = models.CharField(
+        max_length=50,
+        choices=[
+            ("effective", "Close (Effective)"),
+            ("not_effective", "Close (Not Effective)")
+        ]
+    )
+    new_rfa_number = models.CharField(max_length=50, blank=True, null=True, verbose_name="New RFA #")
+
+    def __str__(self):
+        return f"Visit {self.visit_number}: {self.status}"
+
+
+class CloseOut(models.Model):
+    non_conformity = models.OneToOneField(
+        'NonConformity', on_delete=models.CASCADE, related_name='close_out'
+    )
+    auditor_name = models.CharField(max_length=255)
+    auditor_date = models.DateField()
+    process_owner_name = models.CharField(max_length=255)
+    process_owner_date = models.DateField()
+
+    def __str__(self):
+        return f"Close Out for {self.non_conformity.non_conformity}"

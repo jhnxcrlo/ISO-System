@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import UserProfile, TemplateModel, NonConformity, RootCauseAnalysis, ImmediateAction, CorrectiveActionPlan
+from .models import UserProfile, TemplateModel, NonConformity, RootCauseAnalysis, ImmediateAction, CorrectiveActionPlan, \
+    FollowUpAction, ActionVerification, CorrectiveActionPlanReview, CloseOut
 
 
 @admin.register(UserProfile)
@@ -16,6 +17,11 @@ admin.site.register(NonConformity)
 admin.site.register(ImmediateAction)
 admin.site.register(RootCauseAnalysis)
 admin.site.register(CorrectiveActionPlan)
+admin.site.register(CorrectiveActionPlanReview)
+admin.site.register(FollowUpAction)
+admin.site.register(ActionVerification)
+admin.site.register(CloseOut)
+
 
 
 

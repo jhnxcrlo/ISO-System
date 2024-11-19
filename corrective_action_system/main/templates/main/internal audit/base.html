@@ -33,9 +33,9 @@
     <div class="row">
         <!-- Side Navbar -->
         <div class="col-md-2 sidenav d-flex flex-column" id="sidebar" style="margin-top: 60px;">
-            <div class="text-center py-4">
+            <div class="text-center py-3">
                 <img alt="Management System Logo" class="img-fluid" src="{% static 'main/img2.png' %}"
-                     style="max-width: 60%; height: auto; border-radius: 50%;">
+                     style="max-width: 75%; height: auto; border-radius: 50%;">
                 <h6 class="mt-3 system-title" style="color:#272F3F">Management System</h6>
             </div>
             <ul class="nav flex-column">
@@ -92,7 +92,8 @@
                             </a>
 
                             <!-- Dropdown menu for notifications -->
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarNotification" style="width: 250px;">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarNotification"
+                                style="width: 250px;">
                                 <li>
                                     <a gtm-id="Notifications" class="dropdown-item text-wrap"
                                        data-notification-date="06/26/2024 08:00" href=""
@@ -114,7 +115,8 @@
                             </button>
                             <ul aria-labelledby="userMenu" class="dropdown-menu dropdown-menu-end">
                                 <li class="dropdown-header">
-                                    <strong>{{ user.last_name }} {{ user.first_name|slice:":1" }}. ({{user.userprofile.role}})</strong>
+                                    <strong>{{ user.last_name }} {{ user.first_name|slice:":1" }}.
+                                        ({{ user.userprofile.role }})</strong>
                                 </li>
                                 <li>
                                     <hr class="dropdown-divider">
@@ -188,45 +190,45 @@
 </script>
 
 <script>
-// Sidebar toggle and save state to localStorage
-const sidebar = document.getElementById('sidebar');
-const sidebarToggle = document.getElementById('sidebarToggle');
-const mainContent = document.querySelector('.main-content');
+    // Sidebar toggle and save state to localStorage
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const mainContent = document.querySelector('.main-content');
 
-// Load sidebar state on page load
-document.addEventListener("DOMContentLoaded", function() {
-    const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-    if (sidebarCollapsed) {
-        sidebar.classList.add('sidebar-collapsed');
-        mainContent.classList.add('main-content-expanded');
-        sidebarToggle.querySelector('i').classList.remove('fa-arrow-left');
-        sidebarToggle.querySelector('i').classList.add('fa-arrow-right');
-    }
+    // Load sidebar state on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        if (sidebarCollapsed) {
+            sidebar.classList.add('sidebar-collapsed');
+            mainContent.classList.add('main-content-expanded');
+            sidebarToggle.querySelector('i').classList.remove('fa-arrow-left');
+            sidebarToggle.querySelector('i').classList.add('fa-arrow-right');
+        }
 
-    // Remove the `no-transition` class after page load
-    sidebar.classList.remove('no-transition');
-});
+        // Remove the `no-transition` class after page load
+        sidebar.classList.remove('no-transition');
+    });
 
-// Toggle sidebar and save state
-sidebarToggle.addEventListener('click', () => {
-    const isCollapsed = sidebar.classList.toggle('sidebar-collapsed');
-    mainContent.classList.toggle('main-content-expanded');
-    localStorage.setItem('sidebarCollapsed', isCollapsed); // Save state
+    // Toggle sidebar and save state
+    sidebarToggle.addEventListener('click', () => {
+        const isCollapsed = sidebar.classList.toggle('sidebar-collapsed');
+        mainContent.classList.toggle('main-content-expanded');
+        localStorage.setItem('sidebarCollapsed', isCollapsed); // Save state
 
-    // Toggle arrow icon
-    if (isCollapsed) {
-        sidebarToggle.querySelector('i').classList.remove('fa-arrow-left');
-        sidebarToggle.querySelector('i').classList.add('fa-arrow-right');
-    } else {
-        sidebarToggle.querySelector('i').classList.remove('fa-arrow-right');
-        sidebarToggle.querySelector('i').classList.add('fa-arrow-left');
-    }
-});
+        // Toggle arrow icon
+        if (isCollapsed) {
+            sidebarToggle.querySelector('i').classList.remove('fa-arrow-left');
+            sidebarToggle.querySelector('i').classList.add('fa-arrow-right');
+        } else {
+            sidebarToggle.querySelector('i').classList.remove('fa-arrow-right');
+            sidebarToggle.querySelector('i').classList.add('fa-arrow-left');
+        }
+    });
 
-// Add class to hide sidebar on page load
-document.addEventListener("DOMContentLoaded", function() {
-    sidebar.classList.add('no-transition');
-});
+    // Add class to hide sidebar on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        sidebar.classList.add('no-transition');
+    });
 </script>
 
 <!-- JavaScript Libraries -->

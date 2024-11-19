@@ -8,12 +8,10 @@
     <form id="addNonConformityForm" method="POST" action="{% url 'add_non_conformity' %}">
         {% csrf_token %}
 
-        <!-- Non-Conformity and Assignees -->
+        <!-- Non-Conformity -->
         <label for="nonConformity" class="form-label">Non-Conformity</label>
         <input type="text" class="form-control" id="nonConformity" name="non_conformity" required>
-
-        <label for="assignees" class="form-label">Assignees</label>
-        <input type="text" class="form-control" id="assignees" name="assignees" required>
+    
 
         <!-- Originator's Information -->
         <label for="originatorName" class="form-label">Originator’s Name/ID No.</label>
@@ -73,17 +71,13 @@
         </select>
 
         <!-- Task, Start Date, Deadline -->
-        <label for="task" class="form-label">Task</label>
-        <input type="number" class="form-control" id="task" name="task" required>
 
-        <label for="startDate" class="form-label">Start Date</label>
+        <label for="startDate" class="form-label">Date Issued</label>
         <input type="date" class="form-control" id="startDate" name="start_date" required>
-
-        <label for="deadline" class="form-label">Deadline</label>
-        <input type="date" class="form-control" id="deadline" name="deadline" required>
+    
 
         <!-- Process Owner Selection -->
-        <label for="processOwner" class="form-label">Process Owner</label>
+        <label for="processOwner" class="form-label">Assignees</label>
         <select class="form-control" id="processOwner" name="assigned_to" required>
             <option value="" disabled selected>Select Process Owner</option>
             {% for user in process_owners %}

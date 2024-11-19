@@ -6,117 +6,151 @@
     <div class="row d-flex justify-content-center align-items-center">
         <div class="col col-xl-10">
             <!-- Greeting Section -->
-            <div id="greeting-section" class="greeting-section text-left mb-4">
-                <h1>Hi, <strong>{{ user.username }}!</strong></h1>
-                <a class="greeting-link" href="#taskSection">Proceed to do task</a>
+{#            <div id="greeting-section" class="greeting-section text-left mb-4"#}
+{#                 style="background-color: #f8f9fa; border-radius: 15px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: opacity 0.5s ease;">#}
+{#                <h4>Hi, <strong>{{ user.username }}!</strong></h4>#}
+{#                <a class="greeting-link" href="#taskSection"#}
+{#                   style="color: #A33331; text-decoration: none; font-weight: bold;">Proceed to do task</a>#}
+{#            </div>#}
+
+            <!-- Announcements Section -->
+            <div class="greeting-section text-left mb-4"
+                 style="background-color: #f8f9fa; border-radius: 15px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div class="dropdown">
+                    <button class="btn btn-light w-100 text-left dropdown-toggle" type="button"
+                            id="announcementDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                            style="text-align: left; font-size: 1.2rem; font-weight: bold; color: #0f0f0f; background-color: #f8f9fa; border: none;">
+                        Latest Announcements
+                    </button>
+                    <ul class="dropdown-menu w-100 p-3 dropdown-menu-end" aria-labelledby="announcementDropdown"
+                        style="max-height: 300px; overflow-y: auto; border-radius: 15px; position: absolute; z-index: 1050;">
+                        {% for announcement in announcements %}
+                            <li class="mb-3">
+                                <div class="card shadow-sm">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-2">{{ announcement.title }}</h5>
+                                        <p class="card-text">{{ announcement.body }}</p>
+                                        <p class="card-text">
+                                            <small class="text-muted">Posted on {{ announcement.date_posted|date:"F d, Y" }}</small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                        {% empty %}
+                            <li class="text-center text-muted">No announcements to show at the moment.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
 
-            <!-- Announcements -->
-            <div class="announcement-header">
-                <h2>Latest Announcements</h2>
-                <p class="text-muted">Stay updated with the latest news and information</p>
-            </div>
-            <div class="announcement-list mt-4">
-                {% for announcement in announcements %}
-                    <div class="card mb-4 announcement-card">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ announcement.title }}</h5>
-                            <p class="card-text">{{ announcement.body }}</p>
-                            <p class="card-text"><small class="text-muted">Posted on {{ announcement.date_posted|date:"Fd, Y" }}</small></p>
-                        </div>
-                    </div>
-                {% empty %}
-                    <p>No announcements to show at the moment.</p>
-                {% endfor %}
-            </div>
-        </div>
+            <!-- Task Section -->
+            <div id="taskSection">
+    <div class="task-header mb-4">
+        <h1 class="fw-bold">Tasks</h1>
+        <div id="taskCount" class="task-info-below-header text-muted">{{ tasks.count }} tasks</div>
+    </div>
+
+    <div class="search-bar-container mb-4 d-flex justify-content-between align-items-center">
+        <input id="searchInput" class="form-control w-50" placeholder="Search task" type="text"/>
+        <select id="sortDropdown" class="form-select w-25">
+            <option value="date-desc" selected>Sort by Date (Newest First)</option>
+            <option value="date-asc">Sort by Date (Oldest First)</option>
+        </select>
+    </div>
+
+    <!-- Tasks Table -->
+    <div class="table-responsive">
+        <table class="table table-hover table-striped align-middle shadow-sm rounded"
+               style="border-collapse: separate; border-spacing: 0; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+            <thead style="background-color: #C74C4A; color: white;">
+            <tr>
+                <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Non-Conformities</th>
+                <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Assignee(s)</th>
+                <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Department</th>
+                <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Deadline</th>
+                <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Status</th>
+            </tr>
+            </thead>
+            <tbody id="taskList">
+            {% for task in tasks %}
+                <tr class="task-row {% if task.status == 'completed' %}table-success{% endif %}" 
+                    style="transition: all 0.3s ease; cursor: pointer;"
+                    onmouseover="this.style.backgroundColor='#f2f2f2';"
+                    onmouseout="this.style.backgroundColor='';">
+                    <td style="padding: 15px 20px; text-align: left;">
+                        <a href="{% url 'task_detail' task.id %}" style="text-decoration: none; color: #203040; font-weight: bold;">
+                            {{ task.non_conformity }}
+                        </a>
+                    </td>
+                    <td style="padding: 15px 20px; text-align: left;">{{ task.assignees }}</td>
+                    <td style="padding: 15px 20px; text-align: left;">{{ task.department }}</td>
+                    <td style="padding: 15px 20px; text-align: left;">{{ task.deadline|date:"F d, Y" }}</td>
+                    <td style="padding: 15px 20px; text-align: left;">
+                        <span class="badge {{ task.status|lower }}-badge"
+                              style="padding: 5px 10px; font-size: 0.9rem; background-color:
+                                  {% if task.status == 'pending' %}#FFA726
+                                  {% elif task.status == 'in_progress' %}#29B6F6
+                                  {% elif task.status == 'completed' %}#66BB6A
+                                  {% endif %}; color: white; border-radius: 5px;">
+                            {{ task.status|title }}
+                        </span>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted" style="padding: 20px; font-size: 1rem;">
+                        No tasks available
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 
-<!-- Task Section -->
-<div class="container" id="taskSection">
-    <div class="row d-flex justify-content-center align-items-center">
-        <div class="col col-xl-10">
-            <div class="task-header">
-                <h1>To Do</h1>
-                <div id="taskCount" class="task-info-below-header">{{ tasks.count }} tasks</div>
-                <h4>Tasks Assigned to Me</h4>
-            </div>
-
-            <div class="search-bar-container mb-4">
-                <input id="searchInput" class="form-control" placeholder="Search task" type="text"/>
-                <select id="sortDropdown" class="form-select sort-dropdown">
-                    <option value="date-desc" selected>Sort by Date (Newest First)</option>
-                    <option value="date-asc">Sort by Date (Oldest First)</option>
-                </select>
-            </div>
-
-            <!-- To-Do List -->
-            <div id="taskList">
-                {% for task in tasks %}
-                <div class="card todo-card">
-                    <!-- Link to the task detail page instead of opening a modal -->
-                    <a href="{% url 'task_detail' task.id %}" class="stretched-link text-decoration-none">
-                        <div class="todo-content">
-                            <div class="task-details">
-                                <h5 class="card-title">{{ task.non_conformity }}</h5>
-                                <p class="card-text"><small class="text-muted">Due: {{ task.deadline }}</small></p>
-                            </div>
-                            <div class="badge-container"><span class="{{ task.status|lower }}-badge">{{ task.status|title }}</span></div>
-                        </div>
-                    </a>
-                </div>
-                {% endfor %}
-            </div>
         </div>
     </div>
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const searchInput = document.getElementById('searchInput');
-    const sortDropdown = document.getElementById('sortDropdown');
+    document.addEventListener('DOMContentLoaded', function () {
+        // Hide greeting after 5 seconds
+        setTimeout(function () {
+            const greetingSection = document.getElementById('greeting-section');
+            if (greetingSection) {
+                greetingSection.style.opacity = 0;
+                setTimeout(() => greetingSection.style.display = 'none', 1000);
+            }
+        }, 5000);
 
-    // Function to filter tasks by search input
-    function filterTasks() {
-        const searchValue = searchInput.value.toLowerCase();
-        document.querySelectorAll('.todo-card').forEach(task => {
-            const taskTitle = task.querySelector('.card-title').textContent.toLowerCase();
-            task.style.display = taskTitle.includes(searchValue) ? '' : 'none';
-        });
-        updateTaskCount();
-    }
+        // Filter and Sort Functionality for Tasks
+        const searchInput = document.getElementById('searchInput');
+        const sortDropdown = document.getElementById('sortDropdown');
+        const taskList = document.getElementById('taskList');
 
-    // Function to sort tasks by date
-    function sortTasks() {
-        const sortValue = sortDropdown.value;
-        const tasksArray = Array.from(document.querySelectorAll('.todo-card'));
+        function filterTasks() {
+            const searchValue = searchInput.value.toLowerCase();
+            document.querySelectorAll('#taskList .task-row').forEach(row => {
+                const taskTitle = row.querySelector('td:first-child a').textContent.toLowerCase();
+                row.style.display = taskTitle.includes(searchValue) ? '' : 'none';
+            });
+        }
 
-        tasksArray.sort((a, b) => {
-            const dateA = new Date(a.querySelector('.card-text small').textContent.split(': ')[1]);
-            const dateB = new Date(b.querySelector('.card-text small').textContent.split(': ')[1]);
+        function sortTasks() {
+            const sortValue = sortDropdown.value;
+            const rowsArray = Array.from(taskList.querySelectorAll('.task-row'));
 
-            return sortValue === 'date-desc' ? dateB - dateA : dateA - dateB;
-        });
+            rowsArray.sort((a, b) => {
+                const dateA = new Date(a.querySelector('td:nth-child(4)').textContent.trim());
+                const dateB = new Date(b.querySelector('td:nth-child(4)').textContent.trim());
+                return sortValue === 'date-desc' ? dateB - dateA : dateA - dateB;
+            });
 
-        tasksArray.forEach(task => {
-            task.parentElement.appendChild(task);
-        });
-    }
+            rowsArray.forEach(row => taskList.appendChild(row));
+        }
 
-    // Function to update task count
-    function updateTaskCount() {
-        const visibleTasks = document.querySelectorAll('.todo-card:not([style*="display: none"])');
-        document.getElementById('taskCount').textContent = `${visibleTasks.length} tasks`;
-    }
-
-    // Event listeners for search and sort
-    searchInput.addEventListener('input', filterTasks);
-    sortDropdown.addEventListener('change', sortTasks);
-
-    // Initial update of task count
-    updateTaskCount();
-});
+        searchInput.addEventListener('input', filterTasks);
+        sortDropdown.addEventListener('change', sortTasks);
+    });
 </script>
-
 {% endblock %}
