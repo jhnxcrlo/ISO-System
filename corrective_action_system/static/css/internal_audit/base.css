@@ -647,35 +647,61 @@ html {
     color: #555;
 }
 
-.dashboard-card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-}
 
-.dashboard-icon {
-    font-size: 40px;
-    color: #8B0000;
-    opacity: 0.7;
-}
 
-.stat-number {
-    font-size: 2rem;
-    font-weight: bold;
-}
+.dashboard-section {
+            margin-top: 20px;
+        }
 
-.stat-title {
-    font-size: 1.25rem;
-}
+        .dashboard-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            height: 100%;
+        }
 
-.stat-subtitle {
-    color: #666;
-    font-size: 0.9rem;
-}
+        .dashboard-icon {
+            font-size: 40px;
+            color: #A33331;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333333;
+        }
+
+        .stat-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #666666;
+        }
+
+        .stat-subtitle {
+            font-size: 16px;
+            color: #999999;
+        }
+
+        .dashboard-text {
+            flex-grow: 1;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-card {
+                text-align: center;
+            }
+
+            .dashboard-text {
+                align-items: center;
+            }
+
+            .stat-title,
+            .stat-number,
+            .stat-subtitle {
+                text-align: center;
+            }
+        }
 
 /* Greeting Section */
 .greeting-section {

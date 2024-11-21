@@ -63,6 +63,7 @@
         color: white;
     }
 
+
      .table td {
         padding: 15px;
         font-size: 1rem;
@@ -109,38 +110,38 @@
     <!-- Add Non-Conformity Button -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Non-Conformities</h2>
-        <a href="{% url 'add_non_conformity' %}" class="btn btn-primary">
+        <a class="btn btn-primary" href="{% url 'add_non_conformity' %}">
             <i class="bi bi-plus-lg me-2"></i>Add Non-Conformity
         </a>
     </div>
 
     <!-- Filter Tabs -->
-    <ul id="tabContainer" class="nav nav-pills mb-4">
+    <ul class="nav nav-pills mb-4" id="tabContainer">
         <li class="nav-item">
-            <a class="nav-link active" href="#" data-filter="all">All ({{ non_conformities.count }})</a>
+            <a class="nav-link active" data-filter="all" href="#">All ({{ non_conformities.count }})</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#" data-filter="in_progress">Ongoing ({{ ongoing_count }})</a>
+            <a class="nav-link" data-filter="in_progress" href="#">Ongoing ({{ ongoing_count }})</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#" data-filter="cancelled">Cancelled ({{ cancelled_count }})</a>
+            <a class="nav-link" data-filter="cancelled" href="#">Cancelled ({{ cancelled_count }})</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#" data-filter="completed">Finished ({{ finished_count }})</a>
+            <a class="nav-link" data-filter="completed" href="#">Finished ({{ finished_count }})</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#" data-filter="postponed">Postponed ({{ postponed_count }})</a>
+            <a class="nav-link" data-filter="postponed" href="#">Postponed ({{ postponed_count }})</a>
         </li>
     </ul>
 
     <!-- Search Bar -->
     <div class="input-group mb-4">
         <input
-            id="searchInput"
-            type="text"
-            class="form-control"
-            placeholder="Search non-conformities..."
-            aria-label="Search"
+                aria-label="Search"
+                class="form-control"
+                id="searchInput"
+                placeholder="Search non-conformities..."
+                type="text"
         >
         <button class="btn btn-secondary" type="button">
             <i class="fas fa-search"></i>
@@ -163,33 +164,33 @@
             </thead>
             <tbody>
             {% for nc in non_conformities %}
-                <tr data-status="{{ nc.status|lower }}">
-                    <td>
-                        <a href="{% url 'non_conformity_detail' nc.id %}" class="text-decoration-none text-dark fw-bold">
-                            {{ nc.non_conformity }}
-                        </a>
-                    </td>
-                    <td>{{ nc.assignees }}</td>
-                    <td>{{ nc.unit_department }}</td>
-                    <td>{{ nc.start_date|date:"M d, Y" }}</td>
-                    <td>{{ nc.deadline|date:"M d, Y" }}</td>
-                    <td class="text-center">{{ nc.task }}</td>
-                    <td>
-    <span class="badge 
-        {% if nc.status == 'pending' %} bg-warning text-dark
-        {% elif nc.status == 'immediate_action_in_progress' %} bg-info text-dark
-        {% elif nc.status == 'root_cause_analysis_in_progress' %} bg-primary text-light
-        {% elif nc.status == 'corrective_action_in_progress' %} bg-secondary text-light
-        {% elif nc.status == 'corrective_action_completed' %} bg-success
-        {% else %} bg-dark {% endif %}">
-        {% if nc.status == 'corrective_action_completed' %}
-            Completed
-        {% else %}
-            {{ nc.get_status_display }}
-        {% endif %}
-    </span>
-</td>
-                </tr>
+            <tr data-status="{{ nc.status|lower }}">
+                <td>
+                    <a class="text-decoration-none text-dark fw-bold" href="{% url 'non_conformity_detail' nc.id %}">
+                        {{ nc.non_conformity }}
+                    </a>
+                </td>
+                <td>{{ nc.assignees }}</td>
+                <td>{{ nc.unit_department }}</td>
+                <td>{{ nc.start_date|date:"M d, Y" }}</td>
+                <td>{{ nc.deadline|date:"M d, Y" }}</td>
+                <td class="text-center">{{ nc.task }}</td>
+                <td>
+                <span class="badge
+                    {% if nc.status == 'pending' %} bg-warning text-dark
+                    {% elif nc.status == 'immediate_action_in_progress' %} bg-info text-dark
+                    {% elif nc.status == 'root_cause_analysis_in_progress' %} bg-primary text-light
+                    {% elif nc.status == 'corrective_action_in_progress' %} bg-secondary text-light
+                    {% elif nc.status == 'corrective_action_completed' %} bg-success
+                    {% else %} bg-dark {% endif %}">
+                    {% if nc.status == 'corrective_action_completed' %}
+                        Completed
+                    {% else %}
+                        {{ nc.get_status_display }}
+                    {% endif %}
+                </span>
+                </td>
+            </tr>
             {% endfor %}
             </tbody>
         </table>
