@@ -298,7 +298,7 @@
 
                         <!-- Verification History Table -->
                         <h5>Verification History</h5>
-                        <table class="table table-bordered">
+                        <table class="table table-bordered mb-3 mt-3">
                             <thead>
                             <tr>
                                 <th>No. of Visits</th>
@@ -339,7 +339,7 @@
 
                         <!-- Add Verification Form -->
                         {% if not verifications or verifications.last.status == "not_effective" %}
-                            <h5 class="mt-4">Add New Verification</h5>
+                            <h5 class="mt-5">Add New Verification</h5>
                             {% if corrective_action_plan.id %}
                                 <form method="post" action="{% url 'action_verification' corrective_action_plan.id %}">
                                     {% csrf_token %}
