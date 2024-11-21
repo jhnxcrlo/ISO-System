@@ -667,7 +667,7 @@ html {
         }
 
         .stat-number {
-            font-size: 24px;
+            font-size: 36px;
             font-weight: bold;
             color: #333333;
         }
@@ -675,7 +675,7 @@ html {
         .stat-title {
             font-size: 24px;
             font-weight: 700;
-            color: #666666;
+            color: #000000;
         }
 
         .stat-subtitle {
@@ -800,11 +800,17 @@ html {
 }
 
 .report-title {
-    font-size: 1.75rem;
+
     font-weight: bold;
     color: #203040;
     display: flex;
     align-items: center;
+     gap: 0.7rem;
+}
+
+.report-title i {
+    font-size: 2rem;
+
 }
 
 .report-subtitle {
@@ -1301,6 +1307,7 @@ h3 {
     display: flex;
     align-items: center;
     margin-top: 10px;
+
 }
 
 .add-comment input[type="text"] {
@@ -1309,6 +1316,7 @@ h3 {
     padding: 5px 10px;
     border-radius: 5px;
     border: 1px solid #ddd;
+    margin-bottom: 10px;
 }
 
 .add-comment button {

@@ -3,17 +3,17 @@
 {% block title %}Audit Task: Assess Process Owner Compliance{% endblock %}
 
 {% block content %}
-    <div class="container mt-4">
+    <div class="container mt-5">
         <!-- Page Header -->
-        <h2 class="mb-4" style="color: #A33331; font-weight: bold;">AUDIT TASK: ASSESS PROCESS OWNER COMPLIANCE WITH
+        <h2 class="mb-5" style="color: #A33331; font-weight: bold;">AUDIT TASK: ASSESS PROCESS OWNER COMPLIANCE WITH
             RFA</h2>
 
         <div class="row">
             <!-- Left Column: Non-Conformance Details and Follow-Up Actions -->
-            <div class="col-md-4">
+            <div class="col-md-8 mb-4">
                 <!-- Non-Conformance Details -->
-                <h4 class="text-red"><strong> {{ non_conformity.non_conformity }}</strong></h4>
-                <ul class="list-group list-group-flush">
+                <h4 class="text-red mb-4"><strong> {{ non_conformity.non_conformity }}</strong></h4>
+                <ul class="list-group list-group-flush ">
                     <li class="list-group-item"><strong>ISO Clause/Reference:</strong> {{ non_conformity.iso_clause }}
                     </li>
                     <li class="list-group-item"><strong>Category:</strong> {{ non_conformity.get_category_display }}
@@ -33,8 +33,8 @@
             </div>
 
             <!-- Right Column: Step-by-Step Progress -->
-            <div class="col-md-8">
-                <h4>Step-by-Step Progress</h4>
+            <div class="col-md-12 mt-4 mb-4">
+                <h3 class="mb-4">Step-by-Step Progress</h3>
 
                 <!-- Step 1: Immediate Action -->
                 <div class="progress-step">
@@ -44,7 +44,7 @@
                         </a>
                         <span class="step-status-icon"></span>
                     </h6>
-                    <div class="collapse show" id="step1Content">
+                    <div class="collapse show m-5" id="step1Content">
                         <p class="text-muted">Review the immediate action taken by the process owner to address the
                             non-conformance.</p>
                         <ul class="list-group">
@@ -69,7 +69,7 @@
                         </a>
                         <span class="step-status-icon"></span>
                     </h6>
-                    <div class="collapse" id="step2Content">
+                    <div class="collapse show m-5" id="step2Content">
                         <p class="text-muted">Evaluate the root cause analysis provided by the process owner.</p>
                         <ul class="list-group">
                             <li class="list-group-item"><strong>Root
@@ -116,7 +116,7 @@
                         </a>
                         <span class="step-status-icon"></span>
                     </h6>
-                    <div class="collapse show" id="step3Content">
+                    <div class="collapse show m-5" id="step3Content">
                         <p class="text-muted">Assess the corrective actions implemented by the process owner.</p>
 
                         <!-- Corrective Action Plan Table -->
@@ -218,7 +218,7 @@
                         </a>
                         <span class="step-status-icon"></span>
                     </h6>
-                    <div class="collapse show" id="step4Content">
+                    <div class="collapse show m-5" id="step4Content">
                         <p class="text-muted">Have you followed up your solution implementation?</p>
 
                         <!-- Follow-Up History Table -->
@@ -266,13 +266,13 @@
                                     <input type="text" id="responsible_person" name="responsible_person"
                                            class="form-control" placeholder="Enter initials or responsibility" required>
                                 </div>
-                                <div class="form-group mb-3">
+                                <div class="form-group col-md-3 mb-3">
                                     <label for="follow_up_date"><strong>Date:</strong></label>
                                     <input type="date" id="follow_up_date" name="follow_up_date" class="form-control"
                                            required>
                                 </div>
-                                <button type="submit" class="btn btn-danger">Add Follow-Up Action</button>
-                            </form>d
+                                <button type="submit" class="btn btn-danger mt-3">Add Follow-Up Action</button>
+                            </form>
                         {% else %}
                             <div class="mt-4">
                                 <button type="button" class="btn btn-danger complete-step-btn"
@@ -292,7 +292,7 @@
                         </a>
                         <span class="step-status-icon"></span>
                     </h6>
-                    <div class="collapse show" id="step5Content">
+                    <div class="collapse show m-5" id="step5Content">
                         <p class="text-muted">Assess the effectiveness of the corrective actions implemented by the
                             process owner.</p>
 
@@ -402,7 +402,7 @@
                         </a>
                         <span class="step-status-icon"></span>
                     </h6>
-                    <div class="collapse" id="step6Content">
+                    <div class="collapse show m-5" id="step6Content">
                         <p class="text-muted">Complete the close-out process to finalize corrective action
                             implementation.</p>
 
@@ -415,7 +415,7 @@
                                     <input type="text" id="auditor_name" name="auditor_name" class="form-control"
                                            required>
                                 </div>
-                                <div class="mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label for="auditor_date" class="form-label">Date</label>
                                     <input type="date" id="auditor_date" name="auditor_date" class="form-control"
                                            required>
@@ -456,7 +456,7 @@
 
         /* Progress Step Styles */
         .progress-step {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -473,8 +473,9 @@
         }
 
         .progress-step .step-title {
-            font-size: 1.1rem;
+            font-size: 1.5rem;
             color: #343a40;
+            font-weight: bolder;
         }
 
         .progress-step .step-status-icon i {
