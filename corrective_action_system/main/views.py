@@ -1,5 +1,5 @@
 from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
+from django.template.loader import render_to_string, get_template
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.shortcuts import render, redirect, get_object_or_404
@@ -7,9 +7,10 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from itsdangerous import URLSafeTimedSerializer
 from django.contrib.auth.models import User
-from django.contrib import messages
+from xhtml2pdf import pisa
+
 from .models import LoginEvent, UserProfile, ImmediateAction, RootCauseAnalysis, CorrectiveActionPlan, FollowUpAction, \
-    ActionVerification, CorrectiveActionPlanReview
+    ActionVerification, CorrectiveActionPlanReview, CloseOut
 from .forms import UserCreationForm, UserUpdateForm, RootCauseAnalysisForm, ImmediateActionForm, \
     CorrectiveActionPlanForm, FollowUpActionForm, CorrectiveActionPlanReviewForm, CloseOutForm, ActionVerificationForm
 from django.http import HttpResponse, FileResponse, Http404
@@ -569,9 +570,6 @@ def add_non_conformity(request):
     })
 
 
-def fm_qms_010_page_1(request):
-    return render(request, 'main/internal audit/fm_qms_010_page_1.html')
-
 
 @login_required
 def task_detail(request, task_id):
@@ -728,10 +726,11 @@ def non_conformity_detail(request, nc_id):
         follow_up_actions = FollowUpAction.objects.filter(non_conformity=non_conformity).order_by('-follow_up_date')
 
         # Fetch verification records for the corrective action plan
-        action_verifications = (
-            ActionVerification.objects.filter(corrective_action_plan=corrective_action_plan)
-            .order_by('-date') if corrective_action_plan else None
-        )
+        if corrective_action_plan:
+            action_verifications = ActionVerification.objects.filter(
+                corrective_action_plan=corrective_action_plan).order_by('-date')
+        else:
+            action_verifications = None
 
         # Fetch the latest corrective action plan review
         latest_review = CorrectiveActionPlanReview.objects.filter(
@@ -750,7 +749,7 @@ def non_conformity_detail(request, nc_id):
             'corrective_action_plans': corrective_action_plans,
             'corrective_action_plan': corrective_action_plan,
             'follow_up_actions': follow_up_actions,
-            'action_verifications': action_verifications,
+            'verifications': action_verifications,
             'verification_form': verification_form,
             'latest_review': latest_review,
             'follow_up_form': follow_up_form,
@@ -840,59 +839,7 @@ def add_follow_up(request, nc_id):
 
 
 # create views for creating rfa
-"""
-def rfa_create(request):
-    if request.method == 'POST':
-        # Get form data
-        non_conformity = request.POST.get('non_conformity')
-        assignees = request.POST.get('assignees')
-        originator_name = request.POST.get('originator_name')
-        unit_department = request.POST.get('unit_department')
-        phone = request.POST.get('phone')
-        email = request.POST.get('email')
-        rfa_intent = request.POST.get('rfa_intent')
-        department = request.POST.get('department')
-        non_conformance_category = request.POST.get('non_conformance_category')
-        description_of_non_conformance = request.POST.get('description_of_non_conformance')
-        iso_clause = request.POST.get('iso_clause')
-        category = request.POST.get('category')
-        task = request.POST.get('task')
-        start_date = request.POST.get('start_date')
-        deadline = request.POST.get('deadline')
-        assigned_to_id = request.POST.get('assigned_to')
 
-        # Get the assigned process owner
-        assigned_to = User.objects.get(id=assigned_to_id)
-
-        # Create NonConformity instance
-        NonConformity.objects.create(
-            non_conformity=non_conformity,
-            assignees=assignees,
-            originator_name=originator_name,
-            unit_department=unit_department,
-            phone=phone,
-            email=email,
-            rfa_intent=rfa_intent,
-            department=department,
-            non_conformance_category=non_conformance_category,
-            description_of_non_conformance=description_of_non_conformance,
-            iso_clause=iso_clause,
-            category=category,
-            task=task,
-            start_date=start_date,
-            deadline=deadline,
-            assigned_to=assigned_to,  # Assign to selected process owner
-            status='pending'
-        )
-
-        return redirect('internal_auditor_monitoring_log')  # Redirect to the process owner's dashboard
-
-    # Fetch all process owners for dropdown
-    process_owners = User.objects.filter(userprofile__role='Process Owner')
-    return render(request, 'main/internal audit/fm_qms_010_page_1.html', {
-        'process_owners': process_owners
-    })
-"""
 
 
 @login_required
@@ -916,7 +863,20 @@ def action_verification(request, cap_id):
             verification.corrective_action_plan = corrective_action_plan
             verification.save()
 
-            if verification.status == "not_effective":
+            # Check if the verification is marked as "effective"
+            if verification.status == "effective":
+                # Automatically create or update CloseOut record
+                CloseOut.objects.update_or_create(
+                    non_conformity=non_conformity,
+                    defaults={
+                        'auditor_name': request.user.get_full_name() or request.user.username,
+                        'auditor_date': verification.date,
+                        'process_owner_name': non_conformity.assigned_to.get_full_name() if non_conformity.assigned_to else "Unknown",
+                        'process_owner_date': verification.date,
+                    }
+                )
+                messages.success(request, "Corrective action verified as effective. Close Out record updated.")
+            else:
                 # Issue a new RFA if status is "not effective"
                 new_rfa = NonConformity.objects.create(
                     non_conformity=f"New RFA for: {non_conformity.non_conformity}",
@@ -935,10 +895,7 @@ def action_verification(request, cap_id):
                     status='pending',
                     assigned_to=non_conformity.assigned_to
                 )
-                messages.warning(request,
-                                 f"Corrective action plan deemed not effective. New RFA issued: {new_rfa.non_conformity}")
-            else:
-                messages.success(request, "Corrective action plan verified as effective.")
+                messages.warning(request, f"Corrective action plan deemed not effective. New RFA issued: {new_rfa.non_conformity}")
 
             return redirect('non_conformity_detail', nc_id=non_conformity.id)
     else:
@@ -946,7 +903,7 @@ def action_verification(request, cap_id):
 
     context = {
         'corrective_action_plan': corrective_action_plan,
-        'non_conformity': non_conformity,  # Add non_conformity to the context
+        'non_conformity': non_conformity,
         'verifications': verifications,
         'verification_form': verification_form,
     }
@@ -954,27 +911,42 @@ def action_verification(request, cap_id):
     return render(request, 'main/internal audit/non_conformity_detail.html', context)
 
 
+
 @login_required
 def close_out_action(request, nc_id):
-    non_conformity = get_object_or_404(NonConformity, id=nc_id)
+    try:
+        # Fetch the Non-Conformity record
+        non_conformity = get_object_or_404(NonConformity, id=nc_id)
 
-    # Check if a CloseOut record already exists
-    close_out = getattr(non_conformity, 'close_out', None)
+        if request.method == 'POST':
+            # Retrieve the data from the POST request
+            auditor_name = request.POST.get('auditor_name')
+            auditor_date = request.POST.get('auditor_date')
 
-    if request.method == 'POST':
-        form = CloseOutForm(request.POST, instance=close_out)
-        if form.is_valid():
-            close_out = form.save(commit=False)
-            close_out.non_conformity = non_conformity
+            # Validate required fields
+            if not auditor_name or not auditor_date:
+                messages.error(request, "All fields are required for Close Out.")
+                return redirect('non_conformity_detail', nc_id=nc_id)
+
+            # Save the Close Out data
+            close_out, created = CloseOut.objects.get_or_create(non_conformity=non_conformity)
+            close_out.auditor_name = auditor_name
+            close_out.auditor_date = auditor_date
+            close_out.process_owner_name = request.POST.get('process_owner_name', '')
+            close_out.process_owner_date = request.POST.get('process_owner_date', '')
             close_out.save()
-            return redirect('non_conformity_detail', nc_id=nc_id)
-    else:
-        form = CloseOutForm(instance=close_out)
 
-    return render(request, 'main/internal audit/non_conformity_detail.html', {
-        'form': form,
-        'non_conformity': non_conformity,
-    })
+            # Success message and redirect
+            messages.success(request, "Close Out data saved successfully.")
+            return redirect('non_conformity_detail', nc_id=nc_id)
+        else:
+            # Redirect back if not a POST request
+            return redirect('non_conformity_detail', nc_id=nc_id)
+
+    except Exception as e:
+        print(f"Error in close_out_action: {e}")
+        return HttpResponseServerError("An error occurred while processing your request.")
+
 
 
 @login_required
@@ -988,3 +960,174 @@ def complete_step(request, task_id):
         messages.success(request, "Step marked as completed successfully.")
 
     return redirect('non_conformity_detail', nc_id=task_id)
+
+
+from .models import NonConformity, ImmediateAction, RootCauseAnalysis, CorrectiveActionPlan
+
+# View for rendering the HTML page
+def fm_qms_010_page_1(request, nc_id):
+    # Fetch the NonConformity object by its ID
+    non_conformity = get_object_or_404(NonConformity, id=nc_id)
+
+    # Fetch related data safely
+    immediate_action = ImmediateAction.objects.filter(non_conformity=non_conformity).first()
+    root_cause_analysis = RootCauseAnalysis.objects.filter(non_conformity=non_conformity).first()
+    corrective_action_plans = CorrectiveActionPlan.objects.filter(non_conformity=non_conformity)
+
+    # Prepare the context
+    context = {
+        'non_conformity': non_conformity,
+        'immediate_action': immediate_action,
+        'root_cause_analysis': root_cause_analysis,
+        'corrective_action_plans': corrective_action_plans,
+    }
+
+    return render(request, 'main/form/rfa_page1.html', context)
+
+
+# View for generating the PDF
+"""
+class RFAPDFView(PDFTemplateView):
+    template_name = 'main/form/rfa_page1.html'
+
+    def get_context_data(self, **kwargs):
+        # Fetch the NonConformity object by its ID
+        nc_id = self.kwargs['nc_id']
+        non_conformity = get_object_or_404(NonConformity, id=nc_id)
+
+        # Fetch related data
+        immediate_action = ImmediateAction.objects.filter(non_conformity=non_conformity).first()
+        root_cause_analysis = RootCauseAnalysis.objects.filter(non_conformity=non_conformity).first()
+        corrective_action_plans = CorrectiveActionPlan.objects.filter(non_conformity=non_conformity)
+
+        # Prepare the context
+        return {
+            'non_conformity': non_conformity,
+            'immediate_action': immediate_action,
+            'root_cause_analysis': root_cause_analysis,
+            'corrective_action_plans': corrective_action_plans,
+        }
+"""
+
+
+import pdfkit
+from django.shortcuts import render, get_object_or_404
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from django.templatetags.static import static
+from django.conf import settings
+
+def preview_rfa(request, nc_id):
+    # Fetch the NonConformity object by its ID
+    non_conformity = get_object_or_404(NonConformity, id=nc_id)
+
+    # Fetch related data
+    immediate_action = ImmediateAction.objects.filter(non_conformity=non_conformity).first()
+    root_cause_analysis = RootCauseAnalysis.objects.filter(non_conformity=non_conformity).first()
+    corrective_action_plans = CorrectiveActionPlan.objects.filter(non_conformity=non_conformity)
+    follow_up_actions = FollowUpAction.objects.filter(non_conformity=non_conformity)
+    close_out = getattr(non_conformity, 'close_out', None)
+
+    action_verifications = ActionVerification.objects.filter(
+        corrective_action_plan__in=corrective_action_plans
+    )
+
+    reviews = []
+    for cap in corrective_action_plans:
+        review = cap.reviews.last()  # Fetch the latest review for each CAP, if any
+        reviews.append({
+            'effectiveness': review.effectiveness if review else "N/A",
+            'reason': review.reason if review and review.reason else "N/A",
+            'reviewer': review.reviewer.get_full_name() if review and review.reviewer else "N/A",
+            'review_date': review.review_date if review else "N/A"
+        })
+
+    # Prepare the context
+    context = {
+        'non_conformity': non_conformity,
+        'immediate_action': immediate_action,
+        'root_cause_analysis': root_cause_analysis,
+        'corrective_action_plans': corrective_action_plans,
+        'reviews': reviews,
+        'follow_up_actions': follow_up_actions,
+        'action_verifications': action_verifications,
+        'close_out': close_out,
+        'left_logo_url': static('main/iso-sorsu-logo.png'),  # Path to left logo in static folder
+        'right_logo_url': static('main/bagong-pilipinas-logo.png'),  # Path to right logo in static folder
+    }
+
+    # Render the HTML template to preview
+    return render(request, 'main/form/rfa_page1.html', context)
+
+
+def generate_pdf(request, nc_id):
+    # Fetch the NonConformity object by its ID
+    non_conformity = get_object_or_404(NonConformity, id=nc_id)
+
+    # Fetch related data
+    immediate_action = ImmediateAction.objects.filter(non_conformity=non_conformity).first()
+    root_cause_analysis = RootCauseAnalysis.objects.filter(non_conformity=non_conformity).first()
+    corrective_action_plans = CorrectiveActionPlan.objects.filter(non_conformity=non_conformity)
+    follow_up_actions = FollowUpAction.objects.filter(non_conformity=non_conformity)
+    close_out = getattr(non_conformity, 'close_out', None)
+
+    action_verifications = ActionVerification.objects.filter(
+        corrective_action_plan__in=corrective_action_plans
+    )
+
+    # Prepare reviews for corrective action plans
+    reviews = []
+    for cap in corrective_action_plans:
+        review = cap.reviews.last()  # Fetch the latest review for each CAP, if any
+        reviews.append({
+            'effectiveness': review.effectiveness if review else "N/A",
+            'reason': review.reason if review and review.reason else "N/A",
+            'reviewer': review.reviewer.get_full_name() if review and review.reviewer else "N/A",
+            'review_date': review.review_date if review else "N/A"
+        })
+
+
+    # Handle missing or null data in root_cause_analysis
+    root_cause_data = {
+        'cause_description': root_cause_analysis.cause_description if root_cause_analysis and root_cause_analysis.cause_description else "N/A",
+        'rca_date': root_cause_analysis.rca_date if root_cause_analysis and root_cause_analysis.rca_date else "N/A",
+        'responsible_officer': root_cause_analysis.responsible_officer if root_cause_analysis and root_cause_analysis.responsible_officer else "N/A",
+        'estimated_close_date': root_cause_analysis.estimated_close_date if root_cause_analysis and root_cause_analysis.estimated_close_date else "N/A",
+    }
+    current_site = request.build_absolute_uri('/')  # Get the current site URL
+    # Prepare the context
+    context = {
+        'non_conformity': non_conformity,
+        'immediate_action': immediate_action,
+        'root_cause_analysis': root_cause_data,
+        'corrective_action_plans': corrective_action_plans,
+        'reviews': reviews,  # Include reviews in the context
+        'follow_up_actions': follow_up_actions,
+        'action_verifications': action_verifications,
+        'close_out': close_out,
+        'left_logo_url': current_site + static('main/iso-sorsu-logo.png'),
+        'right_logo_url': current_site + static('main/bagong-pilipinas-logo.png'),
+    }
+
+    # Render the HTML template
+    html = render_to_string('main/form/rfa_page1.html', context)
+
+    # Debugging: Save the HTML to a file for inspection
+    with open('debug_rendered_template.html', 'w', encoding='utf-8') as file:
+        file.write(html)
+
+    # Generate PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="non_conformity_report.pdf"'
+
+    # Convert HTML to PDF
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    # Check for errors
+    if pisa_status.err:
+        # Log the error to a file for debugging
+        with open('pdf_error_log.txt', 'w', encoding='utf-8') as error_file:
+            error_file.write(f"Error during PDF generation: {pisa_status.err}")
+        return HttpResponse('An error occurred while generating the PDF', status=500)
+
+    return response

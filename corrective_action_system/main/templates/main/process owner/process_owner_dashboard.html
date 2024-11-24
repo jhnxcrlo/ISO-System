@@ -65,9 +65,9 @@
             <thead style="background-color: #C74C4A; color: white;">
             <tr>
                 <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Non-Conformities</th>
-                <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Assignee(s)</th>
+                <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Originator</th>
                 <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Department</th>
-                <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Deadline</th>
+                <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Start Date</th>
                 <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Status</th>
             </tr>
             </thead>
@@ -82,9 +82,9 @@
                             {{ task.non_conformity }}
                         </a>
                     </td>
-                    <td style="padding: 15px 20px; text-align: left;">{{ task.assignees }}</td>
+                    <td style="padding: 15px 20px; text-align: left;">{{ task.originator_name }}</td>
                     <td style="padding: 15px 20px; text-align: left;">{{ task.department }}</td>
-                    <td style="padding: 15px 20px; text-align: left;">{{ task.deadline|date:"F d, Y" }}</td>
+                    <td style="padding: 15px 20px; text-align: left;">{{ task.start_date|date:"F d, Y" }}</td>
                     <td style="padding: 15px 20px; text-align: left;">
                         <span class="badge {{ task.status|lower }}-badge"
                               style="padding: 5px 10px; font-size: 0.9rem; background-color:

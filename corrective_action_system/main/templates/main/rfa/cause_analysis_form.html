@@ -1,9 +1,0 @@
-{% extends "main/internal audit/base.html" %}
-{% block content %}
-  <h2>Update Cause Analysis</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Save</button>
-  </form>
-{% endblock %}
