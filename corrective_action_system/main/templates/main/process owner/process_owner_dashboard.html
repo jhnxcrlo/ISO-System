@@ -5,14 +5,6 @@
 <div class="container">
     <div class="row d-flex justify-content-center align-items-center">
         <div class="col col-xl-10">
-            <!-- Greeting Section -->
-{#            <div id="greeting-section" class="greeting-section text-left mb-4"#}
-{#                 style="background-color: #f8f9fa; border-radius: 15px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: opacity 0.5s ease;">#}
-{#                <h4>Hi, <strong>{{ user.username }}!</strong></h4>#}
-{#                <a class="greeting-link" href="#taskSection"#}
-{#                   style="color: #A33331; text-decoration: none; font-weight: bold;">Proceed to do task</a>#}
-{#            </div>#}
-
             <!-- Announcements Section -->
             <div class="greeting-section text-left mb-4"
                  style="background-color: #f8f9fa; border-radius: 15px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
@@ -45,85 +37,75 @@
 
             <!-- Task Section -->
             <div id="taskSection">
-    <div class="task-header mb-4">
-        <h1 class="fw-bold">Tasks</h1>
-        <div id="taskCount" class="task-info-below-header text-muted">{{ tasks.count }} tasks</div>
-    </div>
+                <div class="task-header mb-4">
+                    <h1 class="fw-bold">Tasks</h1>
+                    <div id="taskCount" class="task-info-below-header text-muted">{{ tasks.count }} tasks</div>
+                </div>
 
-    <div class="search-bar-container mb-4 d-flex justify-content-between align-items-center">
-        <input id="searchInput" class="form-control w-50" placeholder="Search task" type="text"/>
-        <select id="sortDropdown" class="form-select w-25">
-            <option value="date-desc" selected>Sort by Date (Newest First)</option>
-            <option value="date-asc">Sort by Date (Oldest First)</option>
-        </select>
-    </div>
+                <div class="search-bar-container mb-4 d-flex justify-content-between align-items-center">
+                    <input id="searchInput" class="form-control w-50" placeholder="Search task" type="text"/>
+                    <select id="sortDropdown" class="form-select w-25">
+                        <option value="id-desc" selected>Newest First</option>
+                        <option value="id-asc">Oldest First</option>
+                    </select>
+                </div>
 
-    <!-- Tasks Table -->
-    <div class="table-responsive">
-        <table class="table table-hover table-striped align-middle shadow-sm rounded"
-               style="border-collapse: separate; border-spacing: 0; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-            <thead style="background-color: #C74C4A; color: white;">
-            <tr>
-                <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Non-Conformities</th>
-                <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Originator</th>
-                <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Department</th>
-                <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Start Date</th>
-                <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Status</th>
-            </tr>
-            </thead>
-            <tbody id="taskList">
-            {% for task in tasks %}
-                <tr class="task-row {% if task.status == 'completed' %}table-success{% endif %}" 
-                    style="transition: all 0.3s ease; cursor: pointer;"
-                    onmouseover="this.style.backgroundColor='#f2f2f2';"
-                    onmouseout="this.style.backgroundColor='';">
-                    <td style="padding: 15px 20px; text-align: left;">
-                        <a href="{% url 'task_detail' task.id %}" style="text-decoration: none; color: #203040; font-weight: bold;">
-                            {{ task.non_conformity }}
-                        </a>
-                    </td>
-                    <td style="padding: 15px 20px; text-align: left;">{{ task.originator_name }}</td>
-                    <td style="padding: 15px 20px; text-align: left;">{{ task.department }}</td>
-                    <td style="padding: 15px 20px; text-align: left;">{{ task.start_date|date:"F d, Y" }}</td>
-                    <td style="padding: 15px 20px; text-align: left;">
-                        <span class="badge {{ task.status|lower }}-badge"
-                              style="padding: 5px 10px; font-size: 0.9rem; background-color:
-                                  {% if task.status == 'pending' %}#FFA726
-                                  {% elif task.status == 'in_progress' %}#29B6F6
-                                  {% elif task.status == 'completed' %}#66BB6A
-                                  {% endif %}; color: white; border-radius: 5px;">
-                            {{ task.status|title }}
-                        </span>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center text-muted" style="padding: 20px; font-size: 1rem;">
-                        No tasks available
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-
+                <!-- Tasks Table -->
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle shadow-sm rounded"
+                           style="border-collapse: separate; border-spacing: 0; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+                        <thead style="background-color: #C74C4A; color: white;">
+                        <tr>
+                            <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Non-Conformities</th>
+                            <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Originator</th>
+                            <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Department</th>
+                            <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Start Date</th>
+                            <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Status</th>
+                        </tr>
+                        </thead>
+                        <tbody id="taskList">
+                        {% for task in tasks %}
+                            <tr class="task-row {% if task.status == 'completed' %}table-success{% endif %}" 
+                                data-id="{{ task.id }}"
+                                style="transition: all 0.3s ease; cursor: pointer;"
+                                onmouseover="this.style.backgroundColor='#f2f2f2';"
+                                onmouseout="this.style.backgroundColor='';">
+                                <td style="padding: 15px 20px; text-align: left;">
+                                    <a href="{% url 'task_detail' task.id %}" style="text-decoration: none; color: #203040; font-weight: bold;">
+                                        {{ task.non_conformity }}
+                                    </a>
+                                </td>
+                                <td style="padding: 15px 20px; text-align: left;">{{ task.originator_name }}</td>
+                                <td style="padding: 15px 20px; text-align: left;">{{ task.department }}</td>
+                                <td style="padding: 15px 20px; text-align: left;">{{ task.start_date|date:"F d, Y" }}</td>
+                                <td style="padding: 15px 20px; text-align: left;">
+                                    <span class="badge {{ task.status|lower }}-badge"
+                                          style="padding: 5px 10px; font-size: 0.9rem; background-color:
+                                              {% if task.status == 'pending' %}#FFA726
+                                              {% elif task.status == 'in_progress' %}#29B6F6
+                                              {% elif task.status == 'completed' %}#66BB6A
+                                              {% endif %}; color: white; border-radius: 5px;">
+                                        {{ task.status|title }}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted" style="padding: 20px; font-size: 1rem;">
+                                    No tasks available
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Hide greeting after 5 seconds
-        setTimeout(function () {
-            const greetingSection = document.getElementById('greeting-section');
-            if (greetingSection) {
-                greetingSection.style.opacity = 0;
-                setTimeout(() => greetingSection.style.display = 'none', 1000);
-            }
-        }, 5000);
-
-        // Filter and Sort Functionality for Tasks
         const searchInput = document.getElementById('searchInput');
         const sortDropdown = document.getElementById('sortDropdown');
         const taskList = document.getElementById('taskList');
@@ -141,9 +123,9 @@
             const rowsArray = Array.from(taskList.querySelectorAll('.task-row'));
 
             rowsArray.sort((a, b) => {
-                const dateA = new Date(a.querySelector('td:nth-child(4)').textContent.trim());
-                const dateB = new Date(b.querySelector('td:nth-child(4)').textContent.trim());
-                return sortValue === 'date-desc' ? dateB - dateA : dateA - dateB;
+                const idA = parseInt(a.getAttribute('data-id'));
+                const idB = parseInt(b.getAttribute('data-id'));
+                return sortValue === 'id-desc' ? idB - idA : idA - idB; // Sort by ID
             });
 
             rowsArray.forEach(row => taskList.appendChild(row));
@@ -151,6 +133,9 @@
 
         searchInput.addEventListener('input', filterTasks);
         sortDropdown.addEventListener('change', sortTasks);
+
+        // Initial sorting
+        sortTasks();
     });
 </script>
 {% endblock %}

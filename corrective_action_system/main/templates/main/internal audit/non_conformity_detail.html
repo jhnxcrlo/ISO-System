@@ -35,6 +35,11 @@
 
             <!-- Right Column: Step-by-Step Progress -->
             <div class="col-md-8">
+            <div class="text-end mt-3">
+                <a href="{% url 'preview_rfa' non_conformity.id %}" class="btn btn-primary">
+                    View RFA
+                </a>
+            </div>
                 <h4>Step-by-Step Progress</h4>
 
                 <!-- Step 1: Immediate Action -->
@@ -538,68 +543,68 @@
     </style>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const completeButtons = document.querySelectorAll('.complete-step-btn');
-        const effectivenessSelect = document.getElementById('effectiveness');
-        const reasonField = document.getElementById('reason-field');
-        const statusDropdown = document.getElementById('status');  // Status dropdown for Step 5
-        const newRfaField = document.getElementById('new_rfa_field');  // New RFA field in Step 5
+        document.addEventListener('DOMContentLoaded', function () {
+            const completeButtons = document.querySelectorAll('.complete-step-btn');
+            const effectivenessSelect = document.getElementById('effectiveness');
+            const reasonField = document.getElementById('reason-field');
+            const statusDropdown = document.getElementById('status');  // Status dropdown for Step 5
+            const newRfaField = document.getElementById('new_rfa_field');  // New RFA field in Step 5
 
-        // Complete Step Buttons Logic
-        completeButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                const stepNumber = button.dataset.step;
-                const stepHeader = document.querySelector(`#step${stepNumber}-header`);
-                const stepContent = document.querySelector(`#step${stepNumber}Content`);
+            // Complete Step Buttons Logic
+            completeButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const stepNumber = button.dataset.step;
+                    const stepHeader = document.querySelector(`#step${stepNumber}-header`);
+                    const stepContent = document.querySelector(`#step${stepNumber}Content`);
 
-                // Mark the step as completed
-                button.disabled = true;
-                button.textContent = 'Step Completed';
-                button.classList.remove('btn-danger');
-                button.classList.add('btn-success');
+                    // Mark the step as completed
+                    button.disabled = true;
+                    button.textContent = 'Step Completed';
+                    button.classList.remove('btn-danger');
+                    button.classList.add('btn-success');
 
-                // Update the step title to indicate completion
-                const stepTitle = stepHeader.querySelector('.step-title');
-                if (stepTitle) {
-                    stepTitle.classList.add('text-muted', 'fw-bold');
-                    stepTitle.classList.remove('btn-link');
-                    stepTitle.removeAttribute('data-bs-toggle');
-                    stepTitle.removeAttribute('href');
-                }
+                    // Update the step title to indicate completion
+                    const stepTitle = stepHeader.querySelector('.step-title');
+                    if (stepTitle) {
+                        stepTitle.classList.add('text-muted', 'fw-bold');
+                        stepTitle.classList.remove('btn-link');
+                        stepTitle.removeAttribute('data-bs-toggle');
+                        stepTitle.removeAttribute('href');
+                    }
 
-                // Add checkmark icon
-                const statusIcon = stepHeader.querySelector('.step-status-icon');
-                statusIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
+                    // Add checkmark icon
+                    const statusIcon = stepHeader.querySelector('.step-status-icon');
+                    statusIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
 
-                // Optionally collapse the content
-                if (stepContent && stepContent.classList.contains('show')) {
-                    stepContent.classList.remove('show');
-                }
+                    // Optionally collapse the content
+                    if (stepContent && stepContent.classList.contains('show')) {
+                        stepContent.classList.remove('show');
+                    }
+                });
             });
+
+            // Handle the visibility of the reason field in "Review of Action Plan"
+            if (effectivenessSelect && reasonField) {
+                effectivenessSelect.addEventListener('change', function () {
+                    reasonField.style.display = this.value === 'Not Accepted' ? 'block' : 'none';
+                });
+            }
+
+            // Handle the visibility of the New RFA field in Step 5 based on the status dropdown
+            if (statusDropdown && newRfaField) {
+                // Initially hide the New RFA field
+                newRfaField.style.display = 'none';
+
+                statusDropdown.addEventListener('change', function () {
+                    if (statusDropdown.value === 'not_effective') {
+                        newRfaField.style.display = 'block';
+                    } else {
+                        newRfaField.style.display = 'none';
+                    }
+                });
+            }
         });
-
-        // Handle the visibility of the reason field in "Review of Action Plan"
-        if (effectivenessSelect && reasonField) {
-            effectivenessSelect.addEventListener('change', function () {
-                reasonField.style.display = this.value === 'Not Accepted' ? 'block' : 'none';
-            });
-        }
-
-        // Handle the visibility of the New RFA field in Step 5 based on the status dropdown
-        if (statusDropdown && newRfaField) {
-            // Initially hide the New RFA field
-            newRfaField.style.display = 'none';
-
-            statusDropdown.addEventListener('change', function () {
-                if (statusDropdown.value === 'not_effective') {
-                    newRfaField.style.display = 'block';
-                } else {
-                    newRfaField.style.display = 'none';
-                }
-            });
-        }
-    });
-</script>
+    </script>
 
 
 

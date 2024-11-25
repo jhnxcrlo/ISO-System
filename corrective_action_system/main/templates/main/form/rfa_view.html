@@ -1,0 +1,590 @@
+{% extends "main/internal audit/base.html" %}
+{% block title %}Request for Action{% endblock %}
+
+{% block content %}
+    <div style="font-family: Arial, sans-serif; align-content: center; font-size: 12px; margin: auto; padding: 2%; width: 1200px;">
+<!-- Header -->
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
+    <tr>
+        <!-- Left Logo -->
+        <td style="width: 15%; text-align: center; padding: 3px;">
+            <img src="{{ left_logo_url }}" alt="ISO Logo" style="height: 170px;" />
+        </td>
+        <!-- Centered Text -->
+        <td style="width: 70%; text-align: center; padding: 3px;">
+            <p style="font-size: 14px; margin: 0;">Republic of the Philippines</p>
+            <h2 style="font-size:16px; margin: 0; font-weight: bold;">Sorsogon State University</h2>
+            <p style="font-size: 14px; margin: 2px 0;">Magsaysay Street, Salog (Pob.), Sorsogon City, Sorsogon</p>
+            <p style="font-size: 14px; margin: 2px 0;">Tel No.: 056 211-0103; Email Add.: qa.iso@sorsu.edu.ph</p>
+        </td>
+        <!-- Right Logo -->
+        <td style="width: 15%; text-align: center; padding: 3px;">
+            <img src="{{ right_logo_url }}" alt="Bagong Pilipinas Logo" style="height: 100px;" />
+        </td>
+    </tr>
+</table>
+
+
+<!-- Title -->
+<table style="width: 100%; border-collapse: collapse; table-layout: fixed; border: 1px solid black;">
+    <tr>
+        <!-- Left Section: Title -->
+        <td style="padding: 10px; text-align: center; font-size: 24px; font-weight: bold; border: 1px solid black; vertical-align: middle; width: 70%;">
+            REQUEST FOR ACTION
+        </td>
+        <!-- Right Section: Reference and Date -->
+        <td style="padding: 5px;  text-align: left; font-size: 10px; vertical-align: top; width: 30%;">
+            <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+                <tr>
+                    <td style="padding: 5px; border: 1px solid black; font-weight: bold;">RFA Ref. No. (Auditor)</td>
+                    <td style="padding: 5px; border: 1px solid black;">NQA-NC-01</td>
+                </tr>
+                <tr>
+                    <td style="padding: 5px; border: 1px solid black; font-weight: bold;">Date Issued</td>
+                    <td style="padding: 5px; border: 1px solid black;">02-15-2024</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<!-- PART 1 and Description Combined -->
+<table style="width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed">
+    <!-- PART 1 Header -->
+    <tr>
+        <th style="background-color: white; text-align: left; padding: 3px; border: 1px solid black; width: 50%;"
+            colspan="2">PART 1: What is wrong?
+        </th>
+        <th style="background-color: #800000; color: white; text-align: center; padding: 3px; border: 1px solid black; width: 50%;"
+            colspan="2">NON-CONFORMITY (NC) DATA
+        </th>
+    </tr>
+    <!-- PART 1 Content -->
+    <tr>
+        <td style="padding: 3px; border: 1px solid black; width: 25%;"><b>Originator's Name/ID
+            No.:</b><br>{{ non_conformity.originator_name }}</td>
+        <td style="padding: 3px; border: 1px solid black; width: 25%;">
+            <b>Unit/Department:</b><br>{{ non_conformity.unit_department }}</td>
+        <td style="padding: 3px; border: 1px solid black; width: 25%;"><b>Phone:</b><br>{{ non_conformity.phone }}</td>
+        <td style="padding: 3px; border: 1px solid black; width: 25%;"><b>Email:</b><br>{{ non_conformity.email }}</td>
+    </tr>
+    <tr>
+        <td colspan="2" style="padding: 1px; border: 1px solid black;">
+            <b>This RFA is intended to:</b>
+            <div>
+                <div>
+                    <div style="display: inline-block; width: 12px; height: 12px; border: 1px solid black; text-align: center; line-height: 12px; margin-right: 5px;">
+                        {% if non_conformity.rfa_intent == 'correct_nc' %}✔{% endif %}
+                    </div>
+                    Correct a NC / eliminate source of non-conformance
+                </div>
+                <div style="display: flex; align-items: center; margin-right: 10px; flex: 1;">
+                    <div style="display: inline-block; border: 1px solid black; width: 12px; height: 12px; text-align: center; line-height: 12px; margin-right: 5px;">
+                        {% if non_conformity.rfa_intent == 'prevent_nc' %}✔{% endif %}
+                    </div>
+                    <span>Prevent a potential NC / mitigate risk</span>
+                </div>
+                <!-- For Improvement -->
+                <div style="display: flex; align-items: center; flex: 1;">
+                    <div style="display: inline-block; border: 1px solid black; width: 12px; height: 12px; text-align: center; line-height: 12px; margin-right: 5px;">
+                        {% if non_conformity.rfa_intent == 'improvement' %}✔{% endif %}
+                    </div>
+                    <span>For Improvement</span>
+                </div>
+            </div>
+        </td>
+        <td colspan="2" style="padding: 3px; border: 1px solid black;">
+            <b>Department (where NC exists):</b><br>{{ non_conformity.department }}
+        </td>
+    </tr>
+    <!-- Description Section -->
+    <tr>
+        <td style="padding: 2px; border: 1px solid black; width: 25%; vertical-align: top; text-align: left;">
+            <b>Description of the Non-Conformance:</b><br>{{ non_conformity.description_of_non_conformance }}
+        </td>
+        <td colspan="3" style="padding: 2px; border: 1px solid black; width: 75%;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; table-layout: fixed;">
+                <tr>
+                    <td style="width: 20%; padding: 1px; text-align: center;">
+                        <div style="width: 100%; text-align: left;">
+                            <div style="width: 12px; height: 12px; border: 1px solid black; display: inline-block; text-align: center; line-height: 12px;">
+                                {% if non_conformity.non_conformance_category == 'iqa_related' %}✔{% endif %}
+                            </div>
+                            <span style="margin-left: 5px;">IQA-Related</span>
+                        </div>
+                    </td>
+                    <td style="width: 20%; padding: 1px; text-align: center;">
+                        <div style="width: 100%; text-align: left;">
+                            <div style="width: 12px; height: 12px; border: 1px solid black; display: inline-block; text-align: center; line-height: 12px;">
+                                {% if non_conformity.non_conformance_category == 'supplier_related' %}✔{% endif %}
+                            </div>
+                            <span style="margin-left: 5px;">Supplier-Related</span>
+                        </div>
+                    </td>
+                    <td style="width: 20%; padding: 1px; text-align: center;">
+                        <div style="width: 100%; text-align: left;">
+                            <div style="width: 12px; height: 12px; border: 1px solid black; display: inline-block; text-align: center; line-height: 12px;">
+                                {% if non_conformity.non_conformance_category == '3rd_party_audit_related' %}
+                                    ✔{% endif %}
+                            </div>
+                            <span style="margin-left: 5px;">3rd Party Audit Related</span>
+                        </div>
+                    </td>
+                    <td style="width: 20%; padding: 1px; text-align: center;">
+                        <div style="width: 100%; text-align: left;">
+                            <div style="width: 12px; height: 12px; border: 1px solid black; display: inline-block; text-align: center; line-height: 12px;">
+                                {% if non_conformity.non_conformance_category == 'process_procedural' %}✔{% endif %}
+                            </div>
+                            <span style="margin-left: 5px;">Process/Procedural-related</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 20%; padding: 1px; text-align: center;">
+                        <div style="width: 100%; text-align: left;">
+                            <div style="width: 12px; height: 12px; border: 1px solid black; display: inline-block; text-align: center; line-height: 12px;">
+                                {% if non_conformity.non_conformance_category == 'customer_satisfaction' %}✔{% endif %}
+                            </div>
+                            <span style="margin-left: 5px;">Customer Satisfaction Related</span>
+                        </div>
+                    </td>
+                    <td style="width: 20%; padding: 1px; text-align: center;">
+                        <div style="width: 100%; text-align: left;">
+                            <div style="width: 12px; height: 12px; border: 1px solid black; display: inline-block; text-align: center; line-height: 12px;">
+                                {% if non_conformity.non_conformance_category == 'kpi_quality_objective' %}✔{% endif %}
+                            </div>
+                            <span style="margin-left: 5px;">Relates to KPI/Quality Objective Review</span>
+                        </div>
+                    </td>
+                    <td style="width: 20%; padding: 1px; text-align: center;">
+                        <div style="width: 100%; text-align: left;">
+                            <div style="width: 12px; height: 12px; border: 1px solid black; display: inline-block; text-align: center; line-height: 12px;">
+                                {% if non_conformity.non_conformance_category == 'hrd_related' %}✔{% endif %}
+                            </div>
+                            <span style="margin-left: 5px;">HRD-Related</span>
+                        </div>
+                    </td>
+                    <td style="width: 20%; padding: 1px; text-align: center;">
+                        <div style="width: 100%; text-align: left;">
+                            <div style="width: 12px; height: 12px; border: 1px solid black; display: inline-block; text-align: center; line-height: 12px;">
+                                {% if non_conformity.non_conformance_category == 'others' %}✔{% endif %}
+                            </div>
+                            <span style="margin-left: 5px;">Others (Please Specify):</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <!-- Description of Non-Conformance Section -->
+    <!-- Description of Non-Conformance Section -->
+    <tr>
+        <td colspan="3" style="padding: 3px; border: 1px solid black; text-align: left; vertical-align: top;">
+            <b>DESCRIPTION OF NON-CONFORMANCE</b>
+            <span style="font-size: 10px; display: block;">(Existing or potential; specify the objective evidence.)</span>
+            <span style="font-size: 10px; display: block; margin-top: 2px;">
+            {{ non_conformity.description_of_non_conformance }}
+        </span>
+        </td>
+        <td style="padding: 5px; border: 1px solid black; text-align: left; vertical-align: top; width: 25%;">
+            <b>ISO Clause / Reference:</b> <br>
+            <span style="font-size: 10px;">{{ non_conformity.iso_clause }}</span>
+            <hr style="border: 0; border-top: 1px solid black; margin: 5px 0;">
+            <b>Category (Major/Minor):</b> <br>
+            <span style="font-size: 10px;">{{ non_conformity.category }}</span>
+        </td>
+    </tr>
+    <!-- Immediate Action/Correction Section -->
+    <tr>
+        <!-- Immediate Action/Correction Content -->
+        <td colspan="3" style="padding: 5px; border: 1px solid black; text-align: left; vertical-align: top;">
+            <b>Immediate Action/Correction:</b>
+            <p style="font-size: 10px; margin: 2px 0;">
+                {{ immediate_action.action_description }}
+            </p>
+        </td>
+        <!-- Acknowledgment Section with Compact Layout -->
+        <td style="padding: 5px; border: 1px solid black; text-align: left; vertical-align: top; width: 25%;">
+            <b>Acknowledged by:</b>
+            <div style="margin-top: 3px;">
+                <p style="font-size: 10px; margin: 0;">
+                    {{ immediate_action.acknowledged_by }}
+                </p>
+                <hr style="border: 0; border-top: 1px solid black; margin: 3px 0;">
+                <p style="font-size: 10px; margin: 0;">
+                    <b>Date:</b> <u>{{ immediate_action.acknowledgment_date }}</u>
+                </p>
+            </div>
+        </td>
+    </tr>
+    <!-- Part 2 Header -->
+    <tr>
+        <th style="background-color: white; text-align: left; padding: 3px; border: 1px solid black; width: 50%;"
+            colspan="2">
+            PART 2: What is the root cause?
+        </th>
+        <th style="background-color: #800000; color: white; text-align: center; padding: 3px; border: 1px solid black; width: 50%;"
+            colspan="2">
+            CAUSE ANALYSIS DATA
+        </th>
+    </tr>
+
+    <!-- Root Cause Content -->
+    <tr>
+        <td colspan="3" style="padding: 5px; border: 1px solid black; text-align: left; vertical-align: top;">
+            <b>CAUSE OF NON-CONFORMANCE </b>
+            <p style="font-size: 8px; font-style: italic; margin-top: 5px;">
+                Note: Attach copy (if necessary) of root cause analysis.
+            </p>
+            <p style="font-size: 10px; margin-top: 5px;">
+                {{ root_cause_analysis.cause_description }}
+            </p>
+        </td>
+        <td style="padding: 5px; border: 1px solid black; text-align: left; vertical-align: top; width: 25%;">
+            <p style="font-size: 10px; margin: 0;">
+                <b>Date:</b><br>
+                {{ root_cause_analysis.rca_date }}
+            </p>
+            <hr style="border: 1px solid black; margin: 5px 0;">
+            <p style="font-size: 10px; margin: 0;">
+                <b>Responsible Officer:</b><br>
+                {{ root_cause_analysis.responsible_officer }}
+            </p>
+            <hr style="border: 1px solid black; margin: 5px 0;">
+            <p style="font-size: 10px; margin: 0;">
+                <b>Estimated Close Out Date:</b><br>
+                {{ root_cause_analysis.estimated_close_date }}
+            </p>
+        </td>
+    </tr>
+
+    <!-- PART 3 Header -->
+
+    <table style="width: 100%; border-collapse: collapse; table-layout: fixed; border: 1px solid black;">
+        <!-- PART 3 and Solution Data -->
+        <tr>
+            <th style="background-color: white; text-align: left; padding: 3px; border: 1px solid black; width: 50%;"
+                colspan="2">
+                PART 3: What solutions can we formulate?
+            </th>
+            <th style="background-color: #800000; color: white; text-align: center; padding: 3px; border: 1px solid black; width: 50%;"
+                colspan="2">
+                SOLUTION DATA
+            </th>
+        </tr>
+        <!-- Note Row -->
+        <tr>
+            <td style="padding: 3px; border: 1px solid black; text-align: left; font-size: 10px; vertical-align: top; width: 60%;"
+                colspan="2">
+                <b>Note:</b> Please use continuation sheet if necessary.
+            </td>
+            <td style="padding: 3px; border: 1px solid black; text-align: center; font-size: 10px; vertical-align: top; width: 40%;"
+                colspan="2">
+                <b>CONFIRMATION OF EFFECTS OF COUNTERMEASURES</b>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Corrective Action Plan Table -->
+    <table style="width: 100%; border-collapse: collapse; table-layout: fixed; border: 1px solid black; margin-bottom: 0;">
+        <thead>
+        <tr>
+            <th style="padding: 2px; border: 1px solid black; text-align: center; font-size: 10px; width: 35%;">
+                Step-by-Step Activities
+            </th>
+            <th style="padding: 2px; border: 1px solid black; text-align: center; font-size: 10px; width: 15%;">
+                Responsible Person/Unit
+            </th>
+            <th style="padding: 2px; border: 1px solid black; text-align: center; font-size: 10px; width: 10%;">Time
+                Frame
+            </th>
+            <th style="padding: 2px; border: 1px solid black; text-align: center; font-size: 10px; width: 15%;">
+                Resources Needed
+            </th>
+            <th style="padding: 2px; border: 1px solid black; text-align: center; font-size: 10px; width: 25%;">Result
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for action in corrective_action_plans %}
+            <tr>
+                <td style="padding: 2px; border: 1px solid black; text-align: left; font-size: 10px;">{{ action.activity }}</td>
+                <td style="padding: 2px; border: 1px solid black; text-align: left; font-size: 10px;">{{ action.responsible_person }}</td>
+                <td style="padding: 2px; border: 1px solid black; text-align: center; font-size: 10px;">{{ action.time_frame }}</td>
+                <td style="padding: 2px; border: 1px solid black; text-align: left; font-size: 10px;">{{ action.resources_needed }}</td>
+                <td style="padding: 2px; border: 1px solid black; text-align: left; font-size: 10px;">{{ action.result|default:"N/A" }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5"
+                    style="padding: 2px; border: 1px solid black; text-align: center; font-size: 10px; font-style: italic;">
+                    No corrective actions available.
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Certification and Signature Row -->
+    <table style="width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 0;">
+        <tr>
+            <td colspan="3"
+                style="padding: 2px; border: 1px solid black; text-align: left; font-size: 10px; vertical-align: top;">
+                "I certify that the aforesaid action plans have been reviewed and authorized for implementation. I,
+                therefore, support the implementation of said action plans."
+            </td>
+            <td style="padding: 2px; border: 1px solid black; text-align: center; font-size: 10px; vertical-align: top; width: 20%;">
+                <b>Signature:</b>
+            </td>
+            <td style="padding: 2px; border: 1px solid black; text-align: center; font-size: 10px; vertical-align: top; width: 30%;">
+                <p>JHONNER D. RICAFORT, PhD</p>
+                <p>Vice-President for Academic Affairs</p>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Review of Action Plan -->
+    <table style="width: 100%; border-collapse: collapse; table-layout: fixed; border: 1px solid black">
+        <tr>
+            <!-- Empty Space for Left Column -->
+            <th style="background-color: white; text-align: left; padding: 3px; border: 1px solid black; width: 50%;"></th>
+            <!-- REVIEW OF ACTION PLAN Header -->
+            <th style="background-color: #800000; color: white; text-align: center; padding: 5px; font-size: 10px; border: 1px solid black; width: 50%;">
+                REVIEW OF ACTION PLAN
+            </th>
+        </tr>
+    </table>
+
+    <!-- Additional Review of Action Plan Content -->
+    <table style="width: 100%; border-collapse: collapse; table-layout: fixed; border: 1px solid black; margin-top: 0;">
+        <tr>
+            <!-- Left Section -->
+            <td style="padding: 5px; border: 1px solid black; text-align: left; font-size: 10px; vertical-align: top; width: 50%;">
+                <div style="margin-bottom: 5px;">
+                    <div style="display: inline-block; width: 12px; height: 12px; border: 1px solid black; margin-right: 5px; text-align: center; vertical-align: middle; line-height: 12px;">
+                        {% if reviews.0.effectiveness == 'Accepted' %}
+                            ✔
+                        {% endif %}
+                    </div>
+                    <span>Accepted (Effective)</span>
+                </div>
+                <div style="margin-bottom: 5px;">
+                    <div style="display: inline-block; width: 12px; height: 12px; border: 1px solid black; margin-right: 5px; text-align: center; vertical-align: middle; line-height: 12px;">
+                        {% if reviews.0.effectiveness == 'Not Accepted' %}
+                            ✔
+                        {% endif %}
+                    </div>
+                    <span>Not Accepted</span>
+                    <span style="font-size: 9px; font-style: italic; margin-left: 5px;">(If not accepted, state reasons)</span>
+                </div>
+                <p style="margin-top: 5px; font-size: 10px;">
+                    <b>Reason:</b> {{ reviews.0.reason|default:"N/A" }}
+                </p>
+            </td>
+            <!-- Right Section -->
+            <td style="padding: 5px; border: 1px solid black; text-align: left; font-size: 10px; vertical-align: top; width: 50%;">
+                <p style="margin-bottom: 5px; font-size: 10px;">
+                    <b>Reviewed By:</b> {{ reviews.0.reviewer|default:"N/A" }}
+                </p>
+                <!-- Divider -->
+                <div style="border-top: 1px solid black; margin: 5px 0;"></div>
+                <p style="margin-top: 5px; font-size: 10px;">
+                    <b>Date:</b> {{ reviews.0.review_date|date:"M d, Y" }}
+                </p>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Part 5: Follow-Up Actions -->
+    <!-- FOLLOW-UP TABLE -->
+    <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+        <!-- Table Header Row -->
+        <tr>
+            <th colspan="1"
+                style="background-color: white; text-align: left; padding: 5px; border: 1px solid black; font-size: 10px; width: 50%;">
+                PART 5: Have you followed up your solution implementation?
+            </th>
+            <th colspan="2"
+                style="background-color: #800000; color: white; text-align: center; padding: 3px; border: 1px solid black; font-size: 10px; width: 50%;">
+                FOLLOW UP
+            </th>
+        </tr>
+        <!-- Column Headers -->
+        <tr>
+            <th style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px; width: 50%;">
+                Status
+            </th>
+            <th style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px; width: 30%;">
+                Initials / Responsibility
+            </th>
+            <th style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px; width: 20%;">
+                Date
+            </th>
+        </tr>
+        <!-- Data Rows -->
+        {% for follow_up in follow_up_actions %}
+            <tr>
+                <td style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px;">
+                    {{ follow_up.status }}
+                </td>
+                <td style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px;">
+                    {{ follow_up.responsible_person }}
+                </td>
+                <td style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px;">
+                    {{ follow_up.follow_up_date|date:"M d, Y" }}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3"
+                    style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px; font-style: italic;">
+                    No follow-up actions recorded.
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <table style="width: 100%; border-collapse: collapse; table-layout: fixed; border: 1px solid black;">
+        <tr>
+            <!-- PART 6: Left Section -->
+            <th style="background-color: white; text-align: left; padding: 5px; border: 1px solid black; width: 50%; font-size: 10px;">
+                PART 6: Were you able to establish the effectiveness of the implemented actions?
+            </th>
+            <!-- VERIFICATION: Right Section -->
+            <th style="background-color: #800000; color: white; text-align: center; padding: 5px; border: 1px solid black; width: 50%; font-size: 10px;">
+                VERIFICATION
+            </th>
+        </tr>
+    </table>
+
+    <table style="width: 100%; border-collapse: collapse; table-layout: fixed; border: 1px solid black; ">
+        <!-- Table Header -->
+        <tr>
+            <th colspan="5"
+                style="background-color: white; color: black; text-align: center; padding: 5px; font-size: 10px; border: 1px solid black;">
+                Verification of Effectiveness of Implemented Actions
+            </th>
+        </tr>
+        <!-- Column Headers -->
+        <tr>
+            <th style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px; width: 5%;">
+                No. of Visits
+            </th>
+            <th style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px; width: 10%;">
+                Date
+            </th>
+            <th style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px; width: 40%;">
+                Follow-up Audit Result (Objective Evidences)
+            </th>
+            <th style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px; width: 15%;">
+                New Target Date
+            </th>
+            <th style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px; width: 30%;">
+                Status
+            </th>
+        </tr>
+        <!-- Data Rows -->
+        {% for verification in action_verifications %}
+            <tr>
+                <td style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px;">
+                    {{ verification.visit_number }}
+                </td>
+                <td style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px;">
+                    {{ verification.date|date:"M d, Y" }}
+                </td>
+                <td style="padding: 5px; border: 1px solid black; text-align: left; font-size: 10px;">
+                    {{ verification.follow_up_audit_result }}
+                </td>
+                <td style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px;">
+                    {{ verification.new_target_date|date:"M d, Y"|default:"N/A" }}
+                </td>
+                <td style="padding: 5px; border: 1px solid black; text-align: left; font-size: 10px;">
+                    <div style="font-weight: bold; margin-bottom: 5px;">Was Action Taken Effective?</div>
+                    <div style="margin-bottom: 5px;">
+        <span style="display: inline-block; width: 12px; height: 12px; border: 1px solid black; text-align: center; line-height: 12px; margin-right: 5px;">
+            {% if verification.status == "effective" %}✔{% endif %}
+        </span>
+                        Close (Effective)
+                    </div>
+                    <div>
+        <span style="display: inline-block; width: 12px; height: 12px; border: 1px solid black; text-align: center; line-height: 12px; margin-right: 5px;">
+            {% if verification.status == "not_effective" %}✔{% endif %}
+        </span>
+                        Close (Not Effective)
+                    </div>
+                    {% if verification.status == "not_effective" %}
+                        <div style="margin-top: 5px;">
+                            <b>New RFA #:</b> __________________
+                        </div>
+                    {% endif %}
+                </td>
+
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5"
+                    style="padding: 5px; border: 1px solid black; text-align: center; font-size: 10px; font-style: italic;">
+                    No verification data available.
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+<table style="width: 100%; border-collapse: collapse; table-layout: fixed; border: 1px solid black;">
+    <tr>
+        <!-- PART 7 Header -->
+        <th style="background-color: white; text-align: left; padding: 5px; font-size: 10px; border: 1px solid black; width: 50%;">
+            PART 7: What is the current status of this corrective/preventive action?
+        </th>
+        <th colspan="2" style="background-color: #800000; color: white; text-align: center; padding: 5px; font-size: 10px; border: 1px solid black;">
+            CLOSE OUT
+        </th>
+    </tr>
+    <tr>
+        <!-- Column Headers -->
+        <th style="text-align: left; font-size: 10px; padding: 5px; border: 1px solid black;">&nbsp;</th>
+        <th style="text-align: center; font-size: 10px; padding: 5px; border: 1px solid black;">Name</th>
+        <th style="text-align: center; font-size: 10px; padding: 5px; border: 1px solid black;">Date</th>
+    </tr>
+    <tr>
+        <!-- Auditor Row -->
+        <td style="padding: 5px; font-size: 10px; border: 1px solid black; vertical-align: middle;">
+            <div style="display: flex; align-items: center;">
+                <div style="width: 14px; height: 14px; border: 1px solid black; display: flex; justify-content: center; align-items: center; margin-right: 5px;">
+                    {% if close_out.auditor_name %}
+                        <span style="font-size: 12px; font-weight: bold;">✔</span>
+                    {% endif %}
+                </div>
+                <span>Auditor</span>
+            </div>
+        </td>
+        <td style="padding: 5px; font-size: 10px; border: 1px solid black; text-align: center;">{{ close_out.auditor_name }}</td>
+        <td style="padding: 5px; font-size: 10px; border: 1px solid black; text-align: center;">{{ close_out.auditor_date|date:"M d, Y" }}</td>
+    </tr>
+    <tr>
+        <!-- Process Owner Row -->
+        <td style="padding: 5px; font-size: 10px; border: 1px solid black; vertical-align: middle;">
+            <div style="display: flex; align-items: center;">
+                <div style="width: 14px; height: 14px; border: 1px solid black; display: flex; justify-content: center; align-items: center; margin-right: 5px;">
+                    {% if close_out.process_owner_name %}
+                        <span style="font-size: 12px; font-weight: bold;">✔</span>
+                    {% endif %}
+                </div>
+                <span>Process Owner</span>
+            </div>
+        </td>
+        <td style="padding: 5px; font-size: 10px; border: 1px solid black; text-align: center;">{{ close_out.process_owner_name }}</td>
+        <td style="padding: 5px; font-size: 10px; border: 1px solid black; text-align: center;">{{ close_out.process_owner_date|date:"M d, Y" }}</td>
+    </tr>
+</table>
+</table>
+    <div style="text-align: right;">
+    <a href="{% url 'generate_pdf' non_conformity.id %}" class="btn btn-primary" style="font-size: 14px;">
+        Download RFA
+    </a>
+</div>
+</div>
+
+{% endblock %}

@@ -1,10 +1,10 @@
-<!-- templates/main/internal_auditor_monitoring_log.html -->
 {% extends 'main/internal audit/base.html' %}
 
 {% block title %}Internal Auditor Monitoring Log{% endblock %}
 
 {% block content %}
-<style>
+    
+    <style>
     /* Button Styles */
     .btn-primary {
         background-color: #A33331 !important;
@@ -105,7 +105,7 @@
         background-color: #66BB6A;
     }
 </style>
-
+    
 <div class="container mt-4">
     <!-- Add Non-Conformity Button -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -137,11 +137,11 @@
     <!-- Search Bar -->
     <div class="input-group mb-4">
         <input
-                aria-label="Search"
-                class="form-control"
-                id="searchInput"
-                placeholder="Search non-conformities..."
-                type="text"
+            aria-label="Search"
+            class="form-control"
+            id="searchInput"
+            placeholder="Search non-conformities..."
+            type="text"
         >
         <button class="btn btn-secondary" type="button">
             <i class="fas fa-search"></i>
@@ -156,25 +156,21 @@
                 <th>Non-Conformities</th>
                 <th>Assignees</th>
                 <th>Department</th>
-                <th>Start Date</th>
-                <th>Deadline</th>
-                <th>Task</th>
+                <th>Created Date</th>
                 <th>Status</th>
             </tr>
             </thead>
             <tbody>
             {% for nc in non_conformities %}
-            <tr data-status="{{ nc.status|lower }}">
+            <tr data-status="{{ nc.status|lower }}" data-id="{{ nc.id }}">
                 <td>
                     <a class="text-decoration-none text-dark fw-bold" href="{% url 'non_conformity_detail' nc.id %}">
                         {{ nc.non_conformity }}
                     </a>
                 </td>
-                <td>{{ nc.assignees }}</td>
+                <td>{{ nc.assigned_to }}</td>
                 <td>{{ nc.unit_department }}</td>
                 <td>{{ nc.start_date|date:"M d, Y" }}</td>
-                <td>{{ nc.deadline|date:"M d, Y" }}</td>
-                <td class="text-center">{{ nc.task }}</td>
                 <td>
                 <span class="badge
                     {% if nc.status == 'pending' %} bg-warning text-dark
@@ -199,11 +195,41 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const searchInput = document.getElementById('searchInput');
         const tabLinks = document.querySelectorAll('#tabContainer .nav-link');
-        const tableRows = document.querySelectorAll('#nonConformitiesTable tbody tr');
+        const tableBody = document.querySelector('#nonConformitiesTable tbody');
+        const tableRows = Array.from(tableBody.querySelectorAll('tr'));
+        const searchInput = document.getElementById('searchInput');
 
-        // Filter Rows by Tab
+        // Sort by Default: Latest Created First (by ID)
+        const sortByIdDesc = () => {
+            tableRows.sort((a, b) => {
+                const idA = parseInt(a.getAttribute('data-id'));
+                const idB = parseInt(b.getAttribute('data-id'));
+                return idB - idA; // Descending order by ID
+            });
+
+            // Re-append sorted rows to the table body
+            tableBody.innerHTML = '';
+            tableRows.forEach(row => tableBody.appendChild(row));
+        };
+
+        // Filter Rows by Tabs
+        const filterRowsByTab = (filter) => {
+            tableRows.forEach(row => {
+                const status = row.getAttribute('data-status');
+                row.style.display = (filter === 'all' || filter === status) ? '' : 'none';
+            });
+        };
+
+        // Search Functionality
+        const filterRowsBySearch = (query) => {
+            tableRows.forEach(row => {
+                const matchesSearch = row.textContent.toLowerCase().includes(query);
+                row.style.display = matchesSearch ? '' : 'none';
+            });
+        };
+
+        // Tab Event Listeners
         tabLinks.forEach(tab => {
             tab.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -212,20 +238,18 @@
                 this.classList.add('active');
 
                 const filter = this.getAttribute('data-filter');
-                tableRows.forEach(row => {
-                    const status = row.getAttribute('data-status');
-                    row.style.display = (filter === 'all' || filter === status) ? '' : 'none';
-                });
+                filterRowsByTab(filter); // Filter rows based on the selected tab
             });
         });
 
-        // Search Rows
+        // Search Event Listener
         searchInput.addEventListener('input', function () {
             const query = this.value.toLowerCase();
-            tableRows.forEach(row => {
-                row.style.display = row.textContent.toLowerCase().includes(query) ? '' : 'none';
-            });
+            filterRowsBySearch(query); // Filter rows based on search query
         });
+
+        // Initial Sorting
+        sortByIdDesc();
     });
 </script>
 {% endblock %}

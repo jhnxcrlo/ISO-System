@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from itsdangerous import URLSafeTimedSerializer
 from django.contrib.auth.models import User
 from xhtml2pdf import pisa
-
+from django.http import HttpResponseServerError
 from .models import LoginEvent, UserProfile, ImmediateAction, RootCauseAnalysis, CorrectiveActionPlan, FollowUpAction, \
     ActionVerification, CorrectiveActionPlanReview, CloseOut
 from .forms import UserCreationForm, UserUpdateForm, RootCauseAnalysisForm, ImmediateActionForm, \
@@ -19,9 +19,16 @@ from .forms import GuidelineForm, AnnouncementForm, CustomPasswordChangeForm
 from itsdangerous import SignatureExpired, BadSignature
 from django.contrib.auth import update_session_auth_hash
 import logging
+from django.shortcuts import render, get_object_or_404
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from django.templatetags.static import static
+from django.utils.timezone import now
+from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect
+from .models import  UserProfile
 
 s = URLSafeTimedSerializer('your-secret-key')
-
 
 def login_view(request):
     if request.method == 'POST':
@@ -593,12 +600,10 @@ def task_detail(request, task_id):
 
     return render(request, 'main/process owner/task_detail.html', context)
 
-
-# View for saving Immediate Action
 from django.utils.timezone import now
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
-from .models import NonConformity, ImmediateAction, UserProfile
+from .models import  UserProfile
 
 
 @login_required
@@ -697,11 +702,6 @@ def corrective_action_plan(request, task_id):
         'non_conformity': task,
         'corrective_action_plans': corrective_action_plans,
     })
-
-
-from django.http import HttpResponseServerError
-
-import logging
 
 
 @login_required
@@ -838,10 +838,6 @@ def add_follow_up(request, nc_id):
     return render(request, 'main/internal audit/non_conformity_detail.html', context)
 
 
-# create views for creating rfa
-
-
-
 @login_required
 def action_verification(request, cap_id):
     try:
@@ -910,8 +906,6 @@ def action_verification(request, cap_id):
 
     return render(request, 'main/internal audit/non_conformity_detail.html', context)
 
-
-
 @login_required
 def close_out_action(request, nc_id):
     try:
@@ -948,7 +942,6 @@ def close_out_action(request, nc_id):
         return HttpResponseServerError("An error occurred while processing your request.")
 
 
-
 @login_required
 def complete_step(request, task_id):
     task = get_object_or_404(NonConformity, id=task_id)
@@ -983,39 +976,6 @@ def fm_qms_010_page_1(request, nc_id):
     }
 
     return render(request, 'main/form/rfa_page1.html', context)
-
-
-# View for generating the PDF
-"""
-class RFAPDFView(PDFTemplateView):
-    template_name = 'main/form/rfa_page1.html'
-
-    def get_context_data(self, **kwargs):
-        # Fetch the NonConformity object by its ID
-        nc_id = self.kwargs['nc_id']
-        non_conformity = get_object_or_404(NonConformity, id=nc_id)
-
-        # Fetch related data
-        immediate_action = ImmediateAction.objects.filter(non_conformity=non_conformity).first()
-        root_cause_analysis = RootCauseAnalysis.objects.filter(non_conformity=non_conformity).first()
-        corrective_action_plans = CorrectiveActionPlan.objects.filter(non_conformity=non_conformity)
-
-        # Prepare the context
-        return {
-            'non_conformity': non_conformity,
-            'immediate_action': immediate_action,
-            'root_cause_analysis': root_cause_analysis,
-            'corrective_action_plans': corrective_action_plans,
-        }
-"""
-
-
-import pdfkit
-from django.shortcuts import render, get_object_or_404
-from django.template.loader import render_to_string
-from django.http import HttpResponse
-from django.templatetags.static import static
-from django.conf import settings
 
 def preview_rfa(request, nc_id):
     # Fetch the NonConformity object by its ID
@@ -1057,7 +1017,7 @@ def preview_rfa(request, nc_id):
     }
 
     # Render the HTML template to preview
-    return render(request, 'main/form/rfa_page1.html', context)
+    return render(request, 'main/form/rfa_view.html', context)
 
 
 def generate_pdf(request, nc_id):
@@ -1118,7 +1078,7 @@ def generate_pdf(request, nc_id):
 
     # Generate PDF
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="non_conformity_report.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="FM-QMS-010-RFA-Form.pdf"'
 
     # Convert HTML to PDF
     pisa_status = pisa.CreatePDF(html, dest=response)
