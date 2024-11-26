@@ -2,6 +2,16 @@
 {% block title %}To Do{% endblock %}
 
 {% block content %}
+
+<style>
+#taskList tr:hover a {
+    text-decoration: underline !important; /* Underline on hover */
+}
+
+#taskList a {
+    text-decoration: none !important; /* No underline by default */
+}
+</style>
 <div class="container">
     <div class="row d-flex justify-content-center align-items-center">
         <div class="col col-xl-10">
@@ -103,6 +113,9 @@
         </div>
     </div>
 </div>
+
+
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {

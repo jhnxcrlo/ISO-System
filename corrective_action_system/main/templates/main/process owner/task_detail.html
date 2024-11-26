@@ -11,7 +11,7 @@
         <!-- Progress Bar -->
         <div class="progress my-3">
             <div
-                    class="progress-bar {% if immediate_action and root_cause_analysis and root_cause_analysis.root_cause_completed %}bg-success{% else %}bg-warning{% endif %}"
+                    class="progress-bar progress-bar-striped progress-bar-animated {% if immediate_action and root_cause_analysis and root_cause_analysis.root_cause_completed %}bg-success{% else %}bg-warning{% endif %}"
                     role="progressbar"
                     style="width:
                             {% if not immediate_action %}33%;
@@ -100,7 +100,7 @@
                                 id="immediate-action-tab"
                                 role="tab"
                                 type="button">
-                            Immediate Action/Correction
+                            <strong>Immediate Action/Correction</strong>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -113,7 +113,7 @@
                                 id="root-cause-tab"
                                 role="tab"
                                 type="button">
-                            Step 2: Root Cause Analysis
+                           <strong> Step 2: Root Cause Analysis</strong>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -126,7 +126,7 @@
                                 id="corrective-action-tab"
                                 role="tab"
                                 type="button">
-                            Step 3: Corrective Action Plan
+                           <strong> Step 3: Corrective Action Plan</strong>
                         </button>
                     </li>
                 </ul>

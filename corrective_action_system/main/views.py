@@ -1174,3 +1174,24 @@ def generate_pdf(request, nc_id):
         return HttpResponse('An error occurred while generating the PDF', status=500)
 
     return response
+
+
+
+
+
+def internal_audit_view(request):
+    # Fetch all non-conformities
+    non_conformities = NonConformity.objects.all()
+
+    # Compute counts for each tab dynamically
+    ongoing_count = non_conformities.filter(status='pending').count()
+    finished_count = non_conformities.filter(status='corrective_action_completed').count()
+    postponed_count = non_conformities.filter(status='postponed').count()
+
+    context = {
+        'non_conformities': non_conformities,
+        'ongoing_count': ongoing_count,
+        'finished_count': finished_count,
+        'postponed_count': postponed_count,
+    }
+    return render(request, 'main/internal audit/internal_audit_log.html', context)
