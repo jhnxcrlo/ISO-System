@@ -1,6 +1,8 @@
 from django.contrib import admin
+from fontTools.feaLib.ast import Comment
+
 from .models import UserProfile, TemplateModel, NonConformity, RootCauseAnalysis, ImmediateAction, CorrectiveActionPlan, \
-    FollowUpAction, ActionVerification, CorrectiveActionPlanReview, CloseOut
+    FollowUpAction, ActionVerification, CorrectiveActionPlanReview, CloseOut, Comment
 
 
 @admin.register(UserProfile)
@@ -21,6 +23,7 @@ admin.site.register(CorrectiveActionPlanReview)
 admin.site.register(FollowUpAction)
 admin.site.register(ActionVerification)
 admin.site.register(CloseOut)
+admin.site.register(Comment)
 
 
 

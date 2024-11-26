@@ -150,7 +150,7 @@ class ImmediateActionForm(forms.ModelForm):
 class RootCauseAnalysisForm(forms.ModelForm):
     class Meta:
         model = RootCauseAnalysis
-        fields = ['cause_description', 'rca_date', 'responsible_officer', 'estimated_close_date', 'fishbone_data', 'five_whys']
+        fields = ['cause_description', 'rca_date', 'responsible_officer', 'estimated_close_date']
         widgets = {
             'cause_description': forms.Textarea(attrs={'rows': 4}),
             'rca_date': forms.DateInput(attrs={'type': 'date'}),

@@ -135,9 +135,8 @@ class RootCauseAnalysis(models.Model):
     rca_date = models.DateField(null=True, blank=True)
     responsible_officer = models.CharField(max_length=100)
     estimated_close_date = models.DateField(null=True, blank=True)
-    fishbone_data = models.JSONField(blank=True, null=True)  # For storing Fishbone Diagram data
-    five_whys = models.JSONField(default=dict)
     root_cause_completed = models.BooleanField(default=False)
+    supporting_evidence = models.FileField(upload_to='supporting_evidence/', blank=True, null=True)
 
     def __str__(self):
         return f"Root Cause Analysis for {self.non_conformity.non_conformity}"
@@ -233,3 +232,25 @@ class CloseOut(models.Model):
 
     def __str__(self):
         return f"Close Out for {self.non_conformity.non_conformity}"
+
+class Comment(models.Model):
+    SECTION_CHOICES = [
+        ('immediate_action', 'Immediate Action'),
+        ('root_cause', 'Root Cause Analysis'),
+        ('corrective_action', 'Corrective Action Plan'),
+    ]
+
+    task = models.ForeignKey('NonConformity', on_delete=models.CASCADE, related_name='comments')
+    section = models.CharField(max_length=50, choices=SECTION_CHOICES)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comment by {self.author} on {self.task} - {self.get_section_display()}"
+
+    @property
+    def is_reply(self):
+        return self.parent is not None
+

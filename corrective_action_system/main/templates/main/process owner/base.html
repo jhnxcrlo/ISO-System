@@ -6,6 +6,7 @@
     <title>{% block title %}Dashboard{% endblock %}</title>
     {% load static %}
     <link rel="icon" href="{% static 'main/img2.png' %}" type="image/png">
+    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -13,24 +14,13 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 
     <!-- FullCalendar CSS -->
-    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
 
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Custom Dashboard CSS (Make sure this comes last to override other styles) -->
     <link href="{% static 'css/process_owner/base.css' %}" rel="stylesheet">
-
-    <!-- Bootstrap JavaScript (Including Popper.js) -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-
-
-
-    <style>
-
-    </style>
-
 </head>
 <body>
 <div class="container-fluid">
@@ -63,7 +53,6 @@
                 </li>
             </ul>
 
-
             <!-- Collapse Button at the bottom -->
             <button class="sidebar-toggle-btn" id="sidebarToggle">
                 <i class="fas fa-arrow-left"></i>
@@ -77,38 +66,27 @@
                 <div class="container-fluid">
                     <div class="d-flex ms-auto align-items-center">
                         <div class="notification-icon me-3 position-relative">
-                            <!-- Notification icon that triggers the dropdown -->
+                            <!-- Notification icon -->
                             <a href="#" class="nav-link hidden-arrow" id="navbarNotification" role="button"
-                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" alt="Notifications">
-                                <i class="fas fa-bell"></i> <!-- Notification Bell Icon -->
+                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell"></i>
                             </a>
-
-                            <!-- Dropdown menu for notifications -->
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarNotification" style="width: 250px;">
                                 <li>
                                     <a gtm-id="Notifications" class="dropdown-item text-wrap"
-                                       data-notification-date="06/26/2024 08:00" href=""
-                                       target="_blank" rel="nofollow">
+                                       data-notification-date="06/26/2024" href="#">
                                         <p class="small text-uppercase mb-2">06/26/2024</p>
                                         <p class="mb-0">🛈 New notification message here</p>
                                     </a>
                                 </li>
                             </ul>
                         </div>
-
                         <div class="dropdown">
-                            <button aria-expanded="false" class="btn btn-light dropdown-toggle"
-                                    data-bs-toggle="dropdown" id="userMenu" type="button">
+                            <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" type="button">
                                 <img alt="User" class="rounded-circle me-1" src="{% static 'main/img2.png' %}" width="30">
                                 <span>{{ user.last_name }} {{ user.first_name|slice:":1" }}. ({{ user.userprofile.role }})</span>
                             </button>
-                            <ul aria-labelledby="userMenu" class="dropdown-menu dropdown-menu-end">
-                                <li class="dropdown-header">
-                                    <strong>{{ user.last_name }} {{ user.first_name|slice:":1" }}. ({{ user.userprofile.role }})</strong>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="{% url 'login' %}">Log Out</a></li>
                             </ul>
                         </div>
@@ -117,7 +95,7 @@
             </nav>
 
             <!-- Content Block -->
-            <div class="container-fluid my-4 ">
+            <div class="container-fluid my-4">
                 {% block content %}
                 {% endblock %}
             </div>
@@ -130,7 +108,7 @@
     <i class="fas fa-comment-alt"></i>
 </div>
 
-<!-- Chatbox Container -->
+<!-- Chatbox -->
 <div class="chatbox" id="chatbox">
     <div class="chatbox-header">
         <h5>Chat with us <span class="status-dot"></span></h5>
@@ -140,26 +118,18 @@
         <div class="message">
             <h6>Support</h6>
             <p>How can we assist you today?</p>
-            <div class="quick-replies">
-                <button class="btn">Reviewed the report <i class="bi bi-send"></i></button>
-                <button class="btn">Action being implemented <i class="bi bi-send"></i></button>
-                <button class="btn">Documentation completed <i class="bi bi-send"></i></button>
-                <button class="btn">Need more info? <i class="bi bi-send"></i></button>
-            </div>
         </div>
     </div>
     <div class="chatbox-footer">
-        <label class="file-upload-label" for="file-upload">
-            <i class="fas fa-paperclip"></i>
-            <span class="tooltip-text">Attach file</span>
-        </label>
-        <input id="file-upload" type="file">
-        <input placeholder="Write a message..." type="text">
-        <button class="send-button" type="button"><i class="fas fa-paper-plane"></i></button>
+        <input type="text" placeholder="Write a message...">
+        <button class="send-button"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
 
-<!-- JavaScript -->
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
 <script>
     const chatButton = document.getElementById("chatButton");
     const chatbox = document.getElementById("chatbox");
@@ -174,53 +144,16 @@
         chatbox.style.display = "none";
         chatButton.style.display = "flex";
     });
+
+    // Sidebar Toggle
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const mainContent = document.querySelector('.main-content');
+
+    sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('sidebar-collapsed');
+        mainContent.classList.toggle('main-content-expanded');
+    });
 </script>
-
-<script>
-// Sidebar toggle and save state to localStorage
-const sidebar = document.getElementById('sidebar');
-const sidebarToggle = document.getElementById('sidebarToggle');
-const mainContent = document.querySelector('.main-content');
-
-// Load sidebar state on page load
-document.addEventListener("DOMContentLoaded", function() {
-    const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-    if (sidebarCollapsed) {
-        sidebar.classList.add('sidebar-collapsed');
-        mainContent.classList.add('main-content-expanded');
-        sidebarToggle.querySelector('i').classList.remove('fa-arrow-left');
-        sidebarToggle.querySelector('i').classList.add('fa-arrow-right');
-    }
-
-    // Remove the `no-transition` class after page load
-    sidebar.classList.remove('no-transition');
-});
-
-// Toggle sidebar and save state
-sidebarToggle.addEventListener('click', () => {
-    const isCollapsed = sidebar.classList.toggle('sidebar-collapsed');
-    mainContent.classList.toggle('main-content-expanded');
-    localStorage.setItem('sidebarCollapsed', isCollapsed); // Save state
-
-    // Toggle arrow icon
-    if (isCollapsed) {
-        sidebarToggle.querySelector('i').classList.remove('fa-arrow-left');
-        sidebarToggle.querySelector('i').classList.add('fa-arrow-right');
-    } else {
-        sidebarToggle.querySelector('i').classList.remove('fa-arrow-right');
-        sidebarToggle.querySelector('i').classList.add('fa-arrow-left');
-    }
-});
-
-// Add class to hide sidebar on page load
-document.addEventListener("DOMContentLoaded", function() {
-    sidebar.classList.add('no-transition');
-});
-</script>
-
-<!-- JavaScript Libraries -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
 </body>
 </html>

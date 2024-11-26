@@ -3,331 +3,486 @@
 {% block title %}Non-Conformity Details{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h3>Non-Conformity Details</h3>
 
-    <!-- Progress Bar -->
-    <div class="progress my-3">
-        <div
-                class="progress-bar {% if immediate_action and root_cause_analysis and root_cause_analysis.root_cause_completed %}bg-success{% else %}bg-warning{% endif %}"
-                role="progressbar"
-                style="width:
+
+    <div class="container mt-4">
+        <h3>Non-Conformity Details</h3>
+
+        <!-- Progress Bar -->
+        <div class="progress my-3">
+            <div
+                    class="progress-bar {% if immediate_action and root_cause_analysis and root_cause_analysis.root_cause_completed %}bg-success{% else %}bg-warning{% endif %}"
+                    role="progressbar"
+                    style="width:
                             {% if not immediate_action %}33%;
                             {% elif not root_cause_analysis or not root_cause_analysis.root_cause_completed %}66%;
                             {% else %}100%;
                             {% endif %}">
-            {% if not immediate_action %}
-            Immediate Action Pending
-            {% elif not root_cause_analysis or not root_cause_analysis.root_cause_completed %}
-            Root Cause Analysis Pending
-            {% else %}
-            Corrective Action Plan Completed
-            {% endif %}
+                {% if not immediate_action %}
+                    Immediate Action Pending
+                {% elif not root_cause_analysis or not root_cause_analysis.root_cause_completed %}
+                    Root Cause Analysis Pending
+                {% else %}
+                    Corrective Action Plan Completed
+                {% endif %}
+            </div>
         </div>
-    </div>
 
-    <!-- Display additional details -->
-    {% if immediate_action and root_cause_analysis and root_cause_analysis.root_cause_completed %}
-    <div class="alert alert-success mt-3">
-        <strong>Status:</strong> This non-conformance has been completed successfully.
-    </div>
-    {% else %}
-    <div class="alert alert-info mt-3">
-        <strong>Status:</strong> This non-conformance is still in progress.
-    </div>
-    {% endif %}
+        <!-- Display additional details -->
+        {% if immediate_action and root_cause_analysis and root_cause_analysis.root_cause_completed %}
+            <div class="alert alert-success mt-3">
+                <strong>Status:</strong> This non-conformance has been completed successfully.
+            </div>
+        {% else %}
+            <div class="alert alert-info mt-3">
+                <strong>Status:</strong> This non-conformance is still in progress.
+            </div>
+        {% endif %}
 
 
-    <!-- Flash Messages -->
-    {% if messages %}
-    <div>
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-    </div>
-    {% endif %}
+        <!-- Flash Messages -->
+        {% if messages %}
+            <div>
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
 
-    <!-- Non-Conformity Details Card -->
-    <div class="card mt-4">
-        <div class="card-body">
-            <div class="row">
-                <!-- Details Columns -->
-                <div class="col-md-6">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Originator Name:</strong> {{ task.originator_name }}
-                        </li>
-                        <li class="list-group-item"><strong>Unit/Department:</strong> {{ task.unit_department }}
-                        </li>
-                        <li class="list-group-item"><strong>Phone:</strong> {{ task.phone }}</li>
-                        <li class="list-group-item"><strong>Email:</strong> {{ task.email }}</li>
-                        <li class="list-group-item"><strong>RFA Intent:</strong> {{ task.get_rfa_intent_display }}
-                        </li>
-                        <li class="list-group-item"><strong>Department:</strong> {{ task.department }}</li>
-                        <li class="list-group-item"><strong>Non-Conformance
-                            Category:</strong> {{ task.get_non_conformance_category_display }}
-                        </li>
+        <!-- Non-Conformity Details Card -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <div class="row">
+                    <!-- Details Columns -->
+                    <div class="col-md-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Originator Name:</strong> {{ task.originator_name }}
+                            </li>
+                            <li class="list-group-item"><strong>Unit/Department:</strong> {{ task.unit_department }}
+                            </li>
+                            <li class="list-group-item"><strong>Phone:</strong> {{ task.phone }}</li>
+                            <li class="list-group-item"><strong>Email:</strong> {{ task.email }}</li>
+                            <li class="list-group-item"><strong>RFA Intent:</strong> {{ task.get_rfa_intent_display }}
+                            </li>
+                            <li class="list-group-item"><strong>Department:</strong> {{ task.department }}</li>
+                            <li class="list-group-item"><strong>Non-Conformance
+                                Category:</strong> {{ task.get_non_conformance_category_display }}
+                            </li>
 
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Description of
-                            Non-Conformance:</strong> {{ task.description_of_non_conformance }}
-                        </li>
-                        <li class="list-group-item"><strong>ISO Clause:</strong> {{ task.iso_clause }}</li>
-                        <li class="list-group-item"><strong>Category:</strong> {{ task.get_category_display }}</li>
-                        <li class="list-group-item"><strong>Date Issued:</strong> {{ task.start_date }}</li>
-                        <li class="list-group-item"><strong>Status:</strong> {{ task.get_status_display }}</li>
-                    </ul>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Description of
+                                Non-Conformance:</strong> {{ task.description_of_non_conformance }}
+                            </li>
+                            <li class="list-group-item"><strong>ISO Clause:</strong> {{ task.iso_clause }}</li>
+                            <li class="list-group-item"><strong>Category:</strong> {{ task.get_category_display }}</li>
+                            <li class="list-group-item"><strong>Date Issued:</strong> {{ task.start_date }}</li>
+                            <li class="list-group-item"><strong>Status:</strong> {{ task.get_status_display }}</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="card mt-4">
-        <div class="card-body">
-            <!-- Tabs Navigation -->
-            <ul class="nav nav-tabs nav-justified mb-3" id="auditStepsTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button
-                            aria-controls="immediate-action"
-                            aria-selected="true"
-                            class="nav-link active"
-                            data-bs-target="#immediate-action"
-                            data-bs-toggle="tab"
-                            id="immediate-action-tab"
-                            role="tab"
-                            type="button">
-                        Immediate Action/Correction
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button
-                            aria-controls="root-cause"
-                            aria-selected="false"
-                            class="nav-link"
-                            data-bs-target="#root-cause"
-                            data-bs-toggle="tab"
-                            id="root-cause-tab"
-                            role="tab"
-                            type="button">
-                        Step 2: Root Cause Analysis
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button
-                            aria-controls="corrective-action"
-                            aria-selected="false"
-                            class="nav-link"
-                            data-bs-target="#corrective-action"
-                            data-bs-toggle="tab"
-                            id="corrective-action-tab"
-                            role="tab"
-                            type="button">
-                        Step 3: Corrective Action Plan
-                    </button>
-                </li>
-            </ul>
+        <div class="card mt-4">
+            <div class="card-body">
+                <!-- Tabs Navigation -->
+                <ul class="nav nav-tabs nav-justified mb-3" id="auditStepsTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button
+                                aria-controls="immediate-action"
+                                aria-selected="true"
+                                class="nav-link active"
+                                data-bs-target="#immediate-action"
+                                data-bs-toggle="tab"
+                                id="immediate-action-tab"
+                                role="tab"
+                                type="button">
+                            Immediate Action/Correction
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button
+                                aria-controls="root-cause"
+                                aria-selected="false"
+                                class="nav-link"
+                                data-bs-target="#root-cause"
+                                data-bs-toggle="tab"
+                                id="root-cause-tab"
+                                role="tab"
+                                type="button">
+                            Step 2: Root Cause Analysis
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button
+                                aria-controls="corrective-action"
+                                aria-selected="false"
+                                class="nav-link"
+                                data-bs-target="#corrective-action"
+                                data-bs-toggle="tab"
+                                id="corrective-action-tab"
+                                role="tab"
+                                type="button">
+                            Step 3: Corrective Action Plan
+                        </button>
+                    </li>
+                </ul>
 
-            <!-- Tabs Content -->
-            <div class="tab-content" id="auditStepsContent">
-                <!-- Immediate Action Tab -->
-                <div aria-labelledby="immediate-action-tab" class="tab-pane fade show active" id="immediate-action"
-                     role="tabpanel">
-                    <form action="{% url 'add_immediate_action' task.id %}" method="post">
-                        {% csrf_token %}
-                        <textarea
-                                class="form-control mb-3"
-                                name="immediate_action"
-                                placeholder="Describe the action"
-                                required
-                                rows="4">{{ immediate_action.action_description|default_if_none:'' }}</textarea>
-                        <button class="btn btn-primary mt-2" type="submit">Save Immediate Action</button>
-                    </form>
-                </div>
-
-                <!-- Root Cause Analysis Tab -->
-                <div aria-labelledby="root-cause-tab" class="tab-pane fade" id="root-cause" role="tabpanel">
-                    <form action="{% url 'add_root_cause_analysis' task.id %}" method="post">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label class="form-label" for="rootCause"><strong>Root Cause:</strong></label>
+                <!-- Tabs Content -->
+                <div class="tab-content" id="auditStepsContent">
+                    <div aria-labelledby="immediate-action-tab" class="tab-pane fade show active" id="immediate-action"
+                         role="tabpanel">
+                        <!-- Immediate Action Form -->
+                        <form action="{% url 'add_immediate_action' task.id %}" method="post">
+                            {% csrf_token %}
                             <textarea
-                                    class="form-control"
-                                    id="rootCause"
-                                    name="root_cause"
-                                    placeholder="Identify the root cause"
+                                    class="form-control mb-3"
+                                    name="immediate_action"
+                                    placeholder="Describe the action"
                                     required
-                                    rows="4">{{ root_cause_analysis.cause_description|default_if_none:'' }}</textarea>
+                                    rows="4">{{ immediate_action.action_description|default_if_none:'' }}</textarea>
+                            <button class="btn btn-primary mt-2" type="submit">Save Immediate Action</button>
+                        </form>
+
+                        <!-- Comments Section -->
+                        <div class="comments-section mt-4">
+                            <h6><strong>Comments:</strong></h6>
+                            <ul class="list-group">
+                                {% for comment in immediate_action_comments %}
+                                    <li class="list-group-item">
+                                        <!-- Parent Comment -->
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>{{ comment.author.username }}</strong>
+                                                <span class="text-muted"> - {{ comment.created_at|date:"M d, Y H:i" }}</span>
+                                                <p class="mb-1">{{ comment.content }}</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Replies -->
+                                        {% if comment.replies.all %}
+                                            <ul class="list-group mt-2 ps-4">
+                                                {% for reply in comment.replies.all %}
+                                                    <li class="list-group-item">
+                                                        <div>
+                                                            <strong>{{ reply.author.username }}</strong>
+                                                            <span class="text-muted"> - {{ reply.created_at|date:"M d, Y H:i" }}</span>
+                                                            <p class="mb-1">{{ reply.content }}</p>
+                                                        </div>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+
+                                        <!-- Reply Form -->
+                                        <form action="" method="post" class="mt-2">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                            <input type="hidden" name="section" value="immediate_action">
+                                            <div class="input-group">
+                                                <input type="text" name="comment_content"
+                                                       class="form-control form-control-sm"
+                                                       placeholder="Reply to this comment..." required>
+                                                <button type="submit" class="btn btn-danger btn-sm">Reply</button>
+                                            </div>
+                                        </form>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                            <!-- Add Comment Form -->
+                            <form action="" method="post" class="mt-3">
+                                {% csrf_token %}
+                                <input type="hidden" name="section" value="immediate_action">
+                                <div class="input-group">
+                                    <input type="text" name="comment_content" class="form-control"
+                                           placeholder="Write a comment..." required>
+                                    <button type="submit" class="btn btn-danger">Submit</button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="rcaDate"><strong>Date of Root Cause
-                                Analysis:</strong></label>
-                            <input
-                                    class="form-control"
-                                    id="rcaDate"
-                                    name="rca_date"
-                                    required
-                                    type="date"
-                                    value="{{ root_cause_analysis.rca_date|date:'Y-m-d' }}">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="responsibleOfficer"><strong>Responsible
-                                Officer:</strong></label>
-                            <input
-                                    class="form-control"
-                                    id="responsibleOfficer"
-                                    name="responsible_officer"
-                                    required
-                                    type="text"
-                                    value="{{ root_cause_analysis.responsible_officer|default_if_none:'' }}">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="estimatedCloseDate"><strong>Estimated Close
-                                Date:</strong></label>
-                            <input
-                                    class="form-control"
-                                    id="estimatedCloseDate"
-                                    name="estimated_close_date"
-                                    required
-                                    type="date"
-                                    value="{{ root_cause_analysis.estimated_close_date|date:'Y-m-d' }}">
-                        </div>
-                        <div class="mb-3">
-                            <label><strong>5 Whys Analysis:</strong></label>
-                            {% if root_cause_analysis.five_whys %}
-                            {% for key, value in root_cause_analysis.five_whys.items %}
-                            <div class="input-group mb-2">
-                                <span class="input-group-text">{{ key|title }}:</span>
+                    </div>
+
+
+                    <!-- Root Cause Analysis Tab -->
+                    <div aria-labelledby="root-cause-tab" class="tab-pane fade" id="root-cause" role="tabpanel">
+                        <!-- Root Cause Analysis Form -->
+                        <form action="{% url 'add_root_cause_analysis' task.id %}" method="post"
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="form-label" for="rootCause"><strong>Root Cause:</strong></label>
+                                <textarea
+                                        class="form-control"
+                                        id="rootCause"
+                                        name="root_cause"
+                                        placeholder="Identify the root cause"
+                                        required
+                                        rows="4">{{ root_cause_analysis.cause_description|default_if_none:'' }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="rcaDate"><strong>Date of Root Cause
+                                    Analysis:</strong></label>
                                 <input
                                         class="form-control"
-                                        name="five_whys[{{ key }}]"
-                                        placeholder="Provide reason for {{ key|title }}"
+                                        id="rcaDate"
+                                        name="rca_date"
+                                        required
+                                        type="date"
+                                        value="{{ root_cause_analysis.rca_date|date:'Y-m-d' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="responsibleOfficer"><strong>Responsible Officer:</strong></label>
+                                <input
+                                        class="form-control"
+                                        id="responsibleOfficer"
+                                        name="responsible_officer"
                                         required
                                         type="text"
-                                        value="{{ value }}">
+                                        value="{{ root_cause_analysis.responsible_officer|default_if_none:'' }}">
                             </div>
-                            {% endfor %}
-                            {% else %}
-                            {% for i in "12345" %}
-                            <div class="input-group mb-2">
-                                <span class="input-group-text">Why {{ forloop.counter }}:</span>
+                            <div class="mb-3">
+                                <label class="form-label" for="estimatedCloseDate"><strong>Estimated Close
+                                    Date:</strong></label>
                                 <input
                                         class="form-control"
-                                        name="five_whys[why{{ forloop.counter }}]"
-                                        placeholder="Provide reason for Why {{ forloop.counter }}"
+                                        id="estimatedCloseDate"
+                                        name="estimated_close_date"
                                         required
-                                        type="text">
+                                        type="date"
+                                        value="{{ root_cause_analysis.estimated_close_date|date:'Y-m-d' }}">
                             </div>
-                            {% endfor %}
-                            {% endif %}
-                        </div>
-                        <button class="btn btn-primary mt-2" type="submit">Save Root Cause Analysis</button>
-                    </form>
-                </div>
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Supporting Evidence:</strong></label>
+                                {% if root_cause_analysis.supporting_evidence %}
+                                    <p>
+                                        Uploaded File:
+                                        <a href="{{ root_cause_analysis.supporting_evidence.url }}" target="_blank">
+                                            {{ root_cause_analysis.supporting_evidence.name }}
+                                        </a>
+                                    </p>
+                                {% endif %}
+                                <input
+                                        class="form-control"
+                                        type="file"
+                                        name="supporting_evidence"
+                                        accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.zip">
+                                <small class="form-text text-muted">Upload supporting documents (PDF, Word, Excel,
+                                    images, etc.).</small>
+                            </div>
+                            <button class="btn btn-primary mt-2" type="submit">Save Root Cause Analysis</button>
+                        </form>
+                    
+                        <!-- Root Cause Comments Section -->
+                        <div class="comments-section mt-4">
+                            <h6><strong>Comments:</strong></h6>
+                            <ul class="list-group">
+                                {% for comment in root_cause_comments %}
+                                    <li class="list-group-item">
+                                        <!-- Parent Comment -->
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>{{ comment.author.username }}</strong>
+                                                <span class="text-muted"> - {{ comment.created_at|date:"M d, Y H:i" }}</span>
+                                                <p class="mb-1">{{ comment.content }}</p>
+                                            </div>
+                                        </div>
 
-                <!-- Corrective Action Plan Tab -->
-                <div aria-labelledby="corrective-action-tab" class="tab-pane fade" id="corrective-action"
-                     role="tabpanel">
-                    <form action="{% url 'corrective_action_plan' task.id %}" method="post">
-                        {% csrf_token %}
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Activity</th>
-                                <th>Responsible Person</th>
-                                <th>Time Frame</th>
-                                <th>Resources Needed</th>
-                                <th>Result</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody id="cap-table-body">
-                            {% for cap in corrective_action_plans %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td><input class="form-control" name="activity_{{ forloop.counter }}" required
-                                           type="text" value="{{ cap.activity }}"></td>
-                                <td><input class="form-control" name="responsible_person_{{ forloop.counter }}"
-                                           required
-                                           type="text" value="{{ cap.responsible_person }}"></td>
-                                <td><input class="form-control" name="time_frame_{{ forloop.counter }}" required
-                                           type="text" value="{{ cap.time_frame }}"></td>
-                                <td><input class="form-control" name="resources_needed_{{ forloop.counter }}"
-                                           required
-                                           type="text" value="{{ cap.resources_needed }}"></td>
-                                <td><input class="form-control" name="result_{{ forloop.counter }}" type="text"
-                                           value="{{ cap.result }}"></td>
-                                <td class="text-center">
-                                    <button class="btn btn-link delete-row-btn" title="Delete" type="button">
-                                        <i class="bi bi-trash-fill text-danger"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td>1</td>
-                                <td><input class="form-control" name="activity_1" placeholder="Enter activity"
-                                           required type="text"></td>
-                                <td><input class="form-control" name="responsible_person_1" placeholder="Enter responsible person"
-                                           required type="text"></td>
-                                <td><input class="form-control" name="time_frame_1" placeholder="Enter time frame"
-                                           required type="text"></td>
-                                <td><input class="form-control" name="resources_needed_1" placeholder="Enter resources needed"
-                                           required type="text"></td>
-                                <td><input class="form-control" name="result_1" placeholder="Enter result" type="text">
-                                </td>
-                                <td class="text-center">
-                                    <button class="btn btn-link delete-row-btn" title="Delete" type="button">
-                                        <i class="bi bi-trash-fill text-danger"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                        <div class="d-flex justify-content-between mt-3">
-                            <button class="btn btn-secondary btn-sm" id="add-row-btn" type="button">+ Add Row</button>
-                            <button class="btn btn-primary" type="submit">Save Corrective Action Plan</button>
+                                        <!-- Replies -->
+                                        {% if comment.replies.all %}
+                                            <ul class="list-group mt-2 ps-4">
+                                                {% for reply in comment.replies.all %}
+                                                    <li class="list-group-item">
+                                                        <div>
+                                                            <strong>{{ reply.author.username }}</strong>
+                                                            <span class="text-muted"> - {{ reply.created_at|date:"M d, Y H:i" }}</span>
+                                                            <p class="mb-1">{{ reply.content }}</p>
+                                                        </div>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+
+                                        <!-- Reply Form -->
+                                        <form action="" method="post" class="mt-2">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                            <input type="hidden" name="section" value="root_cause_analysis">
+                                            <div class="input-group">
+                                                <input type="text" name="comment_content"
+                                                       class="form-control form-control-sm"
+                                                       placeholder="Reply to this comment..." required>
+                                                <button type="submit" class="btn btn-danger btn-sm">Reply</button>
+                                            </div>
+                                        </form>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                            <!-- Add New Comment Form -->
+                            <form action="" method="post" class="mt-3">
+                                {% csrf_token %}
+                                <input type="hidden" name="section" value="root_cause_analysis">
+                                <div class="input-group">
+                                    <input type="text" name="comment_content" class="form-control"
+                                           placeholder="Write a comment..." required>
+                                    <button type="submit" class="btn btn-danger">Submit</button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
+
+
+                    <!-- Corrective Action Plan Tab -->
+                    <div aria-labelledby="corrective-action-tab" class="tab-pane fade" id="corrective-action"
+                         role="tabpanel">
+                        <form action="{% url 'corrective_action_plan' task.id %}" method="post">
+                            {% csrf_token %}
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Activity</th>
+                                    <th>Responsible Person</th>
+                                    <th>Time Frame</th>
+                                    <th>Resources Needed</th>
+                                    <th>Result</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody id="cap-table-body">
+                                {% for cap in corrective_action_plans %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td><input class="form-control" name="activity_{{ forloop.counter }}"
+                                                   required
+                                                   type="text" value="{{ cap.activity }}"></td>
+                                        <td><input class="form-control"
+                                                   name="responsible_person_{{ forloop.counter }}"
+                                                   required
+                                                   type="text" value="{{ cap.responsible_person }}"></td>
+                                        <td><input class="form-control" name="time_frame_{{ forloop.counter }}"
+                                                   required
+                                                   type="text" value="{{ cap.time_frame }}"></td>
+                                        <td><input class="form-control"
+                                                   name="resources_needed_{{ forloop.counter }}"
+                                                   required
+                                                   type="text" value="{{ cap.resources_needed }}"></td>
+                                        <td><input class="form-control" name="result_{{ forloop.counter }}"
+                                                   type="text"
+                                                   value="{{ cap.result }}"></td>
+                                        <td class="text-center">
+                                            <button class="btn btn-link delete-row-btn" title="Delete"
+                                                    type="button">
+                                                <i class="bi bi-trash-fill text-danger"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td>1</td>
+                                        <td><input class="form-control" name="activity_1"
+                                                   placeholder="Enter activity"
+                                                   required type="text"></td>
+                                        <td><input class="form-control" name="responsible_person_1"
+                                                   placeholder="Enter responsible person"
+                                                   required type="text"></td>
+                                        <td><input class="form-control" name="time_frame_1"
+                                                   placeholder="Enter time frame"
+                                                   required type="text"></td>
+                                        <td><input class="form-control" name="resources_needed_1"
+                                                   placeholder="Enter resources needed"
+                                                   required type="text"></td>
+                                        <td><input class="form-control" name="result_1" placeholder="Enter result"
+                                                   type="text">
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-link delete-row-btn" title="Delete"
+                                                    type="button">
+                                                <i class="bi bi-trash-fill text-danger"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="d-flex justify-content-between mt-3">
+                                <button class="btn btn-secondary btn-sm" id="add-row-btn" type="button">+ Add Row
+                                </button>
+                                <button class="btn btn-primary" type="submit">Save Corrective Action Plan</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-
-</div>
-</div>
-<script>
+   <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // ============================ Comment Section Management ============================
+
+        // Helper function to toggle visibility of elements
+        function toggleVisibility(element, show = true) {
+            if (element) {
+                element.classList.toggle('d-none', !show);
+            }
+        }
+
+        // Add event listeners to Reply buttons for comments
+        document.querySelectorAll('.reply-comment-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const commentId = this.dataset.commentId;
+                const replyFormElement = document.getElementById(`reply-comment-form-${commentId}`);
+                toggleVisibility(replyFormElement, true);
+            });
+        });
+
+        // Add event listeners to Cancel buttons for replies
+        document.querySelectorAll('.cancel-reply-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const commentId = this.dataset.commentId;
+                const replyFormElement = document.getElementById(`reply-comment-form-${commentId}`);
+                toggleVisibility(replyFormElement, false);
+            });
+        });
+
+        // ============================ Table Row Management ============================
+
         const tableBody = document.getElementById('cap-table-body');
         const addRowBtn = document.getElementById('add-row-btn');
 
-        // Add New Row
-        addRowBtn.addEventListener('click', function () {
-            const rowCount = tableBody.rows.length + 1;
-            const newRow = `
-            <tr>
-                <td>${rowCount}</td>
-                <td><input type="text" class="form-control" name="activity_${rowCount}" placeholder="Enter activity" required></td>
-                <td><input type="text" class="form-control" name="responsible_person_${rowCount}" placeholder="Enter responsible person" required></td>
-                <td><input type="text" class="form-control" name="time_frame_${rowCount}" placeholder="Enter time frame" required></td>
-                <td><input type="text" class="form-control" name="resources_needed_${rowCount}" placeholder="Enter resources needed" required></td>
-                <td><input type="text" class="form-control" name="result_${rowCount}" placeholder="Enter result"></td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-link delete-row-btn" title="Delete">
-                        <i class="bi bi-trash-fill text-danger"></i>
-                    </button>
-                </td>
-            </tr>
-        `;
-            tableBody.insertAdjacentHTML('beforeend', newRow);
+        // Function to create a new row
+        function createNewRow(rowIndex) {
+            return `
+                <tr>
+                    <td>${rowIndex}</td>
+                    <td><input type="text" class="form-control" name="activity_${rowIndex}" placeholder="Enter activity" required></td>
+                    <td><input type="text" class="form-control" name="responsible_person_${rowIndex}" placeholder="Enter responsible person" required></td>
+                    <td><input type="text" class="form-control" name="time_frame_${rowIndex}" placeholder="Enter time frame" required></td>
+                    <td><input type="text" class="form-control" name="resources_needed_${rowIndex}" placeholder="Enter resources needed" required></td>
+                    <td><input type="text" class="form-control" name="result_${rowIndex}" placeholder="Enter result"></td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-link delete-row-btn" title="Delete">
+                            <i class="bi bi-trash-fill text-danger"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }
+
+        // Add new row event
+        addRowBtn?.addEventListener('click', function () {
+            const rowCount = tableBody?.rows.length + 1 || 1;
+            const newRow = createNewRow(rowCount);
+            tableBody?.insertAdjacentHTML('beforeend', newRow);
         });
 
-        // Delete Row
-        tableBody.addEventListener('click', function (event) {
+        // Delete row event
+        tableBody?.addEventListener('click', function (event) {
             const target = event.target.closest('.delete-row-btn');
             if (target) {
                 const row = target.closest('tr');
@@ -335,13 +490,17 @@
 
                 // Re-index remaining rows
                 Array.from(tableBody.rows).forEach((row, index) => {
-                    row.cells[0].innerText = index + 1;
+                    const newRowIndex = index + 1;
+                    row.cells[0].innerText = newRowIndex;
                     row.querySelectorAll('input').forEach(input => {
-                        input.name = input.name.replace(/\d+$/, index + 1);
+                        input.name = input.name.replace(/\d+$/, newRowIndex);
                     });
                 });
             }
         });
     });
 </script>
+
+
+
 {% endblock %}

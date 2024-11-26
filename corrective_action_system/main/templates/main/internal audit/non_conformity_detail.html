@@ -35,11 +35,11 @@
 
             <!-- Right Column: Step-by-Step Progress -->
             <div class="col-md-8">
-            <div class="text-end mt-3">
-                <a href="{% url 'preview_rfa' non_conformity.id %}" class="btn btn-primary">
-                    View RFA
-                </a>
-            </div>
+                <div class="text-end mt-3">
+                    <a href="{% url 'preview_rfa' non_conformity.id %}" class="btn btn-primary">
+                        View RFA
+                    </a>
+                </div>
                 <h4>Step-by-Step Progress</h4>
 
                 <!-- Step 1: Immediate Action -->
@@ -57,15 +57,47 @@
                             <li class="list-group-item"><strong>Action
                                 Description:</strong> {{ immediate_action.action_description }}</li>
                         </ul>
-                        <div class="add-comment d-flex mt-3">
-                            <input placeholder="Add a comment..." type="text" class="form-control me-2">
-                            <button type="button" class="btn btn-outline-danger"><i class="bi bi-send"></i></button>
+
+                        <!-- Immediate Action Comments -->
+                        <div class="comments-section mt-4">
+                            <h6><strong>Comments:</strong></h6>
+                            <ul class="list-group">
+                                {% for comment in immediate_action_comments %}
+                                    <li class="list-group-item">
+                                        <strong>{{ comment.author.username }}</strong> -
+                                        <small>{{ comment.created_at|date:"M d, Y H:i" }}</small>
+                                        <p>{{ comment.content }}</p>
+                                        <!-- Replies -->
+                                        <ul class="list-group mt-2 ps-4">
+                                            {% for reply in comment.replies.all %}
+                                                <li class="list-group-item">
+                                                    <strong>{{ reply.author.username }}</strong> -
+                                                    <small>{{ reply.created_at|date:"M d, Y H:i" }}</small>
+                                                    <p>{{ reply.content }}</p>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <!-- Add Comment Form -->
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="section" value="immediate_action">
+                                <div class="input-group mt-3">
+                                    <input type="text" name="comment_content" class="form-control"
+                                           placeholder="Write a comment..." required>
+                                    <button type="submit" class="btn btn-danger">Comment</button>
+                                </div>
+                            </form>
                         </div>
+
                         <button type="button" class="btn btn-danger mt-3 complete-step-btn w-20" data-step="1">Complete
                             Step
                         </button>
                     </div>
                 </div>
+
 
                 <!-- Step 2: Root Cause Analysis -->
                 <div class="progress-step">
@@ -88,23 +120,59 @@
                                 Date:</strong> {{ root_cause_analysis.estimated_close_date }}</li>
                         </ul>
 
-                        <!-- 5 Why's Analysis -->
-                        <h6 class="mt-4"><strong>5 Why's Analysis:</strong></h6>
+                        <!-- Supporting Evidence Section -->
+                        <h6 class="mt-4"><strong>Supporting Evidence:</strong></h6>
                         <ul class="list-group">
-                            {% for key, value in root_cause_analysis.five_whys.items %}
-                                <li class="list-group-item">
-                                    <strong>{{ key|title }}:</strong> {{ value }}
+                            {% if root_cause_analysis.supporting_evidence %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><i
+                            class="bi bi-file-earmark-text me-2"></i>{{ root_cause_analysis.supporting_evidence.name|slice:":50" }}</span>
+                                    <a href="{{ root_cause_analysis.supporting_evidence.url }}"
+                                       class="btn btn-link btn-sm" target="_blank">
+                                        View / Download
+                                    </a>
                                 </li>
-                            {% empty %}
-                                <li class="list-group-item text-muted">No 5 Why's Analysis provided.</li>
-                            {% endfor %}
+                            {% else %}
+                                <li class="list-group-item text-muted">
+                                    <i class="bi bi-exclamation-circle me-2"></i>No supporting evidence uploaded.
+                                </li>
+                            {% endif %}
                         </ul>
 
-                        <!-- Add Comment Section -->
-                        <div class="add-comment d-flex mt-3">
-                            <input placeholder="Add a comment..." type="text" class="form-control me-2">
-                            <button type="button" class="btn btn-outline-danger"><i class="bi bi-send"></i></button>
+                        <!-- Root Cause Analysis Comments -->
+                        <div class="comments-section mt-4">
+                            <h6><strong>Comments:</strong></h6>
+                            <ul class="list-group">
+                                {% for comment in root_cause_comments %}
+                                    <li class="list-group-item">
+                                        <strong>{{ comment.author.username }}</strong> -
+                                        <small>{{ comment.created_at|date:"M d, Y H:i" }}</small>
+                                        <p>{{ comment.content }}</p>
+                                        <!-- Replies -->
+                                        <ul class="list-group mt-2 ps-4">
+                                            {% for reply in comment.replies.all %}
+                                                <li class="list-group-item">
+                                                    <strong>{{ reply.author.username }}</strong> -
+                                                    <small>{{ reply.created_at|date:"M d, Y H:i" }}</small>
+                                                    <p>{{ reply.content }}</p>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <!-- Add Comment Form -->
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="section" value="root_cause_analysis">
+                                <div class="input-group mt-3">
+                                    <input type="text" name="comment_content" class="form-control"
+                                           placeholder="Write a comment..." required>
+                                    <button type="submit" class="btn btn-danger">Comment</button>
+                                </div>
+                            </form>
                         </div>
+
 
                         <!-- Complete Step Button -->
                         <button type="button" class="btn btn-danger mt-3 complete-step-btn w-20" data-step="2">Complete
@@ -173,6 +241,41 @@
                                     </p>
                                     <p><strong>Date:</strong> {{ latest_review.review_date|date:"M d, Y" }}</p>
                                 </div>
+
+                                <!-- Corrective Action Plan Comments -->
+                                <div class="comments-section mt-4">
+                                    <h6><strong>Comments:</strong></h6>
+                                    <ul class="list-group">
+                                        {% for comment in corrective_action_comments %}
+                                            <li class="list-group-item">
+                                                <strong>{{ comment.author.username }}</strong> -
+                                                <small>{{ comment.created_at|date:"M d, Y H:i" }}</small>
+                                                <p>{{ comment.content }}</p>
+                                                <!-- Replies -->
+                                                <ul class="list-group mt-2 ps-4">
+                                                    {% for reply in comment.replies.all %}
+                                                        <li class="list-group-item">
+                                                            <strong>{{ reply.author.username }}</strong> -
+                                                            <small>{{ reply.created_at|date:"M d, Y H:i" }}</small>
+                                                            <p>{{ reply.content }}</p>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                    <!-- Add Comment Form -->
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="section" value="corrective_action_plan">
+                                        <div class="input-group mt-3">
+                                            <input type="text" name="comment_content" class="form-control"
+                                                   placeholder="Write a comment..." required>
+                                            <button type="submit" class="btn btn-danger">Comment</button>
+                                        </div>
+                                    </form>
+                                </div>
+
 
                                 <!-- Complete Step Button -->
                                 {% if latest_review.effectiveness == 'Accepted' %}
@@ -605,7 +708,4 @@
             }
         });
     </script>
-
-
-
 {% endblock %}

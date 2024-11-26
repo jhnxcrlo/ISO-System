@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from xhtml2pdf import pisa
 from django.http import HttpResponseServerError
 from .models import LoginEvent, UserProfile, ImmediateAction, RootCauseAnalysis, CorrectiveActionPlan, FollowUpAction, \
-    ActionVerification, CorrectiveActionPlanReview, CloseOut
+    ActionVerification, CorrectiveActionPlanReview, CloseOut, Comment
 from .forms import UserCreationForm, UserUpdateForm, RootCauseAnalysisForm, ImmediateActionForm, \
     CorrectiveActionPlanForm, FollowUpActionForm, CorrectiveActionPlanReviewForm, CloseOutForm, ActionVerificationForm
 from django.http import HttpResponse, FileResponse, Http404
@@ -576,29 +576,165 @@ def add_non_conformity(request):
         'process_owners': process_owners
     })
 
+@login_required
+def non_conformity_detail(request, nc_id):
+    try:
+        # Fetch the non-conformity record
+        non_conformity = get_object_or_404(NonConformity, id=nc_id)
+
+        # Existing data fetching
+        immediate_action = ImmediateAction.objects.filter(non_conformity=non_conformity).first()
+        root_cause_analysis = RootCauseAnalysis.objects.filter(non_conformity=non_conformity).first()
+        corrective_action_plans = CorrectiveActionPlan.objects.filter(non_conformity=non_conformity)
+        corrective_action_plan = corrective_action_plans.first()
+        follow_up_actions = FollowUpAction.objects.filter(non_conformity=non_conformity).order_by('-follow_up_date')
+
+        if corrective_action_plan:
+            action_verifications = ActionVerification.objects.filter(
+                corrective_action_plan=corrective_action_plan
+            ).order_by('-date')
+        else:
+            action_verifications = None
+
+        latest_review = CorrectiveActionPlanReview.objects.filter(
+            corrective_action_plan__non_conformity=non_conformity
+        ).order_by('-review_date').first()
+
+        # Fetch comments for each section
+        immediate_action_comments = Comment.objects.filter(
+            task=non_conformity, section='immediate_action', parent__isnull=True
+        ).order_by('-created_at')
+        root_cause_comments = Comment.objects.filter(
+            task=non_conformity, section='root_cause_analysis', parent__isnull=True
+        ).order_by('-created_at')
+        corrective_action_comments = Comment.objects.filter(
+            task=non_conformity, section='corrective_action_plan', parent__isnull=True
+        ).order_by('-created_at')
+
+        # Handle POST request for adding/deleting comments
+        if request.method == 'POST':
+            if 'delete_comment_id' in request.POST:
+                # Existing delete functionality
+                comment_id = request.POST.get('delete_comment_id')
+                comment_to_delete = Comment.objects.filter(id=comment_id, author=request.user).first()
+                if comment_to_delete:
+                    comment_to_delete.delete()
+                    messages.success(request, "Comment deleted successfully!")
+                else:
+                    messages.error(request, "You do not have permission to delete this comment.")
+            elif 'comment_content' in request.POST:
+                # New comment addition functionality
+                content = request.POST.get('comment_content', '').strip()
+                section = request.POST.get('section', '').strip()
+                parent_id = request.POST.get('parent_id')  # Parent comment ID for replies
+
+                if content and section in ['immediate_action', 'root_cause_analysis', 'corrective_action_plan']:
+                    parent_comment = Comment.objects.filter(id=parent_id).first() if parent_id else None
+                    Comment.objects.create(
+                        task=non_conformity,
+                        author=request.user,
+                        content=content,
+                        section=section,
+                        parent=parent_comment
+                    )
+                    messages.success(request, "Comment added successfully!")
+                else:
+                    messages.error(request, "Comment content or section is invalid.")
+
+                # Redirect to prevent duplicate submissions
+                return redirect('non_conformity_detail', nc_id=nc_id)
+
+        # Prepare context for rendering
+        context = {
+            'non_conformity': non_conformity,
+            'immediate_action': immediate_action,
+            'root_cause_analysis': root_cause_analysis,
+            'corrective_action_plans': corrective_action_plans,
+            'corrective_action_plan': corrective_action_plan,
+            'follow_up_actions': follow_up_actions,
+            'verifications': action_verifications,
+            'latest_review': latest_review,
+            'immediate_action_comments': immediate_action_comments,
+            'root_cause_comments': root_cause_comments,
+            'corrective_action_comments': corrective_action_comments,
+        }
+
+        return render(request, 'main/internal audit/non_conformity_detail.html', context)
+
+    except Exception as e:
+        print(f"Error in non_conformity_detail: {e}")
+        return HttpResponseServerError("An error occurred while processing your request.")
+
 
 
 @login_required
 def task_detail(request, task_id):
-    # Fetch the task
+    # Fetch the task (Non-Conformity record)
     task = get_object_or_404(NonConformity, id=task_id)
+
+    # Fetch related comments for each section
+    immediate_action_comments = Comment.objects.filter(
+        task=task, section='immediate_action', parent__isnull=True
+    ).order_by('-created_at')
+    root_cause_comments = Comment.objects.filter(
+        task=task, section='root_cause_analysis', parent__isnull=True
+    ).order_by('-created_at')
+    corrective_action_comments = Comment.objects.filter(
+        task=task, section='corrective_action_plan', parent__isnull=True
+    ).order_by('-created_at')
 
     # Fetch related data
     immediate_action = ImmediateAction.objects.filter(non_conformity=task).first()
     root_cause_analysis = RootCauseAnalysis.objects.filter(non_conformity=task).first()
     corrective_action_plans = CorrectiveActionPlan.objects.filter(non_conformity=task)
 
+    # Handle POST request for adding/replying to comments or deleting them
+    if request.method == 'POST':
+        if 'delete_comment_id' in request.POST:
+            # Handle comment deletion
+            comment_id = request.POST.get('delete_comment_id')
+            comment_to_delete = Comment.objects.filter(id=comment_id, author=request.user).first()
+            if comment_to_delete:
+                comment_to_delete.delete()
+                messages.success(request, "Comment deleted successfully!")
+            else:
+                messages.error(request, "You do not have permission to delete this comment.")
+        elif 'comment_content' in request.POST:
+            # Handle adding a new comment or reply
+            content = request.POST.get('comment_content', '').strip()
+            section = request.POST.get('section', '').strip()
+            parent_id = request.POST.get('parent_id')  # ID of the parent comment (if replying)
+
+            if content and section in ['immediate_action', 'root_cause_analysis', 'corrective_action_plan']:
+                parent_comment = Comment.objects.filter(id=parent_id).first() if parent_id else None
+                Comment.objects.create(
+                    task=task,
+                    author=request.user,
+                    content=content,
+                    section=section,
+                    parent=parent_comment
+                )
+                messages.success(request, "Comment added successfully!")
+            else:
+                messages.error(request, "Comment content or section is invalid.")
+
+            # Redirect back to task_detail view to prevent duplicate submissions
+            return redirect('task_detail', task_id=task_id)
+
+    # Context for rendering the template
     context = {
         'task': task,
         'immediate_action': immediate_action,
         'root_cause_analysis': root_cause_analysis,
         'corrective_action_plans': corrective_action_plans,
-        'immediate_action_form': ImmediateActionForm(instance=immediate_action),
-        'root_cause_analysis_form': RootCauseAnalysisForm(instance=root_cause_analysis),
-        'form_action_url': 'corrective_action_plan',
+        'immediate_action_comments': immediate_action_comments,
+        'root_cause_comments': root_cause_comments,
+        'corrective_action_comments': corrective_action_comments,
     }
 
     return render(request, 'main/process owner/task_detail.html', context)
+
+
 
 from django.utils.timezone import now
 from django.contrib import messages
@@ -637,7 +773,6 @@ def add_immediate_action(request, task_id):
     messages.error(request, "Invalid request.")
     return redirect('task_detail', task_id=task.id)
 
-
 # View for saving Root Cause Analysis
 @login_required
 def add_root_cause_analysis(request, task_id):
@@ -651,12 +786,14 @@ def add_root_cause_analysis(request, task_id):
         root_cause_analysis.rca_date = request.POST.get('rca_date')
         root_cause_analysis.responsible_officer = request.POST.get('responsible_officer', '')
         root_cause_analysis.estimated_close_date = request.POST.get('estimated_close_date')
+        root_cause_analysis.supporting_evidence = request.POST.get('supporting_evidence', '')
 
-        # Process '5 Whys' data
-        five_whys_data = {
-            f'why{i}': request.POST.get(f'five_whys[why{i}]', '') for i in range(1, 6)
-        }
-        root_cause_analysis.five_whys = five_whys_data  # Ensure this field is a JSONField in your model
+        # Handle supporting evidence upload
+        if 'supporting_evidence' in request.FILES:
+            print("File received:", request.FILES['supporting_evidence'].name)
+            root_cause_analysis.supporting_evidence = request.FILES['supporting_evidence']
+        else:
+            print("No file received")
 
         # Validate required fields
         if not root_cause_analysis.cause_description or not root_cause_analysis.rca_date:
@@ -703,63 +840,9 @@ def corrective_action_plan(request, task_id):
         'corrective_action_plans': corrective_action_plans,
     })
 
+from django.contrib import messages
 
-@login_required
-def non_conformity_detail(request, nc_id):
-    try:
-        # Fetch the non-conformity record
-        non_conformity = get_object_or_404(NonConformity, id=nc_id)
 
-        # Fetch immediate action (if any)
-        immediate_action = ImmediateAction.objects.filter(non_conformity=non_conformity).first()
-
-        # Fetch root cause analysis (if any)
-        root_cause_analysis = RootCauseAnalysis.objects.filter(non_conformity=non_conformity).first()
-
-        # Fetch all related corrective action plans
-        corrective_action_plans = CorrectiveActionPlan.objects.filter(non_conformity=non_conformity)
-
-        # Fetch the first corrective action plan for verification
-        corrective_action_plan = corrective_action_plans.first()
-
-        # Fetch all follow-up actions
-        follow_up_actions = FollowUpAction.objects.filter(non_conformity=non_conformity).order_by('-follow_up_date')
-
-        # Fetch verification records for the corrective action plan
-        if corrective_action_plan:
-            action_verifications = ActionVerification.objects.filter(
-                corrective_action_plan=corrective_action_plan).order_by('-date')
-        else:
-            action_verifications = None
-
-        # Fetch the latest corrective action plan review
-        latest_review = CorrectiveActionPlanReview.objects.filter(
-            corrective_action_plan__non_conformity=non_conformity
-        ).order_by('-review_date').first()
-
-        # Prepare forms
-        follow_up_form = FollowUpActionForm()
-        verification_form = ActionVerificationForm()
-
-        # Context for rendering the template
-        context = {
-            'non_conformity': non_conformity,
-            'immediate_action': immediate_action,
-            'root_cause_analysis': root_cause_analysis,
-            'corrective_action_plans': corrective_action_plans,
-            'corrective_action_plan': corrective_action_plan,
-            'follow_up_actions': follow_up_actions,
-            'verifications': action_verifications,
-            'verification_form': verification_form,
-            'latest_review': latest_review,
-            'follow_up_form': follow_up_form,
-        }
-
-        return render(request, 'main/internal audit/non_conformity_detail.html', context)
-
-    except Exception as e:
-        print(f"Error in non_conformity_detail: {e}")
-        return HttpResponseServerError("An error occurred while processing your request.")
 
 
 @login_required
