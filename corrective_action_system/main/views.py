@@ -27,7 +27,8 @@ from django.utils.timezone import now
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from .models import  UserProfile
-
+from notifications.signals import notify
+from notifications.models import Notification
 s = URLSafeTimedSerializer('your-secret-key')
 
 def login_view(request):
@@ -54,25 +55,20 @@ def login_view(request):
             return render(request, 'main/login.html', {'error': 'Invalid username or password'})
     return render(request, 'main/login.html')
 
-
 @login_required
 def dashboard_view(request):
     return render(request, 'main/administrator/dashboard.html')
 
-
 @login_required
 def internal_auditor_dashboard_view(request):
     return render(request, 'main/internal audit/internal_auditor_dashboard.html')
-
 
 @login_required
 def process_owner_dashboard_view(request):
     tasks = NonConformity.objects.filter(assigned_to=request.user, status='pending')
     return render(request, 'main/process owner/process_owner_dashboard.html', {'tasks': tasks})
 
-
 logger = logging.getLogger(__name__)
-
 
 @login_required
 def manage_users_view(request):
@@ -94,7 +90,6 @@ def manage_users_view(request):
     }
 
     return render(request, 'main/administrator/manage_users.html', context)
-
 
 @login_required
 def add_user(request):
@@ -168,7 +163,6 @@ def add_user(request):
 
     return redirect('manage_users')
 
-
 @login_required
 def delete_user_view(request, user_id):
     user = get_object_or_404(User, id=user_id)
@@ -186,7 +180,6 @@ def delete_user_view(request, user_id):
 
     # If it's not a POST request, render the confirmation page
     return render(request, 'main/administrator/confirm_delete.html', {'user': user})
-
 
 @login_required
 def change_password(request):
@@ -223,7 +216,6 @@ def change_password(request):
 
     return render(request, 'main/administrator/change_password.html', {'form': form})
 
-
 def verify_email(request, token):
     try:
         email = s.loads(token, salt='email-confirm', max_age=3600)
@@ -241,13 +233,11 @@ def verify_email(request, token):
         messages.error(request, 'An unexpected error occurred.')
     return redirect('login')
 
-
 def announcement_list(request):
     announcements = Announcement.objects.all()
     form = AnnouncementForm()
     return render(request, 'main/administrator/announcements/announcement_list.html',
                   {'announcements': announcements, 'form': form})
-
 
 @login_required
 def create_announcement(request):
@@ -263,7 +253,6 @@ def create_announcement(request):
 
     return render(request, 'main/administrator/announcements/announcement_list.html', {'form': form})
 
-
 @login_required
 def update_announcement(request, pk):
     announcement = get_object_or_404(Announcement, pk=pk)
@@ -273,7 +262,6 @@ def update_announcement(request, pk):
             form.save()
             return redirect('announcement_list')
 
-
 @login_required
 def delete_announcement(request, pk):
     announcement = get_object_or_404(Announcement, pk=pk)
@@ -281,12 +269,10 @@ def delete_announcement(request, pk):
         announcement.delete()
         return redirect('announcement_list')
 
-
 @login_required
 def forms_view(request):
     templates = TemplateModel.objects.all()
     return render(request, 'main/administrator/forms.html', {'templates': templates})
-
 
 @login_required
 def upload_template(request):
@@ -308,7 +294,6 @@ def upload_template(request):
 
     return redirect('forms')
 
-
 @login_required
 def download_template(request, pk):
     template = get_object_or_404(TemplateModel, pk=pk)
@@ -322,11 +307,9 @@ def download_template(request, pk):
             raise Http404("File not found.")
     return redirect('forms')
 
-
 def role_allowed_to_delete(user):
     print(f"User {user.username} with role {user.userprofile.role} is trying to delete.")
     return hasattr(user, 'userprofile') and user.userprofile.role in ['Admin', 'Internal Auditor']
-
 
 @login_required
 @user_passes_test(role_allowed_to_delete)
@@ -347,12 +330,10 @@ def delete_template(request, pk):
     else:
         return redirect('forms')
 
-
 @login_required
 def internal_auditor_forms_view(request):
     templates = TemplateModel.objects.all()
     return render(request, 'main/internal audit/internal_auditor_forms.html', {'templates': templates})
-
 
 @login_required
 def internal_upload_template(request):
@@ -368,18 +349,16 @@ def internal_upload_template(request):
                 file=template_file
             )
             template_model.save()
-            return redirect('forms')
+            return redirect('internal_auditor_forms')
 
-        return render(request, 'main/administrator/forms.html', {'error': 'No file was uploaded.'})
+        return render(request, 'main/internal audit/internal_auditor_forms.html', {'error': 'No file was uploaded.'})
 
-    return redirect('forms')
-
+    return redirect('internal_auditor_forms')
 
 @login_required
 def process_owner_forms_view(request):
     templates = TemplateModel.objects.all()  # List all available forms
     return render(request, 'main/process owner/process_owner_forms.html', {'templates': templates})
-
 
 @login_required
 def internal_auditor_monitoring_log(request):
@@ -401,14 +380,12 @@ def internal_auditor_monitoring_log(request):
     }
     return render(request, 'main/internal audit/internal_auditor_monitoring_log.html', context)
 
-
 @login_required
 def admin_guideline_list(request):
     guidelines = Guideline.objects.all()
     for guideline in guidelines:
         logger.info(f"File URL: {guideline.file.url}")
     return render(request, 'main/administrator/guidelines/list.html', {'guidelines': guidelines})
-
 
 @login_required
 @login_required
@@ -428,7 +405,6 @@ def admin_upload_guideline(request):
 
     return render(request, 'main/administrator/guidelines/upload.html', {'form': form})
 
-
 @login_required
 def admin_edit_guideline(request, pk):
     guideline = get_object_or_404(Guideline, pk=pk)
@@ -445,7 +421,6 @@ def admin_edit_guideline(request, pk):
 
     return render(request, 'main/administrator/guidelines/edit.html', {'form': form, 'guideline': guideline})
 
-
 @login_required
 def admin_delete_guideline(request, pk):
     guideline = get_object_or_404(Guideline, pk=pk)
@@ -456,18 +431,15 @@ def admin_delete_guideline(request, pk):
 
     return render(request, 'main/administrator/guidelines/delete_confirm.html', {'guideline': guideline})
 
-
 # Check if user is internal auditor
 def is_internal_auditor(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Internal Auditor'
-
 
 @login_required
 @user_passes_test(is_internal_auditor)
 def internal_auditor_guideline_list(request):
     guidelines = Guideline.objects.all()
     return render(request, 'main/internal audit/list.html', {'guidelines': guidelines})
-
 
 @login_required
 @user_passes_test(is_internal_auditor)
@@ -487,7 +459,6 @@ def internal_auditor_upload_guideline(request):
 
     return render(request, 'main/internal audit/upload_guideline.html', {'form': form})
 
-
 @login_required
 @user_passes_test(is_internal_auditor)
 def internal_auditor_edit_guideline(request, pk):
@@ -505,7 +476,6 @@ def internal_auditor_edit_guideline(request, pk):
 
     return render(request, 'main/internal audit/edit_guideline.html', {'form': form, 'guideline': guideline})
 
-
 @login_required
 @user_passes_test(is_internal_auditor)
 def internal_auditor_delete_guideline(request, pk):
@@ -517,18 +487,15 @@ def internal_auditor_delete_guideline(request, pk):
 
     return render(request, 'main/internal audit/delete_guideline.html', {'guideline': guideline})
 
-
 # Check if user is process owner
 def is_process_owner(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Process Owner'
-
 
 @login_required
 @user_passes_test(is_process_owner)
 def process_owner_guideline_list(request):
     guidelines = Guideline.objects.all()
     return render(request, 'main/process owner/list.html', {'guidelines': guidelines})
-
 
 def add_non_conformity(request):
     if request.method == 'POST':
@@ -545,13 +512,13 @@ def add_non_conformity(request):
         iso_clause = request.POST.get('iso_clause')
         category = request.POST.get('category')
         start_date = request.POST.get('start_date')
-        assigned_to_id = request.POST.get('assigned_to')
+        assigned_to_id = request.POST.get('assigned_to')  # Process Owner ID from form
 
         # Get the assigned process owner
         assigned_to = User.objects.get(id=assigned_to_id)
 
-        # Create NonConformity instance
-        NonConformity.objects.create(
+        # Create the NonConformity instance
+        non_conformity_instance = NonConformity.objects.create(
             non_conformity=non_conformity,
             originator_name=originator_name,
             unit_department=unit_department,
@@ -564,13 +531,24 @@ def add_non_conformity(request):
             iso_clause=iso_clause,
             category=category,
             start_date=start_date,
-            assigned_to=assigned_to,  # Assign to selected process owner
+            assigned_to=assigned_to,
             status='pending'
         )
 
-        return redirect('internal_auditor_monitoring_log')  # Redirect to the process owner's dashboard
+        # Send notification to the assigned Process Owner
+        notify.send(
+            request.user,  # Internal Auditor creating the Non-Conformity
+            recipient=assigned_to,  # Process Owner
+            verb="New Task Assigned",
+            description=f"You have been assigned a new Non-Conformity: {non_conformity_instance.non_conformity}.",
+            target=non_conformity_instance  # Link to the created Non-Conformity
+        )
 
-    # Fetch all process owners for dropdown
+        # Add success message and redirect
+        messages.success(request, 'Non-Conformity successfully created and Process Owner notified.')
+        return redirect('internal_auditor_monitoring_log')  # Redirect to appropriate page
+
+    # Fetch all Process Owners for dropdown in the form
     process_owners = User.objects.filter(userprofile__role='Process Owner')
     return render(request, 'main/internal audit/add_non_conformity.html', {
         'process_owners': process_owners
@@ -665,8 +643,6 @@ def non_conformity_detail(request, nc_id):
         print(f"Error in non_conformity_detail: {e}")
         return HttpResponseServerError("An error occurred while processing your request.")
 
-
-
 @login_required
 def task_detail(request, task_id):
     # Fetch the task (Non-Conformity record)
@@ -733,14 +709,6 @@ def task_detail(request, task_id):
     }
 
     return render(request, 'main/process owner/task_detail.html', context)
-
-
-
-from django.utils.timezone import now
-from django.contrib import messages
-from django.shortcuts import get_object_or_404, redirect
-from .models import  UserProfile
-
 
 @login_required
 def add_immediate_action(request, task_id):
@@ -810,7 +778,6 @@ def add_root_cause_analysis(request, task_id):
     messages.error(request, "Invalid request.")
     return redirect('task_detail', task_id=task.id)
 
-
 @login_required
 def corrective_action_plan(request, task_id):
     task = get_object_or_404(NonConformity, id=task_id)
@@ -839,10 +806,6 @@ def corrective_action_plan(request, task_id):
         'non_conformity': task,
         'corrective_action_plans': corrective_action_plans,
     })
-
-from django.contrib import messages
-
-
 
 
 @login_required
@@ -1174,3 +1137,32 @@ def generate_pdf(request, nc_id):
         return HttpResponse('An error occurred while generating the PDF', status=500)
 
     return response
+
+def notifications_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')  # Redirect to login if not authenticated
+
+    # Fetch notifications for the logged-in user
+    notifications = request.user.notifications.all().order_by('-timestamp')
+
+    return render(request, 'main/internal audit/notifications.html', {'notifications': notifications})
+
+def mark_all_notifications_read(request):
+    if not request.user.is_authenticated:
+        return redirect('login')  # Redirect to login if not authenticated
+
+    # Mark all unread notifications as read
+    request.user.notifications.mark_all_as_read()
+
+    return redirect('notifications')  # Redirect back to the notifications page
+
+def mark_notification_as_read(request, notification_id):
+    if not request.user.is_authenticated:
+        return redirect('login')  # Redirect to login if not authenticated
+
+    # Fetch the specific notification
+    notification = get_object_or_404(Notification, id=notification_id, recipient=request.user)
+    notification.mark_as_read()
+
+    return redirect('notifications')  # Redirect back to the notifications page
+

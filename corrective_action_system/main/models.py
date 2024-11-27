@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.urls import reverse
 
 
 class UserProfile(models.Model):
@@ -114,6 +114,14 @@ class NonConformity(models.Model):
 
     def __str__(self):
         return f"{self.non_conformity} - {self.originator_name}"
+
+    def get_task_url(self):
+        """Return the Process Owner-specific URL."""
+        return reverse('task_detail', kwargs={'task_id': self.pk})
+
+    def get_non_conformity_url(self):
+        """Return the Internal Auditor-specific URL."""
+        return reverse('non_conformity_detail', kwargs={'nc_id': self.pk})
 
 
 # Model for Immediate Action
@@ -253,4 +261,7 @@ class Comment(models.Model):
     @property
     def is_reply(self):
         return self.parent is not None
+
+
+
 

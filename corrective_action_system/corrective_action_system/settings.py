@@ -23,8 +23,8 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
     'rest_framework.authtoken',
-    'pdfkit',
     'xhtml2pdf',
+    'notifications',
 ]
 
 MIDDLEWARE = [

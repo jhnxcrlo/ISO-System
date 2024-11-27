@@ -2,7 +2,6 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
-
 from . import views
 from .views import change_password, add_review, fm_qms_010_page_1, preview_rfa, generate_pdf
 
@@ -76,8 +75,12 @@ urlpatterns = [
     path('internal-audit/non-conformity/<int:nc_id>/', views.non_conformity_detail, name='non_conformity_detail'),
     # path for corrective action verification
     path('corrective_action_plan/<int:cap_id>/verification/', views.action_verification, name='action_verification'),
+    path('notifications/', views.notifications_view, name='notifications'),
+    path('notifications/mark-all-read/', views.mark_all_notifications_read, name='mark_all_notifications_read'),
+    path('notifications/<int:notification_id>/mark-read/', views.mark_notification_as_read, name='mark_notification_as_read'),
 
 ]
+
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
