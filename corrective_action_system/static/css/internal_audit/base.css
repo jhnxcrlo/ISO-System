@@ -513,14 +513,15 @@
     text-decoration: none !important;
     cursor: pointer !important;
     padding: 10px 15px !important;
-    font-weight: normal !important;
-    font-size: 1rem !important;
+    font-weight:  bolder !important;
+    font-size: 1.2rem !important;
     transition: color 0.3s ease, text-shadow 0.3s ease !important;
 }
 
 .btn-tertiary:hover {
     color: #7e1f1f !important; /* Slightly darker red on hover */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) !important; /* Add a soft text shadow */
+    text-decoration: underline !important; /* Add underline on hover */
 }
 
 .btn-tertiary:disabled {

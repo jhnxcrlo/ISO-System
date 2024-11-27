@@ -104,6 +104,18 @@
     .badge-completed {
         background-color: #66BB6A;
     }
+
+        /* Hover effect for table rows */
+/* Hover effect for table rows */
+#nonConformitiesTable tbody tr:hover a {
+    text-decoration: underline !important; /* Underline the text when hovering over the row */
+}
+
+/* Ensure no text decoration when not hovered */
+#nonConformitiesTable tbody tr a {
+    text-decoration: none !important; /* Default no underline */
+}
+
 </style>
     
 <div class="container mt-4">
@@ -118,21 +130,27 @@
     <!-- Filter Tabs -->
     <ul class="nav nav-pills mb-4" id="tabContainer">
         <li class="nav-item">
-            <a class="nav-link active" data-filter="all" href="#">All ({{ non_conformities.count }})</a>
+            <a class="nav-link active" data-filter="all" href="#">
+                All ({{ non_conformities.count }})
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-filter="in_progress" href="#">Ongoing ({{ ongoing_count }})</a>
+            <a class="nav-link" data-filter="in_progress" href="#">
+                Ongoing ({{ ongoing_count }})
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-filter="cancelled" href="#">Cancelled ({{ cancelled_count }})</a>
+            <a class="nav-link" data-filter="corrective_action_completed" href="#">
+                Finished ({{ finished_count }})
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-filter="completed" href="#">Finished ({{ finished_count }})</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-filter="postponed" href="#">Postponed ({{ postponed_count }})</a>
+            <a class="nav-link" data-filter="postponed" href="#">
+                Postponed ({{ postponed_count }})
+            </a>
         </li>
     </ul>
+
 
     <!-- Search Bar -->
     <div class="input-group mb-4">
@@ -194,62 +212,84 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const tabLinks = document.querySelectorAll('#tabContainer .nav-link');
-        const tableBody = document.querySelector('#nonConformitiesTable tbody');
-        const tableRows = Array.from(tableBody.querySelectorAll('tr'));
-        const searchInput = document.getElementById('searchInput');
+   document.addEventListener('DOMContentLoaded', function () {
+    const tabLinks = document.querySelectorAll('#tabContainer .nav-link');
+    const tableBody = document.querySelector('#nonConformitiesTable tbody');
+    const tableRows = Array.from(tableBody.querySelectorAll('tr'));
+    const searchInput = document.getElementById('searchInput');
 
-        // Sort by Default: Latest Created First (by ID)
-        const sortByIdDesc = () => {
-            tableRows.sort((a, b) => {
-                const idA = parseInt(a.getAttribute('data-id'));
-                const idB = parseInt(b.getAttribute('data-id'));
-                return idB - idA; // Descending order by ID
-            });
-
-            // Re-append sorted rows to the table body
-            tableBody.innerHTML = '';
-            tableRows.forEach(row => tableBody.appendChild(row));
-        };
-
-        // Filter Rows by Tabs
-        const filterRowsByTab = (filter) => {
-            tableRows.forEach(row => {
-                const status = row.getAttribute('data-status');
-                row.style.display = (filter === 'all' || filter === status) ? '' : 'none';
-            });
-        };
-
-        // Search Functionality
-        const filterRowsBySearch = (query) => {
-            tableRows.forEach(row => {
-                const matchesSearch = row.textContent.toLowerCase().includes(query);
-                row.style.display = matchesSearch ? '' : 'none';
-            });
-        };
-
-        // Tab Event Listeners
-        tabLinks.forEach(tab => {
-            tab.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                tabLinks.forEach(link => link.classList.remove('active'));
-                this.classList.add('active');
-
-                const filter = this.getAttribute('data-filter');
-                filterRowsByTab(filter); // Filter rows based on the selected tab
-            });
+    // Sort by Default: Latest Created First (by ID)
+    const sortByIdDesc = () => {
+        tableRows.sort((a, b) => {
+            const idA = parseInt(a.getAttribute('data-id'));
+            const idB = parseInt(b.getAttribute('data-id'));
+            return idB - idA; // Descending order by ID
         });
 
-        // Search Event Listener
-        searchInput.addEventListener('input', function () {
-            const query = this.value.toLowerCase();
-            filterRowsBySearch(query); // Filter rows based on search query
-        });
+        // Re-append sorted rows to the table body
+        tableBody.innerHTML = '';
+        tableRows.forEach(row => tableBody.appendChild(row));
+    };
 
-        // Initial Sorting
-        sortByIdDesc();
+    // Update tab numbers dynamically
+    const updateTabCounts = () => {
+        const allCount = tableRows.length;
+
+        // Count rows by specific statuses
+        const ongoingCount = tableRows.filter(row => {
+            const status = row.getAttribute('data-status');
+            return status === 'pending' || status === 'in_progress';
+        }).length;
+
+        const finishedCount = tableRows.filter(row => row.getAttribute('data-status') === 'corrective_action_completed').length;
+        const postponedCount = tableRows.filter(row => row.getAttribute('data-status') === 'postponed').length;
+
+        // Update tab counts
+        document.querySelector('[data-filter="all"]').innerText = `All (${allCount})`;
+        document.querySelector('[data-filter="in_progress"]').innerText = `Ongoing (${ongoingCount})`;
+        document.querySelector('[data-filter="corrective_action_completed"]').innerText = `Finished (${finishedCount})`;
+        document.querySelector('[data-filter="postponed"]').innerText = `Postponed (${postponedCount})`;
+    };
+
+    // Filter Rows by Tabs
+    const filterRowsByTab = (filter) => {
+        tableRows.forEach(row => {
+            const status = row.getAttribute('data-status');
+            row.style.display = (filter === 'all' || filter === status) ? '' : 'none';
+        });
+    };
+
+    // Search Functionality
+    const filterRowsBySearch = (query) => {
+        tableRows.forEach(row => {
+            const matchesSearch = row.textContent.toLowerCase().includes(query);
+            row.style.display = matchesSearch ? '' : 'none';
+        });
+    };
+
+    // Tab Event Listeners
+    tabLinks.forEach(tab => {
+        tab.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            tabLinks.forEach(link => link.classList.remove('active'));
+            this.classList.add('active');
+
+            const filter = this.getAttribute('data-filter');
+            filterRowsByTab(filter); // Filter rows based on the selected tab
+        });
     });
+
+    // Search Event Listener
+    searchInput.addEventListener('input', function () {
+        const query = this.value.toLowerCase();
+        filterRowsBySearch(query); // Filter rows based on search query
+    });
+
+    // Initial Sorting and Counts
+    sortByIdDesc();
+    updateTabCounts();
+});
 </script>
+
 {% endblock %}

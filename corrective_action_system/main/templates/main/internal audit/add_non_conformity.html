@@ -2,91 +2,190 @@
 {% block title %}Add New Non-Conformity{% endblock %}
 
 {% block content %}
+<style>
+    /* Style for labels */
+    .form-label {
+        font-weight: bold; /* Make labels bold */
+        font-size: 18px; /* Default font size */
+        line-height: 1.5; /* Improve readability */
+        margin-bottom: 3px; /* Add space below labels */
+    }
+
+    /* Adjust spacing and alignment for inputs */
+    .form-control {
+        margin-top: 10px; /* Space between label and input */
+        font-size: 16px; /* Set input font size */
+    }
+
+    /* Spacing for select dropdowns */
+    .form-control {
+        padding: 12px; /* Add padding for better appearance */
+    }
+
+    /* Style for the form container */
+    .form-container {
+        padding: 20px; /* Add padding inside the container */
+        background-color: #f9f9f9; /* Light background for contrast */
+        border-radius: 8px; /* Smooth corners for the form container */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+    }
+
+    /* Dropdown caret styling */
+    .bi-caret-down-fill {
+        color: #6c757d; /* Match the dropdown color */
+    }
+
+    /* Optional: Adjust textarea appearance */
+    textarea.form-control {
+        resize: vertical; /* Allow vertical resizing only */
+    }
+</style>
 <div class="form-container">
-    <h2>Add New Non-Conformity</h2>
+    <h2 class="m-4" ><strong>ADD NEW NON-CONFORMITY</strong></h2> <hr style="margin-bottom:10px;">
 
     <form id="addNonConformityForm" method="POST" action="{% url 'add_non_conformity' %}">
         {% csrf_token %}
 
         <!-- Non-Conformity -->
-        <label for="nonConformity" class="form-label">Non-Conformity</label>
-        <input type="text" class="form-control" id="nonConformity" name="non_conformity" required>
-    
+        <div class="row m-4">
+            <div class="col-md-12">
+                <label for="nonConformity" class="form-label">Non-Conformity</label>
+                <input type="text" class="form-control" id="nonConformity" name="non_conformity" required>
+            </div>
+        </div>
 
         <!-- Originator's Information -->
-        <label for="originatorName" class="form-label">Originator’s Name/ID No.</label>
-        <input type="text" class="form-control" id="originatorName" name="originator_name" required>
+        <div class="row m-4">
+            <div class="col-md-12">
+                <label for="originatorName" class="form-label">Originator’s Name/ID No.</label>
+                <input type="text" class="form-control" id="originatorName" name="originator_name" required>
+            </div>
+        </div>
 
-        <label for="unitDepartment" class="form-label">Unit/Department</label>
-        <input type="text" class="form-control" id="unitDepartment" name="unit_department" required>
+        <div class="row m-4">
+            <div class="col-md-12">
+                <label for="unitDepartment" class="form-label">Unit/Department</label>
+                <input type="text" class="form-control" id="unitDepartment" name="unit_department" required>
+            </div>
+        </div>
 
-        <label for="phone" class="form-label">Phone</label>
-        <input type="tel" class="form-control" id="phone" name="phone" required>
-
-        <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" name="email" required>
+        <!-- Phone and Email -->
+        <div class="row m-4">
+            <div class="col-md-6">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="tel" class="form-control" id="phone" name="phone" required>
+            </div>
+            <div class="col-md-6">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+        </div>
 
         <!-- RFA Intent -->
-        <label class="form-label">This RFA is intended to:</label>
-        <select class="form-control" id="rfaIntent" name="rfa_intent" required>
-            <option value="" disabled selected>Select RFA Intent</option>
-            <option value="correct_nc">Correct NC</option>
-            <option value="prevent_nc">Prevent NC</option>
-            <option value="improvement">Improvement</option>
-        </select>
+        <div class="row m-4">
+            <div class="col-md-12">
+                <label class="form-label">This RFA is intended to:</label>
+                <div class="position-relative">
+                    <select class="form-control" id="rfaIntent" name="rfa_intent" required>
+                        <option value="" disabled selected>Select RFA Intent</option>
+                        <option value="correct_nc">Correct NC</option>
+                        <option value="prevent_nc">Prevent NC</option>
+                        <option value="improvement">Improvement</option>
+                    </select>
+                     <i class="bi bi-caret-down-fill position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;"></i>
+                </div>
+            </div>
+        </div>
 
         <!-- Department -->
-        <label for="department" class="form-label">Department (where NC exists)</label>
-        <input type="text" class="form-control" id="department" name="department" required>
+        <div class="row m-4">
+            <div class="col-md-12">
+                <label for="department" class="form-label">Department (where NC exists)</label>
+                <input type="text" class="form-control" id="department" name="department" required>
+            </div>
+        </div>
 
         <!-- Non-Conformance Category -->
-        <label for="nonConformanceCategory" class="form-label">Non-Conformance Category</label>
-        <select class="form-control" id="nonConformanceCategory" name="non_conformance_category" required>
-            <option value="" disabled selected>Select Description</option>
-            <option value="iqa_related">IQA-Related</option>
-            <option value="supplier_related">Supplier-Related</option>
-            <option value="3rd_party_audit_related">3rd Party Audit Related</option>
-            <option value="process_procedural">Process/Procedural-related</option>
-            <option value="customer_satisfaction">Customer Satisfaction Related</option>
-            <option value="kpi_quality_objective">Relates to KPI/Quality Objective Review</option>
-            <option value="hrd_related">HRD-Related</option>
-            <option value="others">Others</option>
-        </select>
+        <div class="row m-4">
+            <div class="col-md-12">
+                <label for="nonConformanceCategory" class="form-label">Non-Conformance Category</label>
+                <div class="position-relative">
+                    <select class="form-control" id="nonConformanceCategory" name="non_conformance_category" required>
+                        <option value="" disabled selected>Select Description</option>
+                        <option value="iqa_related">IQA-Related</option>
+                        <option value="supplier_related">Supplier-Related</option>
+                        <option value="3rd_party_audit_related">3rd Party Audit Related</option>
+                        <option value="process_procedural">Process/Procedural-related</option>
+                        <option value="customer_satisfaction">Customer Satisfaction Related</option>
+                        <option value="kpi_quality_objective">Relates to KPI/Quality Objective Review</option>
+                        <option value="hrd_related">HRD-Related</option>
+                        <option value="others">Others</option>
+                    </select>
+                    <i class="bi bi-caret-down-fill position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;"></i>
+                </div>
+            </div>
+        </div>
 
         <!-- Description of Non-Conformance -->
-        <label for="description_of_non_conformance">Description of Non-Conformance</label>
-        <textarea id="description_of_non_conformance" name="description_of_non_conformance" class="form-control" required></textarea>
-    
+        <div class="row m-4">
+            <div class="col-md-12">
+                <label for="description_of_non_conformance" class="form-label">Description of Non-Conformance</label>
+                <textarea id="description_of_non_conformance" name="description_of_non_conformance" class="form-control" required></textarea>
+            </div>
+        </div>
+
         <!-- ISO Clause -->
-        <label for="isoClause" class="form-label">ISO Clause / Reference</label>
-        <input type="text" class="form-control" id="isoClause" name="iso_clause" required>
+        <div class="row m-4">
+            <div class="col-md-12">
+                <label for="isoClause" class="form-label">ISO Clause / Reference</label>
+                <input type="text" class="form-control" id="isoClause" name="iso_clause" required>
+            </div>
+        </div>
 
         <!-- Category -->
-        <label class="form-label">Category</label>
-        <select class="form-control" id="category" name="category" required>
-            <option value="" disabled selected>Select Category</option>
-            <option value="major">Major</option>
-            <option value="minor">Minor</option>
-            <option value="others">Others</option>
-        </select>
+        <div class="row m-4">
+            <div class="col-md-6">
+                <label class="form-label">Category</label>
+                <div class="position-relative">
+                    <select class="form-control pe-5" id="category" name="category" required>
+                        <option value="" disabled selected>Select Category</option>
+                        <option value="major">Major</option>
+                        <option value="minor">Minor</option>
+                        <option value="others">Others</option>
+                    </select>
+                    <i class="bi bi-caret-down-fill position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;"></i>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="startDate" class="form-label">Date Issued</label>
+                <input type="date" class="form-control" id="startDate" name="start_date" required>
+            </div>
+        </div>
 
-        <!-- Task, Start Date, Deadline -->
-
-        <label for="startDate" class="form-label">Date Issued</label>
-        <input type="date" class="form-control" id="startDate" name="start_date" required>
-    
 
         <!-- Process Owner Selection -->
-        <label for="processOwner" class="form-label">Assignees</label>
-        <select class="form-control" id="processOwner" name="assigned_to" required>
-            <option value="" disabled selected>Select Process Owner</option>
-            {% for user in process_owners %}
-                <option value="{{ user.id }}">{{ user.username }}</option>
-            {% endfor %}
-        </select>
+        <div class="row m-4">
+
+            <div class="col-md-6">
+                <label for="processOwner" class="form-label">Assignees</label>
+                <div class="position-relative">
+                    <select class="form-control" id="processOwner" name="assigned_to" required>
+                        <option value="" disabled selected>Select Process Owner</option>
+                        {% for user in process_owners %}
+                            <option value="{{ user.id }}">{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
+                    <i class="bi bi-caret-down-fill position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;"></i>
+                </div>
+            </div>
+        </div>
 
         <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary mt-3">Add Non-Conformity</button>
+        <div class="row m-4">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-primary mt-3">Add Non-Conformity</button>
+            </div>
+        </div>
     </form>
 </div>
 {% endblock %}
