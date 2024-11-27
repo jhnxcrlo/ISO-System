@@ -1,0 +1,92 @@
+{% extends 'main/lead auditor/base.html' %}
+{% block title %}Add New Non-Conformity{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Add New Non-Conformity</h2>
+
+    <form id="addNonConformityForm" method="POST" action="{% url 'add_non_conformity' %}">
+        {% csrf_token %}
+
+        <!-- Non-Conformity -->
+        <label for="nonConformity" class="form-label">Non-Conformity</label>
+        <input type="text" class="form-control" id="nonConformity" name="non_conformity" required>
+    
+
+        <!-- Originator's Information -->
+        <label for="originatorName" class="form-label">Originator’s Name/ID No.</label>
+        <input type="text" class="form-control" id="originatorName" name="originator_name" required>
+
+        <label for="unitDepartment" class="form-label">Unit/Department</label>
+        <input type="text" class="form-control" id="unitDepartment" name="unit_department" required>
+
+        <label for="phone" class="form-label">Phone</label>
+        <input type="tel" class="form-control" id="phone" name="phone" required>
+
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+
+        <!-- RFA Intent -->
+        <label class="form-label">This RFA is intended to:</label>
+        <select class="form-control" id="rfaIntent" name="rfa_intent" required>
+            <option value="" disabled selected>Select RFA Intent</option>
+            <option value="correct_nc">Correct NC</option>
+            <option value="prevent_nc">Prevent NC</option>
+            <option value="improvement">Improvement</option>
+        </select>
+
+        <!-- Department -->
+        <label for="department" class="form-label">Department (where NC exists)</label>
+        <input type="text" class="form-control" id="department" name="department" required>
+
+        <!-- Non-Conformance Category -->
+        <label for="nonConformanceCategory" class="form-label">Non-Conformance Category</label>
+        <select class="form-control" id="nonConformanceCategory" name="non_conformance_category" required>
+            <option value="" disabled selected>Select Description</option>
+            <option value="iqa_related">IQA-Related</option>
+            <option value="supplier_related">Supplier-Related</option>
+            <option value="3rd_party_audit_related">3rd Party Audit Related</option>
+            <option value="process_procedural">Process/Procedural-related</option>
+            <option value="customer_satisfaction">Customer Satisfaction Related</option>
+            <option value="kpi_quality_objective">Relates to KPI/Quality Objective Review</option>
+            <option value="hrd_related">HRD-Related</option>
+            <option value="others">Others</option>
+        </select>
+
+        <!-- Description of Non-Conformance -->
+        <label for="description_of_non_conformance">Description of Non-Conformance</label>
+        <textarea id="description_of_non_conformance" name="description_of_non_conformance" class="form-control" required></textarea>
+    
+        <!-- ISO Clause -->
+        <label for="isoClause" class="form-label">ISO Clause / Reference</label>
+        <input type="text" class="form-control" id="isoClause" name="iso_clause" required>
+
+        <!-- Category -->
+        <label class="form-label">Category</label>
+        <select class="form-control" id="category" name="category" required>
+            <option value="" disabled selected>Select Category</option>
+            <option value="major">Major</option>
+            <option value="minor">Minor</option>
+            <option value="others">Others</option>
+        </select>
+
+        <!-- Task, Start Date, Deadline -->
+
+        <label for="startDate" class="form-label">Date Issued</label>
+        <input type="date" class="form-control" id="startDate" name="start_date" required>
+    
+
+        <!-- Process Owner Selection -->
+        <label for="processOwner" class="form-label">Assignees</label>
+        <select class="form-control" id="processOwner" name="assigned_to" required>
+            <option value="" disabled selected>Select Process Owner</option>
+            {% for user in process_owners %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary mt-3">Add Non-Conformity</button>
+    </form>
+</div>
+{% endblock %}

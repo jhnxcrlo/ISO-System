@@ -1,0 +1,611 @@
+{% extends 'main/lead auditor/base.html' %}
+
+{% block title %}Audit Task: Assess Process Owner Compliance{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <!-- Page Header -->
+        <h2 class="mb-4" style="color: #A33331; font-weight: bold;">AUDIT TASK: ASSESS PROCESS OWNER COMPLIANCE WITH
+            RFA</h2>
+
+        <div class="row">
+            <!-- Left Column: Non-Conformance Details and Follow-Up Actions -->
+            <div class="col-md-4">
+                <!-- Non-Conformance Details -->
+                <a> </a>
+                <h4 class="text-red"><strong> {{ non_conformity.non_conformity }}</strong></h4>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>ISO Clause/Reference:</strong> {{ non_conformity.iso_clause }}
+                    </li>
+                    <li class="list-group-item"><strong>Category:</strong> {{ non_conformity.get_category_display }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Description:</strong> {{ non_conformity.description_of_non_conformance }}</li>
+                    <li class="list-group-item"><strong>Start Date:</strong> {{ non_conformity.start_date }}</li>
+                    <li class="list-group-item"><strong>Deadline:</strong> {{ non_conformity.deadline }}</li>
+                    <li class="list-group-item"><strong>Originator Name:</strong> {{ non_conformity.originator_name }}
+                    </li>
+                    <li class="list-group-item"><strong>Department/Unit:</strong> {{ non_conformity.unit_department }}
+                    </li>
+                </ul>
+
+                <!-- Follow-Up Actions -->
+
+            </div>
+
+            <!-- Right Column: Step-by-Step Progress -->
+            <div class="col-md-8">
+            <div class="text-end mt-3">
+                <a href="{% url 'preview_rfa' non_conformity.id %}" class="btn btn-primary">
+                    View RFA
+                </a>
+            </div>
+                <h4>Step-by-Step Progress</h4>
+
+                <!-- Step 1: Immediate Action -->
+                <div class="progress-step">
+                    <h6 class="d-flex justify-content-between align-items-center" id="step1-header">
+                        <a class="btn-link step-title" data-bs-toggle="collapse" href="#step1Content" role="button">
+                            Step 1: Review Immediate Action
+                        </a>
+                        <span class="step-status-icon"></span>
+                    </h6>
+                    <div class="collapse show" id="step1Content">
+                        <p class="text-muted">Review the immediate action taken by the process owner to address the
+                            non-conformance.</p>
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>Action
+                                Description:</strong> {{ immediate_action.action_description }}</li>
+                        </ul>
+                        <div class="add-comment d-flex mt-3">
+                            <input placeholder="Add a comment..." type="text" class="form-control me-2">
+                            <button type="button" class="btn btn-outline-danger"><i class="bi bi-send"></i></button>
+                        </div>
+                        <button type="button" class="btn btn-danger mt-3 complete-step-btn w-20" data-step="1">Complete
+                            Step
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Root Cause Analysis -->
+                <div class="progress-step">
+                    <h6 class="d-flex justify-content-between align-items-center" id="step2-header">
+                        <a class="btn-link step-title" data-bs-toggle="collapse" href="#step2Content" role="button">
+                            Step 2: Root Cause Analysis
+                        </a>
+                        <span class="step-status-icon"></span>
+                    </h6>
+                    <div class="collapse" id="step2Content">
+                        <p class="text-muted">Evaluate the root cause analysis provided by the process owner.</p>
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>Root
+                                Cause:</strong> {{ root_cause_analysis.cause_description }}</li>
+                            <li class="list-group-item"><strong>Date of
+                                Analysis:</strong> {{ root_cause_analysis.rca_date }}</li>
+                            <li class="list-group-item"><strong>Responsible
+                                Officer:</strong> {{ root_cause_analysis.responsible_officer }}</li>
+                            <li class="list-group-item"><strong>Estimated Close
+                                Date:</strong> {{ root_cause_analysis.estimated_close_date }}</li>
+                        </ul>
+
+                        <!-- 5 Why's Analysis -->
+                        <h6 class="mt-4"><strong>5 Why's Analysis:</strong></h6>
+                        <ul class="list-group">
+                            {% for key, value in root_cause_analysis.five_whys.items %}
+                                <li class="list-group-item">
+                                    <strong>{{ key|title }}:</strong> {{ value }}
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item text-muted">No 5 Why's Analysis provided.</li>
+                            {% endfor %}
+                        </ul>
+
+                        <!-- Add Comment Section -->
+                        <div class="add-comment d-flex mt-3">
+                            <input placeholder="Add a comment..." type="text" class="form-control me-2">
+                            <button type="button" class="btn btn-outline-danger"><i class="bi bi-send"></i></button>
+                        </div>
+
+                        <!-- Complete Step Button -->
+                        <button type="button" class="btn btn-danger mt-3 complete-step-btn w-20" data-step="2">Complete
+                            Step
+                        </button>
+                    </div>
+                </div>
+
+
+                <!-- Step 3: Corrective Action Plan -->
+                <div class="progress-step">
+                    <h6 class="d-flex justify-content-between align-items-center" id="step3-header">
+                        <a class="btn-link step-title" data-bs-toggle="collapse" href="#step3Content" role="button">
+                            Step 3: Review Corrective Action Plan
+                        </a>
+                        <span class="step-status-icon"></span>
+                    </h6>
+                    <div class="collapse show" id="step3Content">
+                        <p class="text-muted">Assess the corrective actions implemented by the process owner.</p>
+
+                        <!-- Corrective Action Plan Table -->
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Activity</th>
+                                <th>Responsible Person</th>
+                                <th>Time Frame</th>
+                                <th>Resources Needed</th>
+                                <th>Result</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if corrective_action_plans %}
+                                {% for plan in corrective_action_plans %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ plan.activity }}</td>
+                                        <td>{{ plan.responsible_person }}</td>
+                                        <td>{{ plan.time_frame }}</td>
+                                        <td>{{ plan.resources_needed }}</td>
+                                        <td>{{ plan.result }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-danger">
+                                        No corrective action plans available.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+
+                        <!-- Review Status -->
+                        {% if latest_review %}
+                            <div class="mt-4">
+                                <h5>Latest Review</h5>
+                                <div class="alert alert-{% if latest_review.effectiveness == 'Accepted' %}success{% else %}danger{% endif %}">
+                                    <p><strong>Effectiveness:</strong> {{ latest_review.effectiveness }}</p>
+                                    {% if latest_review.reason %}
+                                        <p><strong>Reason:</strong> {{ latest_review.reason }}</p>
+                                    {% endif %}
+                                    <p><strong>Reviewed
+                                        By:</strong> {{ latest_review.reviewer.get_full_name|default:latest_review.reviewer.username }}
+                                    </p>
+                                    <p><strong>Date:</strong> {{ latest_review.review_date|date:"M d, Y" }}</p>
+                                </div>
+
+                                <!-- Complete Step Button -->
+                                {% if latest_review.effectiveness == 'Accepted' %}
+                                    <div class="mt-3">
+                                        <button type="button" class="btn btn-danger complete-step-btn" data-step="3">
+                                            Complete Step
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <!-- Review Form -->
+                            <div class="mt-4">
+                                <h5>Submit Review for the Entire Plan</h5>
+                                {% if corrective_action_plans and corrective_action_plans.first.id %}
+                                    <form method="post"
+                                          action="{% url 'add_review' corrective_action_plans.first.id %}">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="effectiveness"><strong>Effectiveness:</strong></label>
+                                            <select id="effectiveness" name="effectiveness" class="form-control"
+                                                    required>
+                                                <option value="" disabled selected>Select...</option>
+                                                <option value="Accepted">Accepted</option>
+                                                <option value="Not Accepted">Not Accepted</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group mt-2">
+                                            <label for="reason"><strong>Reason (if Not Accepted):</strong></label>
+                                            <textarea id="reason" name="reason" class="form-control" rows="3"
+                                                      placeholder="Provide reason if rejected"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary mt-3">Submit Review</button>
+                                    </form>
+                                {% else %}
+                                    <p class="text-danger">Cannot submit a review as no corrective action plans
+                                        exist.</p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Step 4: Follow-Up -->
+                <div class="progress-step">
+                    <h6 class="d-flex justify-content-between align-items-center" id="step4-header">
+                        <a class="btn-link step-title" data-bs-toggle="collapse" href="#step4Content" role="button">
+                            Step 4: Follow-Up
+                        </a>
+                        <span class="step-status-icon"></span>
+                    </h6>
+                    <div class="collapse show" id="step4Content">
+                        <p class="text-muted">Have you followed up your solution implementation?</p>
+
+                        <!-- Follow-Up History Table -->
+                        <h5>Follow-Up History</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Initials / Responsibility</th>
+                                <th>Date</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for follow_up in follow_up_actions %}
+                                <tr>
+                                    <td>{{ follow_up.status }}</td>
+                                    <td>{{ follow_up.responsible_person }}</td>
+                                    <td>{{ follow_up.follow_up_date|date:"M d, Y" }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted">No follow-up actions recorded yet.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <!-- Add Follow-Up Form -->
+                        {% if not follow_up_actions %}
+                            <h5 class="mt-4">Add New Follow-Up Action</h5>
+                            <form method="post" action="{% url 'add_follow_up' non_conformity.id %}">
+                                {% csrf_token %}
+                                <div class="form-group mb-3">
+                                    <label for="status"><strong>Status:</strong></label>
+                                    <select id="status" name="status" class="form-control" required>
+                                        <option value="" disabled selected>Select status...</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Completed">Completed</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="responsible_person"><strong>Initials / Responsibility:</strong></label>
+                                    <input type="text" id="responsible_person" name="responsible_person"
+                                           class="form-control" placeholder="Enter initials or responsibility" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="follow_up_date"><strong>Date:</strong></label>
+                                    <input type="date" id="follow_up_date" name="follow_up_date" class="form-control"
+                                           required>
+                                </div>
+                                <button type="submit" class="btn btn-danger">Add Follow-Up Action</button>
+                            </form>
+                        {% else %}
+                            <div class="mt-4">
+                                <button type="button" class="btn btn-danger complete-step-btn"
+                                        id="complete-follow-up-step-btn" data-step="4">
+                                    Complete Step
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Step 5: Verification -->
+                <div class="progress-step">
+                    <h6 class="d-flex justify-content-between align-items-center" id="step5-header">
+                        <a class="btn-link step-title" data-bs-toggle="collapse" href="#step5Content" role="button">
+                            Step 5: Verification of Effectiveness
+                        </a>
+                        <span class="step-status-icon"></span>
+                    </h6>
+                    <div class="collapse show" id="step5Content">
+                        <p class="text-muted">Assess the effectiveness of the corrective actions implemented by the
+                            process owner.</p>
+
+                        <!-- Verification History Table -->
+                        <h5>Verification History</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>No. of Visits</th>
+                                <th>Date</th>
+                                <th>Follow-Up Audit Result</th>
+                                <th>New Target Date</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if verifications %}
+                                {% for verification in verifications %}
+                                    <tr>
+                                        <td>{{ verification.visit_number }}</td>
+                                        <td>{{ verification.date|date:"M d, Y" }}</td>
+                                        <td>{{ verification.follow_up_audit_result }}</td>
+                                        <td>{{ verification.new_target_date|default:"N/A" }}</td>
+                                        <td>
+                                            {% if verification.status == "effective" %}
+                                                Close (Effective)
+                                            {% else %}
+                                                Close (Not Effective)
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">No verification records found for
+                                        this corrective action plan.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+
+                        <!-- Add Verification Form -->
+                        {% if not verifications or verifications.last.status == "not_effective" %}
+                            <h5 class="mt-4">Add New Verification</h5>
+                            {% if corrective_action_plan.id %}
+                                <form method="post" action="{% url 'action_verification' corrective_action_plan.id %}">
+                                    {% csrf_token %}
+                                    <div class="form-group mb-3">
+                                        <label for="visit_number"><strong>No. of Visits:</strong></label>
+                                        <input type="number" id="visit_number" name="visit_number" class="form-control"
+                                               required>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="date"><strong>Date:</strong></label>
+                                        <input type="date" id="date" name="date" class="form-control" required>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="follow_up_audit_result"><strong>Follow-Up Audit
+                                            Result:</strong></label>
+                                        <textarea id="follow_up_audit_result" name="follow_up_audit_result"
+                                                  class="form-control" rows="3" required></textarea>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="new_target_date"><strong>New Target Date (if
+                                            applicable):</strong></label>
+                                        <input type="date" id="new_target_date" name="new_target_date"
+                                               class="form-control">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="status"><strong>Status:</strong></label>
+                                        <select id="status" name="status" class="form-control" required>
+                                            <option value="effective">Close (Effective)</option>
+                                            <option value="not_effective">Close (Not Effective)</option>
+                                        </select>
+                                    </div>
+                                    <!-- New RFA Number Field -->
+                                    <div class="form-group mb-3" id="new_rfa_field" style="display: none;">
+                                        <label for="new_rfa_number"><strong>New RFA # (if Not
+                                            Effective):</strong></label>
+                                        <input type="text" id="new_rfa_number" name="new_rfa_number"
+                                               class="form-control">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Add Verification</button>
+                                </form>
+                            {% else %}
+                                <p class="text-danger">Error: Corrective Action Plan ID is missing. Cannot proceed with
+                                    adding a verification.</p>
+                            {% endif %}
+                        {% else %}
+                            <div class="mt-4">
+                                <button class="btn btn-danger complete-step-btn" id="complete-verification-step-btn"
+                                        data-step="5">
+                                    Complete Step
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+
+                <!-- Step 6: Close Out -->
+
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* General container styles */
+        .container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Header styles */
+        h2 {
+            font-weight: bold;
+            color: #A33331;
+        }
+
+        h4, h5, h6 {
+            font-weight: bold;
+        }
+
+        .text-red {
+            color: #A33331;
+        }
+
+        /* Progress Step Styles */
+        .progress-step {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            border-left: 4px solid #5a1717;
+        }
+
+        .progress-step h6 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .progress-step .step-title {
+            font-size: 1.1rem;
+            color: #343a40;
+        }
+
+        .progress-step .step-status-icon i {
+            font-size: 1.2rem;
+        }
+
+        /* Forms */
+        .form-label {
+            font-weight: bold;
+        }
+
+        .form-select,
+        .form-control {
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+        }
+
+        .btn-danger {
+            background-color: #A33331;
+            border-color: #A33331;
+        }
+
+        .btn-danger:hover {
+            background-color: #870000;
+            border-color: #870000;
+        }
+
+        .btn-outline-danger {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-outline-danger i {
+            margin-left: 5px;
+        }
+
+        .btn-success {
+            background-color: #198754;
+            border-color: #198754;
+        }
+
+        .btn-success:hover {
+            background-color: #145c34;
+            border-color: #145c34;
+        }
+
+        .btn-primary:hover {
+            background-color: #004494;
+            border-color: #004494;
+        }
+
+        /* Table Styles */
+        table.table {
+            margin-top: 10px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table.table th,
+        table.table td {
+            text-align: left;
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        table.table th {
+            background-color: #f2f2f2;
+        }
+
+        /* Reason Field Animation */
+
+        /* Alerts */
+
+        /* Add comment section */
+        .add-comment {
+            margin-top: 10px;
+        }
+
+        .add-comment input {
+            border-radius: 20px;
+        }
+
+        .add-comment button {
+            border-radius: 8px;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const completeButtons = document.querySelectorAll('.complete-step-btn');
+            const effectivenessSelect = document.getElementById('effectiveness');
+            const reasonField = document.getElementById('reason-field');
+            const statusDropdown = document.getElementById('status');  // Status dropdown for Step 5
+            const newRfaField = document.getElementById('new_rfa_field');  // New RFA field in Step 5
+
+            // Complete Step Buttons Logic
+            completeButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const stepNumber = button.dataset.step;
+                    const stepHeader = document.querySelector(`#step${stepNumber}-header`);
+                    const stepContent = document.querySelector(`#step${stepNumber}Content`);
+
+                    // Mark the step as completed
+                    button.disabled = true;
+                    button.textContent = 'Step Completed';
+                    button.classList.remove('btn-danger');
+                    button.classList.add('btn-success');
+
+                    // Update the step title to indicate completion
+                    const stepTitle = stepHeader.querySelector('.step-title');
+                    if (stepTitle) {
+                        stepTitle.classList.add('text-muted', 'fw-bold');
+                        stepTitle.classList.remove('btn-link');
+                        stepTitle.removeAttribute('data-bs-toggle');
+                        stepTitle.removeAttribute('href');
+                    }
+
+                    // Add checkmark icon
+                    const statusIcon = stepHeader.querySelector('.step-status-icon');
+                    statusIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
+
+                    // Optionally collapse the content
+                    if (stepContent && stepContent.classList.contains('show')) {
+                        stepContent.classList.remove('show');
+                    }
+                });
+            });
+
+            // Handle the visibility of the reason field in "Review of Action Plan"
+            if (effectivenessSelect && reasonField) {
+                effectivenessSelect.addEventListener('change', function () {
+                    reasonField.style.display = this.value === 'Not Accepted' ? 'block' : 'none';
+                });
+            }
+
+            // Handle the visibility of the New RFA field in Step 5 based on the status dropdown
+            if (statusDropdown && newRfaField) {
+                // Initially hide the New RFA field
+                newRfaField.style.display = 'none';
+
+                statusDropdown.addEventListener('change', function () {
+                    if (statusDropdown.value === 'not_effective') {
+                        newRfaField.style.display = 'block';
+                    } else {
+                        newRfaField.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+
+
+
+{% endblock %}

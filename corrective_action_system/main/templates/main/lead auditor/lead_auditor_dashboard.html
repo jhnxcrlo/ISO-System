@@ -1,0 +1,218 @@
+{% extends 'main/lead auditor/base.html' %}
+{% block title %}Lead auditor Dashboard{% endblock %}
+
+
+{% block content %}
+
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <div id="greeting-section" class="greeting-section text-left mb-4">
+        <h1>Hi, <strong>{{ user.username }}!</strong> <i class="bi bi-hand-wave"></i></h1>
+        <a class="greeting-link" href="#taskSection"> Proceed to do task</a>
+    </div>
+
+
+     <div class="container dashboard-section">
+        <div class="row g-4">
+            <!-- Non-Conformities -->
+            <div class="col-md-4">
+                <div class="dashboard-card d-flex align-items-center">
+                    <i class="bi bi-kanban-fill dashboard-icon projects-icon"></i>
+                    <div class="dashboard-text ms-3 d-flex flex-column align-items-start">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-number">32</div>
+                            <div class="stat-title ms-2">Non-Conformities</div>
+                        </div>
+                        <div class="stat-subtitle">Awaiting processing</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks -->
+            <div class="col-md-4">
+                <div class="dashboard-card d-flex align-items-center">
+                    <i class="bi bi-file-earmark-text-fill dashboard-icon invoices-icon"></i>
+                    <div class="dashboard-text ms-3 d-flex flex-column align-items-start">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-number">23</div>
+                            <div class="stat-title ms-2">Tasks</div>
+                        </div>
+                        <div class="stat-subtitle">Soon to be cleared</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Members -->
+            <div class="col-md-4">
+                <div class="dashboard-card d-flex align-items-center">
+                    <i class="bi bi-person-circle dashboard-icon members-icon"></i>
+                    <div class="dashboard-text ms-3 d-flex flex-column align-items-start">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-number">94</div>
+                            <div class="stat-title ms-2">Members</div>
+                        </div>
+                        <div class="stat-subtitle">Working hard</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Announcement Section -->
+    <div class="announcement-header mt-5">
+        <h2>Latest Announcements</h2>
+        <p class="text-muted">Stay updated with the latest news and information</p>
+        <div class="announcement-list mt-4">
+            {% for announcement in announcements %}
+                <div class="card mb-4 announcement-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ announcement.title }}</h5>
+                        <p class="card-text">{{ announcement.body }}</p>
+                        <p class="card-text"><small class="text-muted">Posted
+                            on {{ announcement.date_posted|date:"F d, Y" }}</small></p>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No announcements to show at the moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Audit Section -->
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <!-- Donut Chart and Audit Summary -->
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <div class="chart-info">
+                        <h4 class="report-title">
+                          <i class="fas fa-clipboard-list"></i>Audit Summary
+                        </h4>
+                        <p>Audit Findings</p>
+                        <ul>
+                            <li><span
+                                    style="background-color:#8E2524; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
+                                <span>Non-Comformities</span> <span>78</span></li>
+                            <li><span
+                                    style="background-color:#A33331; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
+                                <span>Good Points</span> <span>63</span></li>
+                            <li><span
+                                    style="background-color:#C74C4A; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
+                                <span>Engagement</span> <span>56</span></li>
+                            <li><span
+                                    style="background-color:#D67F7E; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
+                                <span>Executed Tasks</span> <span>36</span></li>
+                            <li><span
+                                    style="background-color:#E6A5A4; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
+                                <span>Audit Results</span> <span>24</span></li>
+                        </ul>
+                        <button class="btn btn-tertiary">See Details...</button>
+                    </div>
+                    <div class="chart-canvas">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ISO Audit Report Section -->
+            <div class="col-md-6 ">
+                <div class="report-container">
+                    <h4 class="report-title"><i class="bi bi-file-earmark-check-fill"></i> ISO Audit Report</h4>
+                    <p class="report-subtitle">ISO 9001:2015 Corrective Management System</p>
+                    <div class="report-content">
+                        <ul class="report-lines">
+                            <li>
+                                <span>Finding 1: Non-conformance in Quality Management</span>
+                                <i class="bi bi-chevron-down"></i>
+                                <div class="report-expand-content">
+                                    <p>Details:</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span>Finding 2: Documentation Errors</span>
+                                <i class="bi bi-chevron-down"></i>
+                                <div class="report-expand-content">
+                                    <p>Details: </p>
+                                </div>
+                            </li>
+                            <li>
+                                <span>Finding 3: Non-compliance in Training</span>
+                                <i class="bi bi-chevron-down"></i>
+                                <div class="report-expand-content">
+                                    <p>Details: </p>
+                                </div>
+                            </li>
+                            <li>
+                                <span>Finding 4: Inconsistent Safety Protocols</span>
+                                <i class="bi bi-chevron-down"></i>
+                                <div class="report-expand-content">
+                                    <p>Details: </p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js Configuration -->
+    <script>
+        // Setup chart data with lighter color palette
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const data = {
+            labels: ['Product design', 'Development', 'QA & Testing', 'Customer queries', 'R & D'],
+            datasets: [{
+                data: [78, 63, 56, 36, 24],
+                backgroundColor: [
+                    '#8E2524',  // Dark red
+                    '#A33331',  // Slightly lighter dark red
+                    '#C74C4A',  // Mid-range red
+                    '#D67F7E',  // Soft red
+                    '#E6A5A4',  // Lighter red
+                    '#F2C7C6',  // Very light red
+                    '#F7E0E0'   // Almost white, pale red
+                ],
+                hoverOffset: 4
+            }]
+        };
+
+        // Create donut chart
+        const myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Disable the aspect ratio
+                plugins: {
+                    legend: {
+                        display: false // Hide default legend
+                    }
+                },
+                cutout: '70%' // Controls the inner radius of the donut
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Check if the greeting has already been shown
+            if (localStorage.getItem('greetingShown')) {
+                // Hide the greeting section if it has been shown before
+                document.getElementById('greeting-section').style.display = 'none';
+            } else {
+                // Set the localStorage flag to indicate the greeting has been shown
+                localStorage.setItem('greetingShown', 'true');
+            }
+        });
+    </script>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
+
+
+{% endblock %}
