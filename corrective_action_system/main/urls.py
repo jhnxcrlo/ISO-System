@@ -79,6 +79,23 @@ urlpatterns = [
     path('notifications/mark-all-read/', views.mark_all_notifications_read, name='mark_all_notifications_read'),
     path('notifications/<int:notification_id>/mark-read/', views.mark_notification_as_read, name='mark_notification_as_read'),
 
+    # path for adding comments
+    # Lead Auditor paths
+    path('lead-auditor-dashboard/', views.lead_auditor_dashboard_view, name='lead_auditor_dashboard'),
+    path('lead-auditor-monitoring-log/', views.lead_auditor_monitoring_log, name='lead_auditor_monitoring_log'),
+    path('lead-auditor/forms/', views.lead_auditor_forms_view, name='lead_auditor_forms'),
+    path('lead-auditor/guidelines/', views.lead_auditor_guideline_list, name='lead_auditor_guideline_list'),
+    path('lead-auditor/guidelines/upload/', views.lead_auditor_upload_guideline, name='lead_auditor_upload_guideline'),
+    path('lead-auditor/guidelines/edit/<int:pk>/', views.lead_auditor_edit_guideline, name='lead_auditor_edit_guideline'),
+    path('lead-auditor/guidelines/delete/<int:pk>/', views.lead_auditor_delete_guideline, name='lead_auditor_delete_guideline'),
+    path('lead-auditor/lead_auditor_manage_user/', views.lead_auditor_manage_user, name='lead_auditor_manage_user'),
+    path('non-conformity/add/', views.add_non_conformity, name='add_non_conformity'),
+
+
+
+# Your monitoring log view
+
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

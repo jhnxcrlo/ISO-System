@@ -24,7 +24,7 @@
                             <h5 class="card-title fw-bold text-dark">{{ guideline.title }}</h5>
                             <p class="card-text text-muted">{{ guideline.description|truncatechars:150 }}</p>
                             <p class="text-muted small mt-auto">
-                                <i class="fas fa-user"></i> {{ guideline.uploaded_by.username }}
+                                <i class="fa fa-user-circle-o"></i> {{ guideline.uploaded_by.username }}
                                 <span class="text-muted">|</span>
                                 <i class="fas fa-clock"></i> {{ guideline.created_at|date:"F j, Y" }}
                             </p>

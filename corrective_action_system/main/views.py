@@ -45,7 +45,9 @@ def login_view(request):
             request.session['user_role'] = user_profile.role
 
             # Redirect based on user role
-            if user_profile.role == 'Internal Auditor':
+            if user_profile.role == 'Lead Auditor':
+                return redirect('lead_auditor_dashboard')
+            elif user_profile.role == 'Internal Auditor':
                 return redirect('internal_auditor_dashboard')
             elif user_profile.role == 'Process Owner':
                 return redirect('process_owner_dashboard')
@@ -55,20 +57,28 @@ def login_view(request):
             return render(request, 'main/login.html', {'error': 'Invalid username or password'})
     return render(request, 'main/login.html')
 
+
 @login_required
 def dashboard_view(request):
     return render(request, 'main/administrator/dashboard.html')
 
 @login_required
+def lead_auditor_dashboard_view(request):
+    return render(request, 'main/lead auditor/lead_auditor_dashboard.html')
+
+@login_required
 def internal_auditor_dashboard_view(request):
     return render(request, 'main/internal audit/internal_auditor_dashboard.html')
+
 
 @login_required
 def process_owner_dashboard_view(request):
     tasks = NonConformity.objects.filter(assigned_to=request.user, status='pending')
     return render(request, 'main/process owner/process_owner_dashboard.html', {'tasks': tasks})
 
+
 logger = logging.getLogger(__name__)
+
 
 @login_required
 def manage_users_view(request):
@@ -90,6 +100,7 @@ def manage_users_view(request):
     }
 
     return render(request, 'main/administrator/manage_users.html', context)
+
 
 @login_required
 def add_user(request):
@@ -163,6 +174,7 @@ def add_user(request):
 
     return redirect('manage_users')
 
+
 @login_required
 def delete_user_view(request, user_id):
     user = get_object_or_404(User, id=user_id)
@@ -180,6 +192,7 @@ def delete_user_view(request, user_id):
 
     # If it's not a POST request, render the confirmation page
     return render(request, 'main/administrator/confirm_delete.html', {'user': user})
+
 
 @login_required
 def change_password(request):
@@ -216,6 +229,7 @@ def change_password(request):
 
     return render(request, 'main/administrator/change_password.html', {'form': form})
 
+
 def verify_email(request, token):
     try:
         email = s.loads(token, salt='email-confirm', max_age=3600)
@@ -233,11 +247,13 @@ def verify_email(request, token):
         messages.error(request, 'An unexpected error occurred.')
     return redirect('login')
 
+
 def announcement_list(request):
     announcements = Announcement.objects.all()
     form = AnnouncementForm()
     return render(request, 'main/administrator/announcements/announcement_list.html',
                   {'announcements': announcements, 'form': form})
+
 
 @login_required
 def create_announcement(request):
@@ -253,6 +269,7 @@ def create_announcement(request):
 
     return render(request, 'main/administrator/announcements/announcement_list.html', {'form': form})
 
+
 @login_required
 def update_announcement(request, pk):
     announcement = get_object_or_404(Announcement, pk=pk)
@@ -262,6 +279,7 @@ def update_announcement(request, pk):
             form.save()
             return redirect('announcement_list')
 
+
 @login_required
 def delete_announcement(request, pk):
     announcement = get_object_or_404(Announcement, pk=pk)
@@ -269,10 +287,12 @@ def delete_announcement(request, pk):
         announcement.delete()
         return redirect('announcement_list')
 
+
 @login_required
 def forms_view(request):
     templates = TemplateModel.objects.all()
     return render(request, 'main/administrator/forms.html', {'templates': templates})
+
 
 @login_required
 def upload_template(request):
@@ -294,6 +314,7 @@ def upload_template(request):
 
     return redirect('forms')
 
+
 @login_required
 def download_template(request, pk):
     template = get_object_or_404(TemplateModel, pk=pk)
@@ -307,9 +328,11 @@ def download_template(request, pk):
             raise Http404("File not found.")
     return redirect('forms')
 
+
 def role_allowed_to_delete(user):
     print(f"User {user.username} with role {user.userprofile.role} is trying to delete.")
     return hasattr(user, 'userprofile') and user.userprofile.role in ['Admin', 'Internal Auditor']
+
 
 @login_required
 @user_passes_test(role_allowed_to_delete)
@@ -330,10 +353,12 @@ def delete_template(request, pk):
     else:
         return redirect('forms')
 
+
 @login_required
 def internal_auditor_forms_view(request):
     templates = TemplateModel.objects.all()
     return render(request, 'main/internal audit/internal_auditor_forms.html', {'templates': templates})
+
 
 @login_required
 def internal_upload_template(request):
@@ -351,14 +376,16 @@ def internal_upload_template(request):
             template_model.save()
             return redirect('internal_auditor_forms')
 
-        return render(request, 'main/internal audit/internal_auditor_forms.html', {'error': 'No file was uploaded.'})
+        return render(request, 'main/internal audit/internal_auditors_forms.html', {'error': 'No file was uploaded.'})
 
     return redirect('internal_auditor_forms')
+
 
 @login_required
 def process_owner_forms_view(request):
     templates = TemplateModel.objects.all()  # List all available forms
     return render(request, 'main/process owner/process_owner_forms.html', {'templates': templates})
+
 
 @login_required
 def internal_auditor_monitoring_log(request):
@@ -380,12 +407,14 @@ def internal_auditor_monitoring_log(request):
     }
     return render(request, 'main/internal audit/internal_auditor_monitoring_log.html', context)
 
+
 @login_required
 def admin_guideline_list(request):
     guidelines = Guideline.objects.all()
     for guideline in guidelines:
         logger.info(f"File URL: {guideline.file.url}")
     return render(request, 'main/administrator/guidelines/list.html', {'guidelines': guidelines})
+
 
 @login_required
 @login_required
@@ -405,6 +434,7 @@ def admin_upload_guideline(request):
 
     return render(request, 'main/administrator/guidelines/upload.html', {'form': form})
 
+
 @login_required
 def admin_edit_guideline(request, pk):
     guideline = get_object_or_404(Guideline, pk=pk)
@@ -421,6 +451,7 @@ def admin_edit_guideline(request, pk):
 
     return render(request, 'main/administrator/guidelines/edit.html', {'form': form, 'guideline': guideline})
 
+
 @login_required
 def admin_delete_guideline(request, pk):
     guideline = get_object_or_404(Guideline, pk=pk)
@@ -431,15 +462,18 @@ def admin_delete_guideline(request, pk):
 
     return render(request, 'main/administrator/guidelines/delete_confirm.html', {'guideline': guideline})
 
+
 # Check if user is internal auditor
 def is_internal_auditor(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Internal Auditor'
+
 
 @login_required
 @user_passes_test(is_internal_auditor)
 def internal_auditor_guideline_list(request):
     guidelines = Guideline.objects.all()
     return render(request, 'main/internal audit/list.html', {'guidelines': guidelines})
+
 
 @login_required
 @user_passes_test(is_internal_auditor)
@@ -459,6 +493,7 @@ def internal_auditor_upload_guideline(request):
 
     return render(request, 'main/internal audit/upload_guideline.html', {'form': form})
 
+
 @login_required
 @user_passes_test(is_internal_auditor)
 def internal_auditor_edit_guideline(request, pk):
@@ -476,6 +511,7 @@ def internal_auditor_edit_guideline(request, pk):
 
     return render(request, 'main/internal audit/edit_guideline.html', {'form': form, 'guideline': guideline})
 
+
 @login_required
 @user_passes_test(is_internal_auditor)
 def internal_auditor_delete_guideline(request, pk):
@@ -487,15 +523,18 @@ def internal_auditor_delete_guideline(request, pk):
 
     return render(request, 'main/internal audit/delete_guideline.html', {'guideline': guideline})
 
+
 # Check if user is process owner
 def is_process_owner(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Process Owner'
+
 
 @login_required
 @user_passes_test(is_process_owner)
 def process_owner_guideline_list(request):
     guidelines = Guideline.objects.all()
     return render(request, 'main/process owner/list.html', {'guidelines': guidelines})
+
 
 def add_non_conformity(request):
     if request.method == 'POST':
@@ -512,7 +551,7 @@ def add_non_conformity(request):
         iso_clause = request.POST.get('iso_clause')
         category = request.POST.get('category')
         start_date = request.POST.get('start_date')
-        assigned_to_id = request.POST.get('assigned_to')  # Process Owner ID from form
+        assigned_to_id = request.POST.get('assigned_to')
 
         # Get the assigned process owner
         assigned_to = User.objects.get(id=assigned_to_id)
@@ -642,6 +681,8 @@ def non_conformity_detail(request, nc_id):
     except Exception as e:
         print(f"Error in non_conformity_detail: {e}")
         return HttpResponseServerError("An error occurred while processing your request.")
+
+
 
 @login_required
 def task_detail(request, task_id):
@@ -777,6 +818,7 @@ def add_root_cause_analysis(request, task_id):
 
     messages.error(request, "Invalid request.")
     return redirect('task_detail', task_id=task.id)
+
 
 @login_required
 def corrective_action_plan(request, task_id):
@@ -1165,4 +1207,161 @@ def mark_notification_as_read(request, notification_id):
     notification.mark_as_read()
 
     return redirect('notifications')  # Redirect back to the notifications page
+
+def internal_audit_view(request):
+    # Fetch all non-conformities
+    non_conformities = NonConformity.objects.all()
+
+    # Compute counts for each tab dynamically
+    ongoing_count = non_conformities.filter(status='pending').count()
+    finished_count = non_conformities.filter(status='corrective_action_completed').count()
+    postponed_count = non_conformities.filter(status='postponed').count()
+
+    context = {
+        'non_conformities': non_conformities,
+        'ongoing_count': ongoing_count,
+        'finished_count': finished_count,
+        'postponed_count': postponed_count,
+    }
+    return render(request, 'main/internal audit/internal_audit_log.html', context)
+
+
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+# Check if the user is a Lead Auditor
+def is_lead_auditor(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role == 'Lead Auditor'
+
+@login_required
+@user_passes_test(is_lead_auditor)
+def lead_auditor_dashboard_view(request):
+    """
+    Dashboard view for Lead Auditor. Fetch and display tasks or other relevant data.
+    """
+    tasks = NonConformity.objects.filter(status__in=['pending', 'in_progress'])
+    context = {
+        'tasks': tasks,
+    }
+    return render(request, 'main/lead auditor/lead_auditor_dashboard.html', context)
+
+@login_required
+@user_passes_test(is_lead_auditor)
+def lead_auditor_monitoring_log(request):
+    """
+    View for Lead Auditor Monitoring Log. Display all non-conformities and their status.
+    """
+    non_conformities = NonConformity.objects.all()
+
+    # Compute counts for each tab dynamically
+    ongoing_count = non_conformities.filter(status='in_progress').count()
+    finished_count = non_conformities.filter(status='completed').count()
+    postponed_count = non_conformities.filter(status='postponed').count()
+
+    context = {
+        'non_conformities': non_conformities,
+        'ongoing_count': ongoing_count,
+        'finished_count': finished_count,
+        'postponed_count': postponed_count,
+    }
+    return render(request, 'main/lead auditor/lead_auditor_monitoring_log.html', context)
+
+@login_required
+@user_passes_test(is_lead_auditor)
+def lead_auditor_forms_view(request):
+    """
+    View for Lead Auditor to access and manage forms.
+    """
+    templates = TemplateModel.objects.all()
+    return render(request, 'main/lead auditor/lead_auditor_forms.html', {'templates': templates})
+
+@login_required
+@user_passes_test(is_lead_auditor)
+def lead_auditor_guideline_list(request):
+    """
+    View for Lead Auditor to list all guidelines.
+    """
+    guidelines = Guideline.objects.all()
+    return render(request, 'main/lead auditor/lead_auditor_guidelines.html', {'guidelines': guidelines})
+
+@login_required
+@user_passes_test(is_lead_auditor)
+def lead_auditor_upload_guideline(request):
+    """
+    View for Lead Auditor to upload guidelines.
+    """
+    if request.method == "POST":
+        form = GuidelineForm(request.POST, request.FILES)
+        if form.is_valid():
+            guideline = form.save(commit=False)
+            guideline.uploaded_by = request.user
+            guideline.save()
+            messages.success(request, "Guideline uploaded successfully.")
+            return redirect('lead_auditor_guideline_list')
+        else:
+            messages.error(request, "Failed to upload guideline. Please check the form.")
+    else:
+        form = GuidelineForm()
+
+    return render(request, 'main/lead auditor/upload_guideline.html', {'form': form})
+
+@login_required
+@user_passes_test(is_lead_auditor)
+def lead_auditor_edit_guideline(request, pk):
+    """
+    View for Lead Auditor to edit guidelines.
+    """
+    guideline = get_object_or_404(Guideline, pk=pk)
+    if request.method == "POST":
+        form = GuidelineForm(request.POST, request.FILES, instance=guideline)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Guideline updated successfully.")
+            return redirect('lead_auditor_guideline_list')
+        else:
+            messages.error(request, "Failed to update guideline. Please check the form.")
+    else:
+        form = GuidelineForm(instance=guideline)
+
+    return render(request, 'main/lead auditor/edit_guideline.html', {'form': form, 'guideline': guideline})
+
+@login_required
+@user_passes_test(is_lead_auditor)
+def lead_auditor_delete_guideline(request, pk):
+    """
+    View for Lead Auditor to delete guidelines.
+    """
+    guideline = get_object_or_404(Guideline, pk=pk)
+    if request.method == "POST":
+        guideline.delete()
+        messages.success(request, "Guideline deleted successfully.")
+        return redirect('lead_auditor_guideline_list')
+
+    return render(request, 'main/lead auditor/delete_guideline.html', {'guideline': guideline})
+
+@login_required
+def lead_auditor_manage_user(request):
+    # Your logic for managing users as a Lead Auditor
+    return render(request, 'main/lead_auditor/lead_auditor_manage_user.html', {})
+
+@login_required
+@user_passes_test(is_lead_auditor)
+def lead_auditor_manage_users_view(request):
+    """
+    Allow Lead Auditor to manage users like Admin.
+    """
+    users = User.objects.all()
+    user_profiles = UserProfile.objects.select_related('user').all()
+
+    # Role display for template
+    user_roles = {profile.user.id: profile.get_role_display() for profile in user_profiles}
+    add_user_form = UserCreationForm()
+
+    context = {
+        'users': users,
+        'user_roles': user_roles,
+        'add_user_form': add_user_form,
+    }
+
+    return render(request, 'main/lead-auditor/lead_auditor_manage_users.html', context)
+
 

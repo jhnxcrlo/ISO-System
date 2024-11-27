@@ -1,0 +1,128 @@
+/* Buttons */
+.btn-primary {
+    background-color: #8E2524 !important; /* Dark red */
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important; /* Slightly less rounded for modern look */
+    padding: 12px 24px !important; /* More balanced padding */
+    font-weight: bold !important;
+    font-size: 1rem !important; /* Ensure consistent font size */
+    cursor: pointer !important;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important; /* Add subtle shadow */
+}
+
+.btn-primary:hover {
+    background-color: #A33331 !important; /* Slightly lighter red on hover */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15) !important; /* Enhance shadow on hover */
+}
+
+.btn-success {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+.btn-success:hover {
+    background-color: #218838 !important;
+}
+
+.btn-danger {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+.btn-danger:hover {
+    background-color: #c82333 !important;
+}
+
+/* List Group */
+.list-group-item {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.list-group-item h5 {
+    color: #203040;
+    font-size: 1.25rem;
+    margin-bottom: 5px;
+}
+
+.list-group-item p {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 0;
+}
+
+.list-group-item:hover {
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal */
+.modal-content {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    color: #203040;
+}
+
+.modal-header .close {
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding-top: 15px;
+}
+
+/* Form Controls */
+.form-group label {
+    font-size: 1rem;
+    color: #203040;
+    font-weight: bold;
+}
+
+.form-control,
+.form-control-file {
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    border-color: #8E2524;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Textarea */
+textarea.form-control {
+    resize: none;
+}
+
+/* File Input */
+.form-control-file {
+    padding: 5px;
+}
+
+.form-control-file:hover {
+    border-color: #8E2524;
+}
+

@@ -11,8 +11,10 @@ class UserCreationForm(forms.ModelForm):
     role = forms.ChoiceField(choices=[
         ('Admin', 'Admin'),
         ('Process Owner', 'Process Owner'),
-        ('Internal Auditor', 'Internal Auditor')
+        ('Internal Auditor', 'Internal Auditor'),
+        ('Lead Auditor', 'Lead Auditor')
     ])
+
     first_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'First Name'}))
     last_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Last Name'}))
 
@@ -57,7 +59,8 @@ class UserCreationForm(forms.ModelForm):
 class UserUpdateForm(forms.ModelForm):
     role = forms.ChoiceField(choices=[
         ('Process Owner', 'Process Owner'),
-        ('Internal Auditor', 'Internal Auditor')
+        ('Internal Auditor', 'Internal Auditor'),
+        ('Lead Auditor', 'Lead Auditor')
     ])
 
     class Meta:

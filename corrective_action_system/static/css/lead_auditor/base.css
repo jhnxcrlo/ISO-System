@@ -1,0 +1,1440 @@
+/* ========== Navbar Styling ========== */
+.navbar {
+    height: 70px;
+    width: 100%;
+    padding: 0 20px;
+    background: linear-gradient(45deg, #203040, #8E2524); /* Background gradient */
+    color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-nav .nav-item .nav-link {
+    color: #ffffff;
+    font-size: 1.2rem;
+}
+
+.navbar .notification-icon i {
+    font-size: 24px;
+    color: white;
+    margin-right: 15px;
+}
+
+.navbar .notification-icon i:hover {
+    color: #F1F1F1;
+}
+
+.notification-icon .dropdown-menu {
+    top: 47px; /* Adjusts vertical offset */
+
+}
+
+/* ========== Button Styling ========== */
+.navbar .btn {
+    background-color: transparent;
+    border: none;
+    color: white;
+    padding: 10px 0px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar .username:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: underline;
+}
+
+/* Dropdown and User Profile */
+.dropdown-toggle {
+    font-size: 16px;
+    color: white;
+    padding-left: 10px;
+    margin-left: 15px;
+}
+
+.dropdown-toggle img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 3px;
+}
+
+.dropdown-menu {
+    right: 0;
+    left: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ========== Sidebar Styling ========== */
+.sidenav {
+    background: white;
+    height: 100vh;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    padding: 20px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.sidenav .nav-item {
+    margin-bottom: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sidenav .nav-link {
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    color: #333;
+    background-color: #f1f1f1;
+    border: 2px solid #272F3F;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidenav .nav-link i {
+    margin-right: 10px;
+    font-size: 1.5rem;
+}
+
+.sidenav .nav-link:hover {
+    background-color: #f1f1f1;
+    color: #272F3F;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    border: 2px solid #272F3F;
+}
+
+/* Active State Styling */
+.sidenav .nav-link.active {
+    background-color: white !important;
+    color: #272F3F !important;
+    font-weight: bold !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    border: 2px solid #272F3F !important;
+    border-left: 6px solid #8E2524 !important;
+}
+
+/* Sidebar Logo */
+.system-title {
+    font-size: 1.7rem;
+    font-weight: bold;
+    color: #EFF1F3;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.sidebar-toggle-btn {
+    font-size: 1rem;
+    color: #333;
+    border: none;
+    background: transparent;
+    position: absolute;
+    bottom: 20px;
+    left: 38%;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 10px 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    margin-bottom: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hover effect when sidebar is not collapsed */
+.sidebar-toggle-btn:hover {
+    background-color: #8E2524;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translate(-5px, 0);
+    transition: transform 0.3s ease;
+}
+
+/* Hover effect when sidebar is collapsed */
+.sidebar-collapsed .sidebar-toggle-btn:hover {
+    background-color: #8E2524;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translate(5px, 0);
+    transition: transform 0.3s ease;
+}
+
+/* Collapsed Sidebar */
+.sidebar-collapsed {
+    width: 95px;
+}
+
+.sidebar-collapsed .nav-link {
+    justify-content: center;
+    padding: 10px;
+    font-size: 0;
+}
+
+.sidebar-collapsed .nav-link i {
+    font-size: 1.5rem;
+    justify-content: center;
+}
+
+.sidebar-collapsed .system-title {
+    display: none;
+}
+
+/* Stop transitions for elements when navigating away */
+.no-transition * {
+    transition: none !important;
+}
+/* Remove transition for sidebar */
+.sidenav, .sidebar-collapsed {
+    transition: none !important;
+}
+
+/* ========== Chatbox and Button Styling ========== */
+.chat-button {
+    position: fixed;
+    bottom: 55px;
+    right: 70px;
+    background-color: white;
+    border: 2px solid #8E2524;
+    color: #8E2524;
+    border-radius: 50px;
+    padding: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chat-button:hover {
+    transform: scale(1.1);
+    background-color: #203040;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 2px solid #ffffff;
+}
+
+.chatbox {
+    position: fixed;
+    bottom: 110px;
+    right: 56px;
+    width: 350px;
+    max-width: 100%;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 999;
+}
+
+.chatbox-header {
+    background-color: #8E2524;
+    padding: 10px;
+    border-bottom: 1px solid #eaeaea;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chatbox-header h5 {
+    margin: 0;
+    font-size: 16px;
+    color: #ffffff;
+}
+
+.chatbox-body {
+    padding: 20px;
+    height: 300px;
+    background-color: #eff1f3;
+    overflow-y: auto;
+}
+
+.chatbox-footer {
+    padding: 10px;
+    border-top: 1px solid #eaeaea;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chatbox-footer input {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    padding: 8px 15px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.chatbox-footer button {
+    background-color: #8E2524;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.chatbox-footer button:hover {
+    background-color: #a83c3c;
+    transform: scale(1.05);
+}
+
+.chatbox-footer label {
+    cursor: pointer;
+    position: relative;
+}
+
+.chatbox-footer input[type="file"] {
+    display: none;
+}
+
+.chatbox-footer .file-upload-label:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    bottom: 100%;
+    left: 0;
+    white-space: nowrap;
+    transform: translateY(0px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.quick-replies {
+    text-align: right;
+}
+
+.quick-replies button {
+    background-color: white;
+    color: #8E2524;
+    border: 2px solid #8E2524;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quick-replies button:hover {
+    background-color: #8E2524;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.chatbox-header .close {
+    font-size: 25px;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.send-button {
+    background-color: transparent;
+    border: 2px solid #8E2524;
+    color: #8E2524;
+    padding: 5px 8px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, color 0.3s ease;
+}
+
+.send-button:hover {
+    background-color: #8E2524;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Main Content Area Styling */
+.main-content {
+    padding: 40px;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+    margin-left: 250px;
+    transition: margin-left 0.3s ease;
+}
+
+.container-fluid h1, h2, h3 {
+    color: #203040;
+}
+
+
+
+.main-content-expanded {
+    margin-left: 190px;
+}
+
+/* Responsive behavior */
+@media (max-width: 768px) {
+    .sidenav {
+        width: 80px;
+        padding: 10px;
+    }
+
+    .sidenav .nav-link {
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+
+    .sidenav .nav-link i {
+        font-size: 1.2rem;
+    }
+
+    .main-content {
+        margin-left: 80px;
+    }
+
+    .sidebar-toggle-btn {
+        font-size: 20px;
+        right: -10px;
+        padding: 5px;
+    }
+}
+
+@media (max-width: 576px) {
+    .sidenav {
+        width: 100%;
+        height: auto;
+    }
+
+    .sidenav .nav-link {
+        justify-content: flex-start;
+        font-size: 1rem;
+    }
+
+    .sidenav .nav-link i {
+        font-size: 1.2rem;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .sidebar-toggle-btn {
+        display: none;
+    }
+}
+
+/*Adjust content margin when sidebar is collapsed */
+.sidebar-collapsed .main-content {
+    padding-left: 95px;
+}
+
+/* Primary Button (Dark Red) */
+.btn-primary {
+    background-color: #8E2524 !important; /* Dark red */
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important; /* Slightly less rounded for modern look */
+    padding: 12px 24px !important; /* More balanced padding */
+    font-weight: bold !important;
+    font-size: 1rem !important; /* Ensure consistent font size */
+    cursor: pointer !important;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important; /* Add subtle shadow */
+}
+
+.btn-primary:hover {
+    background-color: #A33331 !important; /* Slightly lighter red on hover */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15) !important; /* Enhance shadow on hover */
+}
+
+.btn-primary:disabled {
+    background-color: #d3d3d3 !important;
+    color: #777 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}
+
+/* Secondary Button (Lighter Red) */
+.btn-secondary {
+    background-color: #E6A5A4 !important; /* Lighter red */
+    color: #8E2524 !important; /* Darker red text */
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 24px !important;
+    font-weight: bold !important;
+    font-size: 1rem !important;
+    cursor: pointer !important;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-secondary:hover {
+    background-color: #C74C4A !important; /* Darker red hover */
+    color: white !important;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15) !important;
+}
+
+.btn-secondary:disabled {
+    background-color: #f0f0f0 !important;
+    color: #777 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}
+
+/* Tertiary Button (Minimal Red) */
+.btn-tertiary {
+    background-color: transparent !important; /* No background */
+    color: #A33331 !important; /* Use primary red for text */
+    border: none !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    padding: 10px 15px !important;
+    font-weight:  bolder !important;
+    font-size: 1.2rem !important;
+    transition: color 0.3s ease, text-shadow 0.3s ease !important;
+}
+
+.btn-tertiary:hover {
+    color: #7e1f1f !important; /* Slightly darker red on hover */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) !important; /* Add a soft text shadow */
+    text-decoration: underline !important; /* Add underline on hover */
+}
+
+.btn-tertiary:disabled {
+    color: #ccc !important;
+    cursor: not-allowed !important;
+    text-shadow: none !important;
+}
+
+/* Badge Primary Background */
+.bg-primary {
+    background-color: #C74C4A !important; /* Replace with a mid-range red */
+    color: white !important;
+}
+
+/* Badge Secondary Background */
+.bg-secondary {
+    background-color: #E6A5A4 !important; /* Lighter red */
+    color: #8E2524 !important; /* Dark red text */
+}
+
+/* Ripple Effect for Buttons */
+.btn {
+    position: relative;
+    overflow: hidden; /* Ensures the ripple does not exceed button boundary */
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.4); /* Light ripple effect */
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
+    opacity: 0;
+}
+
+.btn:hover::before {
+    width: 300%;
+    height: 300%;
+    opacity: 1;
+}
+
+/* Badge Styling */
+.badge {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+
+/* General Container and Layout */
+.custom-background {
+    background-color: #ffffff;
+    color: #333;
+    min-height: 100vh;
+    padding: 40px 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+.container-fluid {
+    padding: 20px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Greeting Section */
+.greeting-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    color: white;
+}
+
+.greeting-section:hover .greeting-link {
+    transform: scale(1.2);
+    color: #7e1f1f;
+}
+
+.greeting-section strong {
+    color: #272F3E; /* Change this to your desired color */
+    font-weight: bolder;
+}
+
+/* Announcement Section */
+.announcement-header {
+    margin-top: 50px;
+    margin-left: 30px;
+}
+
+
+.announcement-header h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.announcement-card {
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.announcement-card h5 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.announcement-card .card-text {
+    font-size: 1rem;
+    color: #555;
+}
+
+
+
+.dashboard-section {
+            margin-top: 20px;
+        }
+
+        .dashboard-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            height: 100%;
+        }
+
+        .dashboard-icon {
+            font-size: 40px;
+            color: #A33331;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333333;
+        }
+
+        .stat-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .stat-subtitle {
+            font-size: 16px;
+            color: #999999;
+        }
+
+        .dashboard-text {
+            flex-grow: 1;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-card {
+                text-align: center;
+            }
+
+            .dashboard-text {
+                align-items: center;
+            }
+
+            .stat-title,
+            .stat-number,
+            .stat-subtitle {
+                text-align: center;
+            }
+        }
+
+/* Greeting Section */
+.greeting-section {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #8e2524;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease;
+}
+
+.greeting-section h1 {
+    color: #8e2524;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.greeting-link {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.greeting-link:hover {
+    color: #ffd700;
+    text-decoration: underline;
+}
+
+/* Form and Button Styling */
+.form-control,
+.form-select {
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+/* Chart Section */
+.chart-container {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.chart-info {
+    width: 60%;
+}
+
+.chart-info h2 {
+    font-weight: bold;
+}
+
+.chart-info ul {
+    list-style-type: none;
+    padding: 0;
+    margin-right: 30px;
+}
+
+.chart-info ul li {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.chart-info ul li span {
+    font-weight: bold;
+}
+
+.chart-canvas {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chart-canvas canvas {
+    width: 250px;
+    height: 250px;
+}
+
+/* ISO Audit Report Enhancements */
+.report-container {
+    background-color: #f9f9f9;
+    padding: 20px;
+
+}
+
+.report-title {
+
+    font-weight: bold;
+    color: #203040;
+    display: flex;
+    align-items: center;
+     gap: 0.7rem;
+}
+
+.report-title i {
+    font-size: 2rem;
+
+}
+
+.report-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.report-lines {
+    list-style: none;
+    padding: 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.report-lines li {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.report-lines li:hover {
+    background-color: #f2f2f2;
+}
+
+/* Flexbox for responsiveness */
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+    }
+}
+
+/* Table Styling */
+.table-wrapper {
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    margin-top: 2rem;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.table th {
+    color: #203040;
+    font-weight: bold;
+}
+
+#projectsTable tbody td a {
+text-decoration: none ; /* Removes underline */
+color: #203040 !important; /* Ensures consistent color */
+}
+#projectsTable tbody td a:hover{
+text-decoration: underline ; /* Removes underline */
+color: #203040 !important; /* Ensures consistent color */
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f2f2f2;
+}
+
+/* Avatar Group Styling */
+.avatar-group {
+    display: flex;
+    align-items: center;
+}
+
+.avatar-group img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-right: -10px;
+    border: 2px solid #fff;
+}
+
+.progress {
+    height: 3px;
+}
+
+.progress-bar {
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+/* Badge Styling */
+.badge-status {
+    font-size: 0.85rem;
+    padding: 2.5px 10px;
+    border-radius: 12px;
+}
+
+.badge-completed {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-ongoing {
+    background-color: #007bff;
+    color: white;
+}
+
+.badge-critical {
+    background-color: #dc3545;
+    color: white;
+}
+
+.badge-inactive {
+    background-color: #ffc107;
+    color: white;
+}
+
+.badge-cancelled {
+    background-color: #6c757d;
+    color: white;
+}
+
+.badge bg-primary {
+    badkground-color: #e6a5a4;
+}
+
+/* Filter Tabs */
+.filter-tabs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.filter-tabs .nav-link {
+    font-weight: bold;
+    color: #A33331;
+    transition: color 0.3s;
+}
+
+.filter-tabs .nav-link:hover, .filter-tabs .nav-link.active {
+    color: white;
+}
+
+/* Change the default color of nav-pills links */
+.nav-pills .nav-link {
+    color: #A33331; /* Your desired color for inactive pills */
+}
+
+/* Change the color of the active pill */
+.nav-pills .nav-link.active {
+    background-color: #C74C4A; /* Background color for the active pill */
+    color: #fff; /* Text color for the active pill */
+}
+
+/* Change the color on hover */
+.nav-pills .nav-link:hover {
+    color: #A33331; /* Text color on hover */
+}
+
+/* Other Styling */
+.card {
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.text-primary {
+    color: #8B0000;
+}
+
+h3 {
+    font-size: 1.75rem;
+}
+
+.input-group-text {
+    background-color: #f0f2f5;
+}
+
+/* Search Bar Container */
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 350px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #ddd;
+    transition: border-color 0.3s ease;
+}
+
+/* Search Input */
+.search-input {
+    flex-grow: 1;
+    padding: 10px 20px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    border-radius: 30px 0 0 30px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #0d6efd;
+}
+
+/* Search Button */
+.input-group-text {
+    padding: 13px 20px;
+    background-color: white; /* Dark Red */
+    color: #8E2524;
+    border: 2px solid #8E2524;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    border-radius: 0 5px 5px 0;
+}
+
+.input-group-text:hover {
+    background-color: #f0f0f0; /* Slightly lighter red on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+/* View All Link Styling */
+
+.view-all-link {
+    font-weight: bold;
+    color: #A33331;
+    transition: color 0.3s;
+    text-decoration: none;
+}
+
+.nav-link i.fa-angle-right {
+    color: #A33331; /* Icon changes color when hovered */
+}
+
+.view-all-link:hover {
+    color: #8E2524; /* Darker red on hover */
+    text-decoration: underline;
+}
+
+/* Pagination Red Theme */
+.pagination-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.pagination-red .page-link {
+    color: #8E2524; /* Dark Red */
+    font-weight: bold;
+}
+
+.pagination-red .page-link:hover {
+    background-color: #C74C4A;
+    color: #fff; /* White text on hover */
+}
+
+.pagination-red .page-link:focus {
+    box-shadow: none; /* Remove the blue outline on focus */
+}
+
+.pagination-red .page-item.active .page-link {
+    background-color: #8E2524;
+    border-color: #8E2524;
+    color: #fff; /* White text when active */
+}
+
+.pagination-red .page-item.disabled .page-link {
+    color: #d3d3d3; /* Disabled item color */
+    pointer-events: none;
+    background-color: #f0f0f0;
+}
+
+/* Task cards - updated background color to light gray and text to black for better readability */
+.todo-card {
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.todo-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Badge styling for better color contrast */
+.urgent-badge {
+    background-color: #dc3545;
+    color: white;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    margin-top: 100px;
+}
+
+.on-process-badge {
+    background-color: #ffc107;
+    color: #333;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    border-radius: 5px;
+}
+
+.completed-badge {
+    background-color: #28a745;
+    color: white;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    border-radius: 5px;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+}
+
+.task-header h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.task-header h4 {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* Search bar and task info styling for clean, minimal look */
+.search-bar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.search-bar-container input,
+.search-bar-container .sort-dropdown {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.search-bar-container input {
+    width: 60%;
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sort-dropdown {
+    margin-left: 20px;
+}
+
+/* Modal styling with white background for better readability */
+
+.modal-lg-custom {
+    max-width: 80% !important;
+}
+
+.modal-content {
+    background-color: #fff;
+    color: #333;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.modal-header h2 {
+    font-size: 2rem;
+    color: #272F3F;
+    margin-bottom: 15px;
+    font-weight: 900;
+}
+
+.modal-header h3 {
+    font-size: 1.5rem;
+    color: #c70039;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid #ddd;
+}
+
+/* Move number of tasks below 'To Do' heading */
+.task-info-below-header {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* Progress steps with improved padding, borders, and background for clarity */
+.progress-container {
+    margin-top: 30px;
+}
+
+.progress-step {
+    background-color: #f8f8f8;
+    border-left: 4px solid #7E1F1F;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    position: relative;
+    cursor: pointer;
+}
+
+.progress-step h6 {
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.progress-step p {
+    color: #666;
+}
+
+/* File sample styling */
+.file-samples {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.file-sample {
+    padding: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+}
+
+.file-name {
+    color: #333;
+    font-weight: bold;
+}
+
+/* Attachment input style */
+.attachment-input {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.attachment-input label {
+    margin-right: 10px;
+    cursor: pointer;
+    color: #007bff;
+}
+
+.attachment-input input[type="file"] {
+    display: none;
+}
+
+.comments-section {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.comment {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.admin-comment {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.user-comment {
+    color: #333;
+}
+
+/* Add comment input styling */
+.add-comment {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+
+}
+
+.add-comment input[type="text"] {
+    flex-grow: 1;
+    margin-right: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+.add-comment button {
+    padding: 6px 12px;
+    background-color: #7E1F1F;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+
+}
+
+.add-comment button:hover {
+    background-color: #5a1717;
+}
+
+.add-comment .comment-input {
+    border-radius: 8px 0 0 8px; /* Rounded left corners */
+    border-right: none; /* Remove border on the right */
+}
+
+.add-comment .send-comment-btn {
+    background-color: #A33331;
+    border-radius: 0 8px 8px 0; /* Rounded right corners */
+    border-left: none; /* Remove border on the left */
+    display: flex;
+    align-items: center; /* Vertically align icon */
+    padding: 0 16px; /* Adjust padding to make the button height match the input */
+    margin-top: 10px;
+}
+
+.add-comment .comment-input,
+.add-comment .send-comment-btn {
+    height: 42px; /* Make the input and button the same height */
+}
+
+
+/* Improved button and input styling */
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.greeting-section {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #8E2524;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease;
+}
+
+.greeting-section h1 {
+    color: #8E2524;
+    font-size: 2.5rem;
+/ font-weight: bold;
+}
+
+.greeting-section strong {
+    color: #203040;
+}
+
+/* Add animation to make the div more dynamic */
+.greeting-section:hover {
+    transform: translateY(-5px); /* Slightly elevate the div on hover */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    color: white;
+}
+
+.greeting-section:hover::before {
+    transform: skewX(-20deg) translateX(0);
+
+}
+
+.greeting-section:hover .greeting-link {
+    transform: scale(1.2); /* Scale up the link */
+    color: #7E1F1F; /* Ensure link text stays white */
+}
+
+.greeting-link {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: transform 0.3s ease, background-color 0.3s ease; /* Add smooth transition for scaling and color */
+}
+
+.greeting-link:hover {
+    color: #FFD700;
+    text-decoration: underline;
+}
+
+.progress-step .text-muted {
+    color: #666 !important;
+}
+
+/* Make the link appear as black and remove the default blue color and underline */
+.progress-step a.btn-link {
+    color: #000 !important; /* Black color */
+    text-decoration: none; /* Remove underline */
+}
+
+.progress-step a.btn-link:hover {
+    text-decoration: underline; /* Optionally add underline on hover */
+    color: #333; /* Slightly lighter on hover */
+}
+
+
+
+
+
