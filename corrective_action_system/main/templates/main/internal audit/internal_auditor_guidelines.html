@@ -2,14 +2,17 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1>Internal Auditor Guidelines</h1>
+    <h3>Guidelines</h3>
 
-    <!-- Add Guideline Button -->
-    <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addGuidelineModal">
-        Add Guideline
-    </button>
+    <!-- Add Guideline Button (Right-Aligned) -->
+    <div class="d-flex justify-content-end mb-4">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGuidelineModal">
+            Add Guideline
+        </button>
+    </div>
 
     <!-- Guidelines List -->
+    {% if guidelines %}
     <div class="row">
         {% for guideline in guidelines %}
         <div class="col-md-4">
@@ -39,7 +42,14 @@
         </div>
         {% endfor %}
     </div>
+    {% else %}
+    <div class="alert alert-info text-center">
+        No guidelines have been uploaded yet. Please add a new guideline using the "Add Guideline" button above.
+    </div>
+    {% endif %}
 </div>
+
+
 
 <!-- Add Guideline Modal -->
 <div class="modal fade" id="addGuidelineModal" tabindex="-1" aria-hidden="true">
