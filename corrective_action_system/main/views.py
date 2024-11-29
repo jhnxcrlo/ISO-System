@@ -382,8 +382,6 @@ def delete_template(request, pk):
         return redirect('internal_auditor_forms')
     return redirect('process_owner_forms')  # Default redirect
 
-
-
 @login_required
 def process_owner_forms_view(request):
     """View for Process Owner to view and download forms."""
@@ -638,8 +636,6 @@ def combined_non_conformity_detail(request, nc_id):
     else:
         return render(request, 'main/internal audit/non_conformity_detail.html', context)
 
-
-
 @login_required
 def task_detail(request, task_id):
     # Fetch the task (Non-Conformity record)
@@ -804,24 +800,23 @@ def corrective_action_plan(request, task_id):
         'corrective_action_plans': corrective_action_plans,
     })
 
-
 @login_required
 def add_review(request, cap_id):
     corrective_action_plan = get_object_or_404(CorrectiveActionPlan, id=cap_id)
     non_conformity = corrective_action_plan.non_conformity
 
-    # Determine the current view name
-    current_view_name = resolve(request.path).url_name
-    is_lead_auditor = current_view_name == 'lead_auditor_add_review'
+    # Get the user's role from the UserProfile model
+    user_role = getattr(request.user.userprofile, 'role', None)
+    allowed_roles = ['Lead Auditor', 'Internal Auditor']  # Roles allowed to add a review
 
-    # Optional: Role-based validation
-    if is_lead_auditor and not request.user.groups.filter(name='Lead Auditor').exists():
-        raise PermissionDenied
+    # Validate the user's role
+    if user_role not in allowed_roles:
+        raise PermissionDenied("You do not have permission to add a review.")
 
     if request.method == 'POST':
         effectiveness = request.POST.get('effectiveness')
         reason = request.POST.get('reason', '')  # Optional field
-        restart_process = True if effectiveness == 'Not Accepted' else False
+        restart_process = effectiveness == 'Not Accepted'
 
         # Create a new review
         CorrectiveActionPlanReview.objects.create(
@@ -853,19 +848,29 @@ def add_review(request, cap_id):
             )
             messages.warning(
                 request,
-                f"Corrective Action Plan rejected. A new RFA was issued: {new_rfa.non_conformity}"
+                f"Corrective Action Plan rejected. A new RFA was issued: {new_rfa.non_conformity}."
             )
         else:
             messages.success(request, "Review added successfully.")
 
-        # Redirect based on the current view (role-specific redirect)
-        if is_lead_auditor:
+            # Notify the Process Owner
+            if non_conformity.assigned_to:  # Check if a process owner is assigned
+                notify.send(
+                    sender=request.user,
+                    recipient=non_conformity.assigned_to,
+                    verb="New Review Added",
+                    description=f"A review was added to the corrective action plan for {non_conformity.non_conformity}.",
+                    target=corrective_action_plan
+                )
+
+        # Redirect based on the user's role
+        if user_role == 'Lead Auditor':
             return redirect('lead_auditor_non_conformity_detail', nc_id=non_conformity.id)
         else:
             return redirect('non_conformity_detail', nc_id=non_conformity.id)
 
-    # If GET request or any other method, redirect to the detail page
-    if is_lead_auditor:
+    # Handle other methods (e.g., GET) by redirecting to the detail page
+    if user_role == 'Lead Auditor':
         return redirect('lead_auditor_non_conformity_detail', nc_id=non_conformity.id)
     else:
         return redirect('non_conformity_detail', nc_id=non_conformity.id)
@@ -914,6 +919,8 @@ def add_follow_up(request, nc_id):
         return render(request, 'main/internal audit/non_conformity_detail.html', context)
 
 
+from notifications.signals import notify
+
 @login_required
 def action_verification(request, cap_id):
     try:
@@ -939,39 +946,57 @@ def action_verification(request, cap_id):
             verification.corrective_action_plan = corrective_action_plan
             verification.save()
 
-            # Check if the verification is marked as "effective"
-            if verification.status == "effective":
-                # Automatically create or update CloseOut record
-                CloseOut.objects.update_or_create(
-                    non_conformity=non_conformity,
-                    defaults={
-                        'auditor_name': request.user.get_full_name() or request.user.username,
-                        'auditor_date': verification.date,
-                        'process_owner_name': non_conformity.assigned_to.get_full_name() if non_conformity.assigned_to else "Unknown",
-                        'process_owner_date': verification.date,
-                    }
-                )
-                messages.success(request, "Corrective action verified as effective. Close Out record updated.")
-            else:
-                # Issue a new RFA if status is "not effective"
-                new_rfa = NonConformity.objects.create(
-                    non_conformity=f"New RFA for: {non_conformity.non_conformity}",
-                    assignees=non_conformity.assignees,
-                    originator_name=non_conformity.originator_name,
-                    unit_department=non_conformity.unit_department,
-                    phone=non_conformity.phone,
-                    email=non_conformity.email,
-                    rfa_intent=non_conformity.rfa_intent,
-                    department=non_conformity.department,
-                    non_conformance_category=non_conformity.non_conformance_category,
-                    description_of_non_conformance=non_conformity.description_of_non_conformance,
-                    iso_clause=non_conformity.iso_clause,
-                    category=non_conformity.category,
-                    start_date=now().date(),
-                    status='pending',
-                    assigned_to=non_conformity.assigned_to
-                )
-                messages.warning(request, f"Corrective action plan deemed not effective. New RFA issued: {new_rfa.non_conformity}")
+            # Notify Process Owner
+            process_owner = non_conformity.assigned_to
+            if process_owner:
+                if verification.status == "effective":
+                    # Notify Process Owner about effective action
+                    notify.send(
+                        sender=request.user,
+                        recipient=process_owner,
+                        verb="Action Verified Effective",
+                        description=f"Corrective action plan for '{non_conformity.non_conformity}' has been verified as effective.",
+                        target=verification
+                    )
+                    # Automatically create or update CloseOut record
+                    CloseOut.objects.update_or_create(
+                        non_conformity=non_conformity,
+                        defaults={
+                            'auditor_name': request.user.get_full_name() or request.user.username,
+                            'auditor_date': verification.date,
+                            'process_owner_name': process_owner.get_full_name(),
+                            'process_owner_date': verification.date,
+                        }
+                    )
+                    messages.success(request, "Corrective action verified as effective. Close Out record updated.")
+                else:
+                    # Notify Process Owner about ineffective action
+                    notify.send(
+                        sender=request.user,
+                        recipient=process_owner,
+                        verb="Action Not Effective",
+                        description=f"Corrective action plan for '{non_conformity.non_conformity}' was deemed not effective.",
+                        target=verification
+                    )
+                    # Issue a new RFA if status is "not effective"
+                    new_rfa = NonConformity.objects.create(
+                        non_conformity=f"New RFA for: {non_conformity.non_conformity}",
+                        assignees=non_conformity.assignees,
+                        originator_name=non_conformity.originator_name,
+                        unit_department=non_conformity.unit_department,
+                        phone=non_conformity.phone,
+                        email=non_conformity.email,
+                        rfa_intent=non_conformity.rfa_intent,
+                        department=non_conformity.department,
+                        non_conformance_category=non_conformity.non_conformance_category,
+                        description_of_non_conformance=non_conformity.description_of_non_conformance,
+                        iso_clause=non_conformity.iso_clause,
+                        category=non_conformity.category,
+                        start_date=now().date(),
+                        status='pending',
+                        assigned_to=process_owner
+                    )
+                    messages.warning(request, f"Corrective action plan deemed not effective. New RFA issued: {new_rfa.non_conformity}")
 
             # Redirect based on role
             if is_lead_auditor:
