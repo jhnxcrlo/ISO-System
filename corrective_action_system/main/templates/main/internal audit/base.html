@@ -65,8 +65,8 @@
 
                 <!-- Guidelines Link -->
                 <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'internal_auditor_guideline_list' %}active{% endif %}"
-                       href="{% url 'internal_auditor_guideline_list' %}">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'internal_auditor_guidelines' %}active{% endif %}"
+                       href="{% url 'internal_auditor_guidelines' %}">
                         <i class="fas fa-book me-2"></i> Guidelines
                     </a>
                 </li>

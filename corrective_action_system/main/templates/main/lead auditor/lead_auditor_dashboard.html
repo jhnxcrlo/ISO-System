@@ -61,24 +61,6 @@
 
 
     <!-- Announcement Section -->
-    <div class="announcement-header mt-5">
-        <h2>Latest Announcements</h2>
-        <p class="text-muted">Stay updated with the latest news and information</p>
-        <div class="announcement-list mt-4">
-            {% for announcement in announcements %}
-                <div class="card mb-4 announcement-card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ announcement.title }}</h5>
-                        <p class="card-text">{{ announcement.body }}</p>
-                        <p class="card-text"><small class="text-muted">Posted
-                            on {{ announcement.date_posted|date:"F d, Y" }}</small></p>
-                    </div>
-                </div>
-            {% empty %}
-                <p>No announcements to show at the moment.</p>
-            {% endfor %}
-        </div>
-    </div>
 
     <!-- Audit Section -->
     <div class="container-fluid mt-5">

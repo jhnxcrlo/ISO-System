@@ -1,94 +1,25 @@
 {% extends 'main/lead auditor/base.html' %}
-
+{% load custom_tags %}
 {% block title %}Manage Users{% endblock %}
 
 {% block content %}
-{% load custom_tags %}
+<div class="container mt-5">
+    <h2 class="fw-bold mb-4">Manage Users</h2>
 
-<style>
-    body {
-        background-color: #f9f9f9;
-    }
-    .container {
-        margin-top: 20px;
-    }
-    .table {
-        margin-top: 20px;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .table th {
-        background-color: #007bff;
-        color: white;
-        text-align: center;
-        font-weight: 600;
-    }
-    .table td {
-        padding: 15px;
-        text-align: center;
-    }
-    .table-hover tbody tr:hover {
-        background-color: #f1f1f1;
-    }
-    .btn-action {
-        margin: 0 0.5rem;
-        display: inline-block;
-    }
-    .search-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-    .search-container input {
-        width: 300px;
-        padding: 0.5rem;
-        border: 1px solid #ced4da;
-        border-radius: 0.25rem;
-    }
-    .modal-content {
-        padding: 20px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        border-radius: 10px;
-    }
-    .modal-header {
-        border-bottom: none;
-    }
-    .modal-title {
-        font-size: 1.5rem;
-        font-weight: 600;
-    }
-    .btn-primary, .btn-warning, .btn-danger {
-        border-radius: 20px;
-        padding: 8px 16px;
-        font-size: 14px;
-    }
-    .btn-primary i, .btn-warning i, .btn-danger i {
-        margin-right: 6px;
-    }
-    .modal-footer {
-        justify-content: center;
-    }
-    .error-message {
-        color: red;
-        margin-bottom: 10px;
-    }
-</style>
-
-<div class="container">
-    <h2 class="mt-4 fw-bold">Manage Users</h2>
-
-    <div class="search-container">
-        <input type="text" id="searchInput" class="form-control" placeholder="Search by username..." onkeyup="filterUsers()" aria-label="Search users">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
-            <i class="fas fa-plus"></i> Add User
-        </button>
+    <!-- Add and Search Users -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="input-group w-50">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search users by username..." onkeyup="filterUsers()">
     </div>
+    <button class="btn btn-primary btn-lg" onclick="openAddUserForm()">
+        <i class="fas fa-user-plus"></i> Add User
+    </button>
+</div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-            <thead>
+    <!-- User Table -->
+    <div class="table-responsive rounded">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light text-center">
                 <tr>
                     <th>ID</th>
                     <th>Username</th>
@@ -99,24 +30,20 @@
             </thead>
             <tbody id="userTableBody">
                 {% for user in users %}
-                <tr>
+                <tr class="text-center">
                     <td>{{ user.id }}</td>
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user_roles|get_item:user.id }}</td>
                     <td>
-                        <!-- Edit button -->
-                        <button class="btn btn-sm btn-warning btn-action" data-bs-toggle="modal" data-bs-target="#addUserModal" data-id="{{ user.id }}" data-username="{{ user.username }}" data-email="{{ user.email }}" data-role="{{ user_roles|get_item:user.id }}">
-                            <i class="fas fa-edit"></i> Edit
+                        <button class="btn btn-sm btn-warning" title="Edit User" 
+                                onclick="openEditUserForm('{{ user.id }}', '{{ user.username }}', '{{ user.email }}', '{{ user_roles|get_item:user.id }}')">
+                            <i class="fas fa-edit"></i>
                         </button>
-
-                        <!-- Delete button -->
-                        <form method="post" action="{% url 'delete_user' user.id %}" style="display:inline;" onsubmit="return confirmDeletion('{{ user.username }}');">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-danger btn-action" {% if user.is_superuser %}disabled{% endif %}>
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </form>
+                        <button class="btn btn-sm btn-danger" title="Delete User" 
+                                onclick="confirmDeletion('{{ user.username }}', '{% url 'delete_user' user.id %}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -125,109 +52,115 @@
     </div>
 </div>
 
-<!-- Add/Edit User Modal -->
-<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="userForm" method="post" action="{% url 'add_user' %}">
-                    {% csrf_token %}
+<!-- Hidden Add/Edit User Form -->
+<form id="userForm" method="post" action="{% url 'add_user' %}" style="display: none;">
+    {% csrf_token %}
+    <input type="hidden" name="user_id" id="user_id">
 
-                    <div class="form-group">
-                        <label for="id_username" class="fw-bold">Username:</label>
-                        <input type="text" name="username" class="form-control" required id="id_username">
-                    </div>
-                    <div class="form-group">
-                        <label for="id_email" class="fw-bold">Email:</label>
-                        <input type="email" name="email" class="form-control" required id="id_email">
-                    </div>
-                    <div class="form-group">
-                        <label for="id_role" class="fw-bold">Role:</label>
-                        <select name="role" class="form-control" required id="id_role">
-                            <option value="">Select Role</option>
-                            <option value="Admin">Admin</option>
-                            <option value="Process Owner">Process Owner</option>
-                            <option value="Internal Auditor">Internal Auditor</option>
-                        </select>
-                    </div>
-                    <div id="formErrors" class="mt-2"></div>
-                    <input type="hidden" name="user_id" id="user_id" value="">
-                    <button type="submit" class="btn btn-primary w-100 mt-2">Save</button>
-                </form>
-            </div>
-        </div>
+    <div class="mb-3">
+        <label for="id_username" class="form-label">Username</label>
+        <input type="text" name="username" id="id_username" class="form-control" placeholder="Enter username" required>
     </div>
-</div>
 
-<!-- Success Modal -->
-<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="successModalLabel">Success!</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="successMessage">
-                <!-- Success message will be injected here -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
+    <div class="mb-3">
+        <label for="id_email" class="form-label">Email</label>
+        <input type="email" name="email" id="id_email" class="form-control" placeholder="Enter email" required>
     </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+    <div class="mb-3">
+        <label for="id_role" class="form-label">Role</label>
+        <select name="role" id="id_role" class="form-select" required>
+            <option value="" disabled selected>Select Role</option>
+            <option value="Admin">Admin</option>
+            <option value="Process Owner">Process Owner</option>
+            <option value="Internal Auditor">Internal Auditor</option>
+            <option value="Lead Auditor">Lead Auditor</option>
+            <option value="External Auditor">External Auditor</option>
+        </select>
+    </div>
+</form>
+    
+    <script>
+function filterUsers() {
+    const searchValue = document.getElementById('searchInput').value.toLowerCase();
+    const userRows = document.querySelectorAll('#userTableBody tr'); // Use table rows instead
 
-<script>
-    function confirmDeletion(username) {
-        return confirm("Are you sure you want to delete user " + username + "?");
-    }
-
-    // Prefill the modal with data for editing
-    $('#addUserModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var userId = button.data('id');
-        var username = button.data('username');
-        var email = button.data('email');
-        var role = button.data('role');
-
-        var modal = $(this);
-        modal.find('.modal-title').text(userId ? 'Edit User' : 'Add User');
-        modal.find('#user_id').val(userId || '');
-        modal.find('input[name="username"]').val(username || '');
-        modal.find('input[name="email"]').val(email || '');
-        modal.find('select[name="role"]').val(role || '');
-        $('#formErrors').empty();  // Clear previous errors
-    });
-
-    $(document).ready(function () {
-        {% if messages %}
-            $('#successMessage').text('{% for message in messages %}{{ message }}{% endfor %}');
-            $('#successModal').modal('show');
-        {% endif %}
-    });
-
-    function filterUsers() {
-        var input = document.getElementById("searchInput");
-        var filter = input.value.toLowerCase();
-        var table = document.getElementById("userTableBody");
-        var tr = table.getElementsByTagName("tr");
-
-        for (var i = 0; i < tr.length; i++) {
-            var td = tr[i].getElementsByTagName("td")[1]; // Username column
-            if (td) {
-                var txtValue = td.textContent || td.innerText;
-                tr[i].style.display = txtValue.toLowerCase().indexOf(filter) > -1 ? "" : "none";
-            }
+    userRows.forEach((row) => {
+        const username = row.cells[1].textContent.toLowerCase(); // Username is in the second cell
+        if (username.includes(searchValue)) {
+            row.style.display = ''; // Show the row
+        } else {
+            row.style.display = 'none'; // Hide the row
         }
-    }
-</script>
+    });
+}
+// Confirm Deletion with SweetAlert2
+function confirmDeletion(username, deleteUrl) {
+    Swal.fire({
+        title: `Delete User "${username}"?`,
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6c757d",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = deleteUrl; // Redirect to delete URL
+        }
+    });
+}
 
+// Open Add User Form
+function openAddUserForm() {
+    const form = document.getElementById('userForm');
+    form.action = "{% url 'add_user' %}";
+
+    // Clear form fields
+    document.getElementById('user_id').value = '';
+    document.getElementById('id_username').value = '';
+    document.getElementById('id_email').value = '';
+    document.getElementById('id_role').value = '';
+
+    showForm('Add User');
+}
+
+// Open Edit User Form
+function openEditUserForm(userId, username, email, role) {
+    const form = document.getElementById('userForm');
+    form.action = "{% url 'edit_user' 0 %}".replace('0', userId);
+
+    // Populate form fields
+    document.getElementById('user_id').value = userId;
+    document.getElementById('id_username').value = username;
+    document.getElementById('id_email').value = email;
+    document.getElementById('id_role').value = role;
+
+    showForm('Edit User');
+}
+
+// Show Form in SweetAlert Modal
+function showForm(title) {
+    const form = document.getElementById('userForm'); // Use the original form
+    form.style.display = 'block'; // Temporarily show the form
+
+    Swal.fire({
+        title: title,
+        html: form, // Embed the form into SweetAlert
+        showCancelButton: true,
+        confirmButtonText: 'Save',
+        cancelButtonText: 'Cancel',
+        focusConfirm: false,
+        preConfirm: () => {
+            form.submit(); // Submit the form
+        },
+        willClose: () => {
+            form.style.display = 'none'; // Hide the form after modal closes
+        },
+    });
+}
+
+    </script>
+    
 {% endblock %}

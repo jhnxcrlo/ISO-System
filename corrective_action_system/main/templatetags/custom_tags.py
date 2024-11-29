@@ -10,6 +10,17 @@ def get_item(dictionary, key):
         return dictionary.get(key, "")
     return ""
 
+@register.filter
+def get_item(dictionary, key):
+    """Retrieve a value from a dictionary by key."""
+    return dictionary.get(key)
+
+@register.filter
+def message_icon(tags):
+    """Return SweetAlert icon type based on message tags."""
+    return 'success' if 'success' in tags else 'error'
+
+
 
 @register.filter(name='add_class')
 def add_class(value, css_class):

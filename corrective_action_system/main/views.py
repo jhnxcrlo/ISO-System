@@ -1,34 +1,39 @@
+from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string, get_template
+from django.urls import resolve
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required, user_passes_test
-from itsdangerous import URLSafeTimedSerializer
 from django.contrib.auth.models import User
-from xhtml2pdf import pisa
-from django.http import HttpResponseServerError
-from .models import LoginEvent, UserProfile, ImmediateAction, RootCauseAnalysis, CorrectiveActionPlan, FollowUpAction, \
-    ActionVerification, CorrectiveActionPlanReview, CloseOut, Comment
-from .forms import UserCreationForm, UserUpdateForm, RootCauseAnalysisForm, ImmediateActionForm, \
-    CorrectiveActionPlanForm, FollowUpActionForm, CorrectiveActionPlanReviewForm, CloseOutForm, ActionVerificationForm
-from django.http import HttpResponse, FileResponse, Http404
-from .models import TemplateModel, Guideline, Announcement, NonConformity
-from .forms import GuidelineForm, AnnouncementForm, CustomPasswordChangeForm
-from itsdangerous import SignatureExpired, BadSignature
 from django.contrib.auth import update_session_auth_hash
-import logging
-from django.shortcuts import render, get_object_or_404
-from django.template.loader import render_to_string
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse, Http404, HttpResponseServerError, HttpResponseForbidden
 from django.templatetags.static import static
-from django.utils.timezone import now
 from django.contrib import messages
-from django.shortcuts import get_object_or_404, redirect
-from .models import  UserProfile
+from django.utils.timezone import now
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+from xhtml2pdf import pisa
+import logging
+
 from notifications.signals import notify
 from notifications.models import Notification
+
+from .models import (
+    LoginEvent, UserProfile, ImmediateAction, RootCauseAnalysis,
+    CorrectiveActionPlan, FollowUpAction, ActionVerification,
+    CorrectiveActionPlanReview, CloseOut, Comment, NonConformity,
+    TemplateModel, Guideline, Announcement
+)
+
+from .forms import (
+    UserCreationForm, UserUpdateForm, RootCauseAnalysisForm,
+    ImmediateActionForm, CorrectiveActionPlanForm, FollowUpActionForm,
+    CorrectiveActionPlanReviewForm, CloseOutForm, ActionVerificationForm,
+    GuidelineForm, AnnouncementForm, CustomPasswordChangeForm
+)
+
 s = URLSafeTimedSerializer('your-secret-key')
 
 def login_view(request):
@@ -45,22 +50,17 @@ def login_view(request):
             request.session['user_role'] = user_profile.role
 
             # Redirect based on user role
-            if user_profile.role == 'Lead Auditor':
-                return redirect('lead_auditor_dashboard')
-            elif user_profile.role == 'Internal Auditor':
+            if user_profile.role == 'Internal Auditor':
                 return redirect('internal_auditor_dashboard')
             elif user_profile.role == 'Process Owner':
                 return redirect('process_owner_dashboard')
+            elif user_profile.role == 'Lead Auditor':
+                return redirect('lead_auditor_dashboard')
             else:
                 return redirect('dashboard')
         else:
             return render(request, 'main/login.html', {'error': 'Invalid username or password'})
     return render(request, 'main/login.html')
-
-
-@login_required
-def dashboard_view(request):
-    return render(request, 'main/administrator/dashboard.html')
 
 @login_required
 def lead_auditor_dashboard_view(request):
@@ -70,15 +70,12 @@ def lead_auditor_dashboard_view(request):
 def internal_auditor_dashboard_view(request):
     return render(request, 'main/internal audit/internal_auditor_dashboard.html')
 
-
 @login_required
 def process_owner_dashboard_view(request):
     tasks = NonConformity.objects.filter(assigned_to=request.user, status='pending')
     return render(request, 'main/process owner/process_owner_dashboard.html', {'tasks': tasks})
 
-
 logger = logging.getLogger(__name__)
-
 
 @login_required
 def manage_users_view(request):
@@ -99,80 +96,63 @@ def manage_users_view(request):
         'add_user_form': add_user_form,  # Empty form for adding users
     }
 
-    return render(request, 'main/administrator/manage_users.html', context)
-
+    return render(request, 'main/lead auditor/lead_auditor_manage_user.html', context)
 
 @login_required
 def add_user(request):
     if request.method == 'POST':
-        user_id = request.POST.get('user_id')  # Get user_id if it's an edit
-        logger.info(f'Handling user creation/edit. User ID: {user_id}')
-
-        if user_id:
-            # If user_id exists, it's an update, fetch the user and update their info
-            user = get_object_or_404(User, id=user_id)
-            form = UserUpdateForm(request.POST, instance=user)
-        else:
-            # If no user_id, it's a new user creation
-            form = UserCreationForm(request.POST)
-
+        form = UserCreationForm(request.POST)
         if form.is_valid():
-            # If the form is valid, save the user
-            if user_id:
-                # Update existing user
-                form.save()
-                messages.success(request, 'User account has been successfully updated.')
-                logger.info(f'User {user.username} updated successfully.')
-            else:
-                # Create a new user and set a default password
-                user = form.save(commit=False)  # Save user data but don't commit to DB yet
-                default_password = 'sorsu123'  # Set your default password here
-                user.set_password(default_password)
-                user.save()  # Save the user to the database
-                logger.info(f'New user {user.username} created with default password.')
+            user = form.save(commit=False)
+            user.set_password('sorsu123')  # Assign default password
+            user.save()
 
-                # Create a user profile and set role
-                UserProfile.objects.create(user=user, role=form.cleaned_data['role'])
-
-                # Force the user to change their password on first login
-                user.userprofile.password_needs_reset = True
-                user.userprofile.save()
-
-                # Send email for account creation and verification (if email verification is required)
-                token = s.dumps(user.email, salt='email-confirm')
-                verification_link = request.build_absolute_uri(f'/main/verify/{token}/')
-
-                subject = 'Account Created - Verify your email address'
-                html_content = render_to_string('main/administrator/confirmation_email.html',
-                                                {'verification_link': verification_link})
-                text_content = strip_tags(html_content)
-
-                email = EmailMultiAlternatives(subject, text_content, 'jhnxcrlo@gmail.com', [user.email])
-                email.attach_alternative(html_content, "text/html")
-                email.send()
-
-                messages.success(request, 'User account has been successfully created.')
-                logger.info(f'User {user.username} email sent with verification link.')
-
-            # After successful creation or update, redirect to the manage users page
-            return redirect('manage_users')
+            UserProfile.objects.update_or_create(
+                user=user,
+                defaults={
+                    'role': form.cleaned_data['role'],
+                    'password_needs_reset': True  # Force password reset
+                }
+            )
+            messages.success(request, f'User "{user.username}" successfully added!')
+            return redirect('lead_auditor_manage_user')
         else:
-            # If the form is invalid, log errors and re-render the page with error messages
-            logger.error(f'Form validation failed. Errors: {form.errors}')
+            print("Form validation errors:", form.errors)  # Debugging
+            messages.error(request, 'Failed to add user. Please check the form.')
+    return redirect('lead_auditor_manage_user')
+
+
+
+
+
+
+@login_required
+def edit_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+
+            # Update the user's profile role if applicable
+            user.userprofile.role = form.cleaned_data['role']
+            user.userprofile.save()
+
+            messages.success(request, 'User account has been successfully updated.')
+            logger.info(f'User {user.username} updated successfully.')
+            return redirect('lead_auditor_manage_user')
+        else:
             messages.error(request, 'Please correct the errors below.')
+            logger.error(f'Form validation failed. Errors: {form.errors}')
+    else:
+        form = UserUpdateForm(instance=user)
 
-            # Re-display the manage users page with the form containing validation errors
-            users = User.objects.all()
-            user_profiles = UserProfile.objects.select_related('user').all()
-            user_roles = {profile.user.id: profile.get_role_display() for profile in user_profiles}
-            context = {
-                'users': users,
-                'user_roles': user_roles,
-                'add_user_form': form,  # Return the form with errors
-            }
-            return render(request, 'main/administrator/manage_users.html', context)
-
-    return redirect('manage_users')
+    context = {
+        'edit_user_form': form,
+        'user': user,
+    }
+    return render(request, 'main/lead auditor/lead_auditor_manage_user.html', context)
 
 
 @login_required
@@ -186,13 +166,12 @@ def delete_user_view(request, user_id):
             user.delete()
             messages.success(request, 'User account has been successfully deleted.')
             logger.info(f'User {user.username} deleted.')
-            return redirect('manage_users')
+            return redirect('lead_auditor_manage_user')
         else:
             return HttpResponse('Unauthorized', status=403)
 
     # If it's not a POST request, render the confirmation page
-    return render(request, 'main/administrator/confirm_delete.html', {'user': user})
-
+    return render(request, 'main/lead auditor/confirm_delete.html', {'user': user})
 
 @login_required
 def change_password(request):
@@ -214,7 +193,9 @@ def change_password(request):
             if user_profile.role == 'Internal Auditor':
                 return redirect('internal_auditor_dashboard')  # Ensure this URL name is defined
             elif user_profile.role == 'Process Owner':
-                return redirect('process_owner_dashboard')  # Ensure this URL name is defined
+                return redirect('process_owner_dashboard')
+            elif user_profile.role == 'Lead Auditor':
+                return redirect('lead_auditor_dashboard')
             else:
                 return redirect('dashboard')  # Default redirect for other roles
         else:
@@ -227,8 +208,7 @@ def change_password(request):
             'last_name': request.user.last_name,
         })
 
-    return render(request, 'main/administrator/change_password.html', {'form': form})
-
+    return render(request, 'main/lead auditor/change_password.html', {'form': form})
 
 def verify_email(request, token):
     try:
@@ -247,13 +227,11 @@ def verify_email(request, token):
         messages.error(request, 'An unexpected error occurred.')
     return redirect('login')
 
-
 def announcement_list(request):
     announcements = Announcement.objects.all()
     form = AnnouncementForm()
     return render(request, 'main/administrator/announcements/announcement_list.html',
                   {'announcements': announcements, 'form': form})
-
 
 @login_required
 def create_announcement(request):
@@ -269,7 +247,6 @@ def create_announcement(request):
 
     return render(request, 'main/administrator/announcements/announcement_list.html', {'form': form})
 
-
 @login_required
 def update_announcement(request, pk):
     announcement = get_object_or_404(Announcement, pk=pk)
@@ -279,7 +256,6 @@ def update_announcement(request, pk):
             form.save()
             return redirect('announcement_list')
 
-
 @login_required
 def delete_announcement(request, pk):
     announcement = get_object_or_404(Announcement, pk=pk)
@@ -287,15 +263,28 @@ def delete_announcement(request, pk):
         announcement.delete()
         return redirect('announcement_list')
 
+def role_allowed_to_manage_forms(user):
+    """Check if user is Lead Auditor or Internal Auditor."""
+    return hasattr(user, 'userprofile') and user.userprofile.role in ['Lead Auditor', 'Internal Auditor']
+
 
 @login_required
-def forms_view(request):
+@user_passes_test(role_allowed_to_manage_forms)
+def manage_forms_view(request):
+    """Unified view for Lead Auditor and Internal Auditor to manage forms."""
     templates = TemplateModel.objects.all()
-    return render(request, 'main/administrator/forms.html', {'templates': templates})
+    user_role = request.user.userprofile.role
+
+    # Determine template to use based on role
+    template = 'main/lead auditor/lead_auditor_forms.html' if user_role == 'Lead Auditor' else 'main/internal audit/internal_auditor_forms.html'
+
+    return render(request, template, {'templates': templates})
 
 
 @login_required
+@user_passes_test(role_allowed_to_manage_forms)
 def upload_template(request):
+    """Unified view for uploading templates."""
     if request.method == 'POST':
         template_name = request.POST.get('template_name')
         template_description = request.POST.get('template_description')
@@ -305,87 +294,101 @@ def upload_template(request):
             template_model = TemplateModel.objects.create(
                 template_name=template_name,
                 description=template_description,
-                file=template_file
+                file=template_file,
             )
             template_model.save()
-            return redirect('forms')
+            messages.success(request, "Template uploaded successfully.")
+        else:
+            messages.error(request, "No file was uploaded.")
 
-        return render(request, 'main/administrator/forms.html', {'error': 'No file was uploaded.'})
+        # Redirect based on role
+        user_role = request.user.userprofile.role
+        if user_role == 'Lead Auditor':
+            return redirect('lead_auditor_forms')
+        elif user_role == 'Internal Auditor':
+            return redirect('internal_auditor_forms')
+        else:
+            return redirect('process_owner_forms')  # Default redirect for other roles
 
-    return redirect('forms')
-
+    # Redirect if not a POST request
+    user_role = request.user.userprofile.role
+    if user_role == 'Lead Auditor':
+        return redirect('lead_auditor_forms')
+    elif user_role == 'Internal Auditor':
+        return redirect('internal_auditor_forms')
+    else:
+        return redirect('process_owner_forms')
 
 @login_required
 def download_template(request, pk):
+    """View for downloading templates."""
     template = get_object_or_404(TemplateModel, pk=pk)
     if template.file:
         try:
-
             file = template.file.open('rb')
             response = FileResponse(file, as_attachment=True, filename=template.file.name)
             return response
         except FileNotFoundError:
             raise Http404("File not found.")
-    return redirect('forms')
+    return redirect('manage_forms')
 
+@login_required
+@user_passes_test(role_allowed_to_manage_forms)
+def edit_template(request, pk):
+    """View to edit an existing template."""
+    template = get_object_or_404(TemplateModel, pk=pk)
 
-def role_allowed_to_delete(user):
-    print(f"User {user.username} with role {user.userprofile.role} is trying to delete.")
-    return hasattr(user, 'userprofile') and user.userprofile.role in ['Admin', 'Internal Auditor']
+    if request.method == 'POST':
+        template.template_name = request.POST.get('template_name', template.template_name)
+        template.description = request.POST.get('template_description', template.description)
+
+        if 'template_file' in request.FILES:
+            template.file = request.FILES['template_file']
+
+        template.save()
+        messages.success(request, "Template updated successfully.")
+
+        # Redirect based on the user's role
+        user_role = request.user.userprofile.role
+        if user_role == 'Lead Auditor':
+            return redirect('lead_auditor_forms')
+        elif user_role == 'Internal Auditor':
+            return redirect('internal_auditor_forms')
+        else:
+            return redirect('manage_forms')  # Default fallback
+
+    # Default redirection for GET requests
+    return redirect('manage_forms')
 
 
 @login_required
-@user_passes_test(role_allowed_to_delete)
+@user_passes_test(role_allowed_to_manage_forms)
 def delete_template(request, pk):
+    """View for deleting templates."""
     template = get_object_or_404(TemplateModel, pk=pk)
+
     if request.method == "POST":
         if template.file:
             template.file.delete(save=False)
         template.delete()
-
         messages.success(request, "Template deleted successfully.")
+    else:
+        messages.error(request, "Delete request must be POST.")
 
-    # Redirect to appropriate page based on the user's role
-    if request.user.userprofile.role == 'Admin':
-        return redirect('forms')
+    # Redirect the user back to their appropriate forms page
+    if request.user.userprofile.role == 'Lead Auditor':
+        return redirect('lead_auditor_forms')
     elif request.user.userprofile.role == 'Internal Auditor':
         return redirect('internal_auditor_forms')
-    else:
-        return redirect('forms')
+    return redirect('process_owner_forms')  # Default redirect
 
-
-@login_required
-def internal_auditor_forms_view(request):
-    templates = TemplateModel.objects.all()
-    return render(request, 'main/internal audit/internal_auditor_forms.html', {'templates': templates})
-
-
-@login_required
-def internal_upload_template(request):
-    if request.method == 'POST':
-        template_name = request.POST.get('template_name')
-        template_description = request.POST.get('template_description')
-        template_file = request.FILES.get('template_file')
-
-        if template_file:
-            template_model = TemplateModel.objects.create(
-                template_name=template_name,
-                description=template_description,
-                file=template_file
-            )
-            template_model.save()
-            return redirect('internal_auditor_forms')
-
-        return render(request, 'main/internal audit/internal_auditors_forms.html', {'error': 'No file was uploaded.'})
-
-    return redirect('internal_auditor_forms')
 
 
 @login_required
 def process_owner_forms_view(request):
-    templates = TemplateModel.objects.all()  # List all available forms
+    """View for Process Owner to view and download forms."""
+    templates = TemplateModel.objects.all()
     return render(request, 'main/process owner/process_owner_forms.html', {'templates': templates})
-
 
 @login_required
 def internal_auditor_monitoring_log(request):
@@ -407,136 +410,78 @@ def internal_auditor_monitoring_log(request):
     }
     return render(request, 'main/internal audit/internal_auditor_monitoring_log.html', context)
 
-
-@login_required
-def admin_guideline_list(request):
-    guidelines = Guideline.objects.all()
-    for guideline in guidelines:
-        logger.info(f"File URL: {guideline.file.url}")
-    return render(request, 'main/administrator/guidelines/list.html', {'guidelines': guidelines})
-
-
-@login_required
-@login_required
-def admin_upload_guideline(request):
-    if request.method == "POST":
-        form = GuidelineForm(request.POST, request.FILES)
-        if form.is_valid():
-            guideline = form.save(commit=False)
-            guideline.uploaded_by = request.user
-            guideline.save()
-            messages.success(request, "Guideline uploaded successfully.")
-            return redirect('admin_guideline_list')  # Redirect to Guidelines
-        else:
-            messages.error(request, "Failed to upload guideline. Please check the form.")
-    else:
-        form = GuidelineForm()
-
-    return render(request, 'main/administrator/guidelines/upload.html', {'form': form})
-
-
-@login_required
-def admin_edit_guideline(request, pk):
-    guideline = get_object_or_404(Guideline, pk=pk)
-    if request.method == "POST":
-        form = GuidelineForm(request.POST, request.FILES, instance=guideline)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Guideline updated successfully.")
-            return redirect('admin_guideline_list')
-        else:
-            messages.error(request, "Failed to update guideline. Please check the form.")
-    else:
-        form = GuidelineForm(instance=guideline)
-
-    return render(request, 'main/administrator/guidelines/edit.html', {'form': form, 'guideline': guideline})
-
-
-@login_required
-def admin_delete_guideline(request, pk):
-    guideline = get_object_or_404(Guideline, pk=pk)
-    if request.method == "POST":
-        guideline.delete()
-        messages.success(request, "Guideline deleted successfully.")
-        return redirect('admin_guideline_list')
-
-    return render(request, 'main/administrator/guidelines/delete_confirm.html', {'guideline': guideline})
-
-
 # Check if user is internal auditor
 def is_internal_auditor(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Internal Auditor'
 
-
 @login_required
-@user_passes_test(is_internal_auditor)
-def internal_auditor_guideline_list(request):
-    guidelines = Guideline.objects.all()
-    return render(request, 'main/internal audit/list.html', {'guidelines': guidelines})
+def guideline_management_view(request):
+    """Unified view to handle guideline management for all roles."""
+    role = request.user.userprofile.role
+    template = None
 
-
-@login_required
-@user_passes_test(is_internal_auditor)
-def internal_auditor_upload_guideline(request):
-    if request.method == "POST":
-        form = GuidelineForm(request.POST, request.FILES)
-        if form.is_valid():
-            guideline = form.save(commit=False)
-            guideline.uploaded_by = request.user
-            guideline.save()
-            messages.success(request, "Guideline uploaded successfully.")
-            return redirect('internal_auditor_guideline_list')
-        else:
-            messages.error(request, "Failed to upload guideline. Please check the form.")
+    # Set the template and permissions based on the role
+    if role == 'Lead Auditor':
+        template = 'main/lead auditor/lead_auditor_guidelines.html'
+    elif role == 'Internal Auditor':
+        template = 'main/internal audit/internal_auditor_guidelines.html'
+    elif role == 'Process Owner':
+        template = 'main/process owner/list.html'
     else:
-        form = GuidelineForm()
+        messages.error(request, "Unauthorized access.")
+        return redirect('login')
 
-    return render(request, 'main/internal audit/upload_guideline.html', {'form': form})
-
-
-@login_required
-@user_passes_test(is_internal_auditor)
-def internal_auditor_edit_guideline(request, pk):
-    guideline = get_object_or_404(Guideline, pk=pk)
-    if request.method == "POST":
-        form = GuidelineForm(request.POST, request.FILES, instance=guideline)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Guideline updated successfully.")
-            return redirect('internal_auditor_guideline_list')
-        else:
-            messages.error(request, "Failed to update guideline. Please check the form.")
-    else:
-        form = GuidelineForm(instance=guideline)
-
-    return render(request, 'main/internal audit/edit_guideline.html', {'form': form, 'guideline': guideline})
-
-
-@login_required
-@user_passes_test(is_internal_auditor)
-def internal_auditor_delete_guideline(request, pk):
-    guideline = get_object_or_404(Guideline, pk=pk)
-    if request.method == "POST":
-        guideline.delete()
-        messages.success(request, "Guideline deleted successfully.")
-        return redirect('internal_auditor_guideline_list')
-
-    return render(request, 'main/internal audit/delete_guideline.html', {'guideline': guideline})
-
-
-# Check if user is process owner
-def is_process_owner(user):
-    return hasattr(user, 'userprofile') and user.userprofile.role == 'Process Owner'
-
-
-@login_required
-@user_passes_test(is_process_owner)
-def process_owner_guideline_list(request):
+    # Fetch guidelines for viewing
     guidelines = Guideline.objects.all()
-    return render(request, 'main/process owner/list.html', {'guidelines': guidelines})
 
+    # Handle form submissions (CRUD actions)
+    if request.method == 'POST':
+        action = request.POST.get('action')  # Action can be 'add', 'edit', 'delete'
+        if action == 'add' and role in ['Lead Auditor', 'Internal Auditor']:
+            form = GuidelineForm(request.POST, request.FILES)
+            if form.is_valid():
+                guideline = form.save(commit=False)
+                guideline.uploaded_by = request.user
+                guideline.save()
+                messages.success(request, "Guideline added successfully.")
+            else:
+                messages.error(request, "Failed to add guideline. Please check the form.")
+        elif action == 'edit' and role in ['Lead Auditor', 'Internal Auditor']:
+            guideline_id = request.POST.get('guideline_id')
+            guideline = get_object_or_404(Guideline, id=guideline_id)
+            form = GuidelineForm(request.POST, request.FILES, instance=guideline)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Guideline updated successfully.")
+            else:
+                messages.error(request, "Failed to update guideline. Please check the form.")
+        elif action == 'delete' and role in ['Lead Auditor', 'Internal Auditor']:
+            guideline_id = request.POST.get('guideline_id')
+            guideline = get_object_or_404(Guideline, id=guideline_id)
+            guideline.delete()
+            messages.success(request, "Guideline deleted successfully.")
+        else:
+            messages.error(request, "Invalid action or insufficient permissions.")
 
+        return redirect(request.path)  # Refresh the page after form submission
+
+    # Provide a blank form for adding a new guideline
+    form = GuidelineForm()
+
+    context = {
+        'guidelines': guidelines,
+        'form': form,
+        'role': role,  # Pass role to the template for role-specific UI elements
+    }
+
+    return render(request, template, context)
+
+@login_required
 def add_non_conformity(request):
+    # Determine the role or path to adjust behavior dynamically
+    current_view_name = resolve(request.path).url_name  # Get the name of the current view
+    is_lead_auditor = current_view_name == 'lead_auditor_add_non_conformity'
+
     if request.method == 'POST':
         # Get form data
         non_conformity = request.POST.get('non_conformity')
@@ -551,7 +496,7 @@ def add_non_conformity(request):
         iso_clause = request.POST.get('iso_clause')
         category = request.POST.get('category')
         start_date = request.POST.get('start_date')
-        assigned_to_id = request.POST.get('assigned_to')
+        assigned_to_id = request.POST.get('assigned_to')  # Process Owner ID from form
 
         # Get the assigned process owner
         assigned_to = User.objects.get(id=assigned_to_id)
@@ -576,7 +521,7 @@ def add_non_conformity(request):
 
         # Send notification to the assigned Process Owner
         notify.send(
-            request.user,  # Internal Auditor creating the Non-Conformity
+            request.user,  # The user creating the Non-Conformity (Internal/Lead Auditor)
             recipient=assigned_to,  # Process Owner
             verb="New Task Assigned",
             description=f"You have been assigned a new Non-Conformity: {non_conformity_instance.non_conformity}.",
@@ -585,102 +530,113 @@ def add_non_conformity(request):
 
         # Add success message and redirect
         messages.success(request, 'Non-Conformity successfully created and Process Owner notified.')
-        return redirect('internal_auditor_monitoring_log')  # Redirect to appropriate page
+
+        # Redirect based on the role or path
+        if is_lead_auditor:
+            return redirect('lead_auditor_monitoring_log')  # Replace with the Lead Auditor's appropriate page
+        else:
+            return redirect('internal_auditor_monitoring_log')  # Redirect to Internal Auditor's page
 
     # Fetch all Process Owners for dropdown in the form
     process_owners = User.objects.filter(userprofile__role='Process Owner')
-    return render(request, 'main/internal audit/add_non_conformity.html', {
+
+    # Render the appropriate template
+    template = 'main/lead auditor/add_non_conformity.html' if is_lead_auditor else 'main/internal audit/add_non_conformity.html'
+    return render(request, template, {
         'process_owners': process_owners
     })
 
+
 @login_required
-def non_conformity_detail(request, nc_id):
-    try:
-        # Fetch the non-conformity record
-        non_conformity = get_object_or_404(NonConformity, id=nc_id)
+def combined_non_conformity_detail(request, nc_id):
+    # Determine the current view name based on the request path
+    current_view_name = resolve(request.path).url_name  # Get the name of the current view
+    is_lead_auditor = current_view_name == 'lead_auditor_non_conformity_detail'
 
-        # Existing data fetching
-        immediate_action = ImmediateAction.objects.filter(non_conformity=non_conformity).first()
-        root_cause_analysis = RootCauseAnalysis.objects.filter(non_conformity=non_conformity).first()
-        corrective_action_plans = CorrectiveActionPlan.objects.filter(non_conformity=non_conformity)
-        corrective_action_plan = corrective_action_plans.first()
-        follow_up_actions = FollowUpAction.objects.filter(non_conformity=non_conformity).order_by('-follow_up_date')
+    # Fetch the non-conformity record
+    non_conformity = get_object_or_404(NonConformity, id=nc_id)
 
-        if corrective_action_plan:
-            action_verifications = ActionVerification.objects.filter(
-                corrective_action_plan=corrective_action_plan
-            ).order_by('-date')
-        else:
-            action_verifications = None
+    # Existing data fetching
+    immediate_action = ImmediateAction.objects.filter(non_conformity=non_conformity).first()
+    root_cause_analysis = RootCauseAnalysis.objects.filter(non_conformity=non_conformity).first()
+    corrective_action_plans = CorrectiveActionPlan.objects.filter(non_conformity=non_conformity)
+    corrective_action_plan = corrective_action_plans.first()
+    follow_up_actions = FollowUpAction.objects.filter(non_conformity=non_conformity).order_by('-follow_up_date')
 
-        latest_review = CorrectiveActionPlanReview.objects.filter(
-            corrective_action_plan__non_conformity=non_conformity
-        ).order_by('-review_date').first()
+    if corrective_action_plan:
+        action_verifications = ActionVerification.objects.filter(
+            corrective_action_plan=corrective_action_plan
+        ).order_by('-date')
+    else:
+        action_verifications = None
 
-        # Fetch comments for each section
-        immediate_action_comments = Comment.objects.filter(
-            task=non_conformity, section='immediate_action', parent__isnull=True
-        ).order_by('-created_at')
-        root_cause_comments = Comment.objects.filter(
-            task=non_conformity, section='root_cause_analysis', parent__isnull=True
-        ).order_by('-created_at')
-        corrective_action_comments = Comment.objects.filter(
-            task=non_conformity, section='corrective_action_plan', parent__isnull=True
-        ).order_by('-created_at')
+    latest_review = CorrectiveActionPlanReview.objects.filter(
+        corrective_action_plan__non_conformity=non_conformity
+    ).order_by('-review_date').first()
 
-        # Handle POST request for adding/deleting comments
-        if request.method == 'POST':
-            if 'delete_comment_id' in request.POST:
-                # Existing delete functionality
-                comment_id = request.POST.get('delete_comment_id')
-                comment_to_delete = Comment.objects.filter(id=comment_id, author=request.user).first()
-                if comment_to_delete:
-                    comment_to_delete.delete()
-                    messages.success(request, "Comment deleted successfully!")
-                else:
-                    messages.error(request, "You do not have permission to delete this comment.")
-            elif 'comment_content' in request.POST:
-                # New comment addition functionality
-                content = request.POST.get('comment_content', '').strip()
-                section = request.POST.get('section', '').strip()
-                parent_id = request.POST.get('parent_id')  # Parent comment ID for replies
+    # Fetch comments for each section
+    immediate_action_comments = Comment.objects.filter(
+        task=non_conformity, section='immediate_action', parent__isnull=True
+    ).order_by('-created_at')
+    root_cause_comments = Comment.objects.filter(
+        task=non_conformity, section='root_cause_analysis', parent__isnull=True
+    ).order_by('-created_at')
+    corrective_action_comments = Comment.objects.filter(
+        task=non_conformity, section='corrective_action_plan', parent__isnull=True
+    ).order_by('-created_at')
 
-                if content and section in ['immediate_action', 'root_cause_analysis', 'corrective_action_plan']:
-                    parent_comment = Comment.objects.filter(id=parent_id).first() if parent_id else None
-                    Comment.objects.create(
-                        task=non_conformity,
-                        author=request.user,
-                        content=content,
-                        section=section,
-                        parent=parent_comment
-                    )
-                    messages.success(request, "Comment added successfully!")
-                else:
-                    messages.error(request, "Comment content or section is invalid.")
+    # Handle POST request for adding/deleting comments
+    if request.method == 'POST':
+        if 'delete_comment_id' in request.POST:
+            comment_id = request.POST.get('delete_comment_id')
+            comment_to_delete = Comment.objects.filter(id=comment_id, author=request.user).first()
+            if comment_to_delete:
+                comment_to_delete.delete()
+                messages.success(request, "Comment deleted successfully!")
+            else:
+                messages.error(request, "You do not have permission to delete this comment.")
+        elif 'comment_content' in request.POST:
+            content = request.POST.get('comment_content', '').strip()
+            section = request.POST.get('section', '').strip()
+            parent_id = request.POST.get('parent_id')  # Parent comment ID for replies
 
-                # Redirect to prevent duplicate submissions
-                return redirect('non_conformity_detail', nc_id=nc_id)
+            if content and section in ['immediate_action', 'root_cause_analysis', 'corrective_action_plan']:
+                parent_comment = Comment.objects.filter(id=parent_id).first() if parent_id else None
+                Comment.objects.create(
+                    task=non_conformity,
+                    author=request.user,
+                    content=content,
+                    section=section,
+                    parent=parent_comment
+                )
+                messages.success(request, "Comment added successfully!")
+            else:
+                messages.error(request, "Comment content or section is invalid.")
 
-        # Prepare context for rendering
-        context = {
-            'non_conformity': non_conformity,
-            'immediate_action': immediate_action,
-            'root_cause_analysis': root_cause_analysis,
-            'corrective_action_plans': corrective_action_plans,
-            'corrective_action_plan': corrective_action_plan,
-            'follow_up_actions': follow_up_actions,
-            'verifications': action_verifications,
-            'latest_review': latest_review,
-            'immediate_action_comments': immediate_action_comments,
-            'root_cause_comments': root_cause_comments,
-            'corrective_action_comments': corrective_action_comments,
-        }
+            # Redirect to prevent duplicate submissions
+            return redirect(current_view_name, nc_id=nc_id)
 
+    # Prepare context for rendering
+    context = {
+        'non_conformity': non_conformity,
+        'immediate_action': immediate_action,
+        'root_cause_analysis': root_cause_analysis,
+        'corrective_action_plans': corrective_action_plans,
+        'corrective_action_plan': corrective_action_plan,
+        'follow_up_actions': follow_up_actions,
+        'verifications': action_verifications,
+        'latest_review': latest_review,
+        'immediate_action_comments': immediate_action_comments,
+        'root_cause_comments': root_cause_comments,
+        'corrective_action_comments': corrective_action_comments,
+        'is_lead_auditor': is_lead_auditor,
+    }
+
+    # Render different templates or modify behavior based on role or path
+    if is_lead_auditor:
+        return render(request, 'main/lead auditor/non_conformity_detail.html', context)
+    else:
         return render(request, 'main/internal audit/non_conformity_detail.html', context)
-
-    except Exception as e:
-        print(f"Error in non_conformity_detail: {e}")
-        return HttpResponseServerError("An error occurred while processing your request.")
 
 
 
@@ -819,7 +775,6 @@ def add_root_cause_analysis(request, task_id):
     messages.error(request, "Invalid request.")
     return redirect('task_detail', task_id=task.id)
 
-
 @login_required
 def corrective_action_plan(request, task_id):
     task = get_object_or_404(NonConformity, id=task_id)
@@ -855,6 +810,14 @@ def add_review(request, cap_id):
     corrective_action_plan = get_object_or_404(CorrectiveActionPlan, id=cap_id)
     non_conformity = corrective_action_plan.non_conformity
 
+    # Determine the current view name
+    current_view_name = resolve(request.path).url_name
+    is_lead_auditor = current_view_name == 'lead_auditor_add_review'
+
+    # Optional: Role-based validation
+    if is_lead_auditor and not request.user.groups.filter(name='Lead Auditor').exists():
+        raise PermissionDenied
+
     if request.method == 'POST':
         effectiveness = request.POST.get('effectiveness')
         reason = request.POST.get('reason', '')  # Optional field
@@ -884,24 +847,38 @@ def add_review(request, cap_id):
                 description_of_non_conformance=non_conformity.description_of_non_conformance,
                 iso_clause=non_conformity.iso_clause,
                 category=non_conformity.category,
-                start_date=timezone.now().date(),
+                start_date=now().date(),
                 status='pending',
                 assigned_to=non_conformity.assigned_to
             )
-            messages.warning(request,
-                             f"Corrective Action Plan rejected. A new RFA was issued: {new_rfa.non_conformity}")
+            messages.warning(
+                request,
+                f"Corrective Action Plan rejected. A new RFA was issued: {new_rfa.non_conformity}"
+            )
         else:
             messages.success(request, "Review added successfully.")
 
-        return redirect('non_conformity_detail', nc_id=non_conformity.id)
+        # Redirect based on the current view (role-specific redirect)
+        if is_lead_auditor:
+            return redirect('lead_auditor_non_conformity_detail', nc_id=non_conformity.id)
+        else:
+            return redirect('non_conformity_detail', nc_id=non_conformity.id)
 
-    return redirect('non_conformity_detail', nc_id=non_conformity.id)
+    # If GET request or any other method, redirect to the detail page
+    if is_lead_auditor:
+        return redirect('lead_auditor_non_conformity_detail', nc_id=non_conformity.id)
+    else:
+        return redirect('non_conformity_detail', nc_id=non_conformity.id)
 
 
 @login_required
 def add_follow_up(request, nc_id):
-    # Get the non-conformity record
+    # Get the Non-Conformity record
     non_conformity = get_object_or_404(NonConformity, id=nc_id)
+
+    # Determine the current view name based on the request path
+    current_view_name = resolve(request.path).url_name
+    is_lead_auditor = current_view_name == 'lead_auditor_add_follow_up'
 
     if request.method == 'POST':
         form = FollowUpActionForm(request.POST)
@@ -910,7 +887,11 @@ def add_follow_up(request, nc_id):
             follow_up.non_conformity = non_conformity  # Associate follow-up with the non-conformity
             follow_up.save()
             messages.success(request, "Follow-Up Action added successfully.")
-            return redirect('non_conformity_detail', nc_id=nc_id)
+            # Redirect based on role
+            if is_lead_auditor:
+                return redirect('lead_auditor_non_conformity_detail', nc_id=nc_id)
+            else:
+                return redirect('non_conformity_detail', nc_id=nc_id)
         else:
             messages.error(request, "Error saving Follow-Up Action. Please try again.")
     else:
@@ -918,12 +899,19 @@ def add_follow_up(request, nc_id):
 
     follow_up_actions = FollowUpAction.objects.filter(non_conformity=non_conformity).order_by('-follow_up_date')
 
+    # Context for rendering
     context = {
         'form': form,
         'follow_up_actions': follow_up_actions,
         'non_conformity': non_conformity,
+        'is_lead_auditor': is_lead_auditor,  # Pass role context if needed for templates
     }
-    return render(request, 'main/internal audit/non_conformity_detail.html', context)
+
+    # Render the appropriate template based on the role
+    if is_lead_auditor:
+        return render(request, 'main/lead auditor/non_conformity_detail.html', context)
+    else:
+        return render(request, 'main/internal audit/non_conformity_detail.html', context)
 
 
 @login_required
@@ -935,6 +923,10 @@ def action_verification(request, cap_id):
     except CorrectiveActionPlan.DoesNotExist:
         messages.error(request, f"No Corrective Action Plan found with ID: {cap_id}")
         return redirect('non_conformity_list')  # Redirect to an appropriate list or dashboard
+
+    # Determine the current view name
+    current_view_name = resolve(request.path).url_name
+    is_lead_auditor = current_view_name == 'lead_auditor_action_verification'
 
     # Fetch related verifications
     verifications = ActionVerification.objects.filter(corrective_action_plan=corrective_action_plan).order_by('-date')
@@ -975,13 +967,17 @@ def action_verification(request, cap_id):
                     description_of_non_conformance=non_conformity.description_of_non_conformance,
                     iso_clause=non_conformity.iso_clause,
                     category=non_conformity.category,
-                    start_date=timezone.now().date(),
+                    start_date=now().date(),
                     status='pending',
                     assigned_to=non_conformity.assigned_to
                 )
                 messages.warning(request, f"Corrective action plan deemed not effective. New RFA issued: {new_rfa.non_conformity}")
 
-            return redirect('non_conformity_detail', nc_id=non_conformity.id)
+            # Redirect based on role
+            if is_lead_auditor:
+                return redirect('lead_auditor_non_conformity_detail', nc_id=non_conformity.id)
+            else:
+                return redirect('non_conformity_detail', nc_id=non_conformity.id)
     else:
         verification_form = ActionVerificationForm()
 
@@ -990,9 +986,14 @@ def action_verification(request, cap_id):
         'non_conformity': non_conformity,
         'verifications': verifications,
         'verification_form': verification_form,
+        'is_lead_auditor': is_lead_auditor,  # Role-specific context if needed in templates
     }
 
-    return render(request, 'main/internal audit/non_conformity_detail.html', context)
+    # Render the appropriate template based on the role
+    if is_lead_auditor:
+        return render(request, 'main/lead auditor/non_conformity_detail.html', context)
+    else:
+        return render(request, 'main/internal audit/non_conformity_detail.html', context)
 
 @login_required
 def close_out_action(request, nc_id):
@@ -1042,30 +1043,12 @@ def complete_step(request, task_id):
 
     return redirect('non_conformity_detail', nc_id=task_id)
 
-
-from .models import NonConformity, ImmediateAction, RootCauseAnalysis, CorrectiveActionPlan
-
-# View for rendering the HTML page
-def fm_qms_010_page_1(request, nc_id):
-    # Fetch the NonConformity object by its ID
-    non_conformity = get_object_or_404(NonConformity, id=nc_id)
-
-    # Fetch related data safely
-    immediate_action = ImmediateAction.objects.filter(non_conformity=non_conformity).first()
-    root_cause_analysis = RootCauseAnalysis.objects.filter(non_conformity=non_conformity).first()
-    corrective_action_plans = CorrectiveActionPlan.objects.filter(non_conformity=non_conformity)
-
-    # Prepare the context
-    context = {
-        'non_conformity': non_conformity,
-        'immediate_action': immediate_action,
-        'root_cause_analysis': root_cause_analysis,
-        'corrective_action_plans': corrective_action_plans,
-    }
-
-    return render(request, 'main/form/rfa_page1.html', context)
-
+@login_required
 def preview_rfa(request, nc_id):
+    # Determine the current view name based on the request path
+    current_view_name = resolve(request.path).url_name  # Get the name of the current view
+    is_lead_auditor = current_view_name == 'lead_auditor_preview_rfa'
+
     # Fetch the NonConformity object by its ID
     non_conformity = get_object_or_404(NonConformity, id=nc_id)
 
@@ -1102,10 +1085,14 @@ def preview_rfa(request, nc_id):
         'close_out': close_out,
         'left_logo_url': static('main/iso-sorsu-logo.png'),  # Path to left logo in static folder
         'right_logo_url': static('main/bagong-pilipinas-logo.png'),  # Path to right logo in static folder
+        'is_lead_auditor': is_lead_auditor,  # Role-specific context
     }
 
-    # Render the HTML template to preview
-    return render(request, 'main/form/rfa_view.html', context)
+    # Render the appropriate template based on the role
+    if is_lead_auditor:
+        return render(request, 'main/lead auditor/rfa_view.html', context)
+    else:
+        return render(request, 'main/form/rfa_view.html', context)
 
 
 def generate_pdf(request, nc_id):
@@ -1223,12 +1210,8 @@ def internal_audit_view(request):
         'finished_count': finished_count,
         'postponed_count': postponed_count,
     }
-    return render(request, 'main/internal audit/internal_audit_log.html', context)
+    return render(request, 'main/internal audit/internal_auditor_monitoring_log.html', context)
 
-
-from django.contrib.auth.decorators import login_required, user_passes_test
-
-# Check if the user is a Lead Auditor
 def is_lead_auditor(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Lead Auditor'
 
@@ -1265,103 +1248,41 @@ def lead_auditor_monitoring_log(request):
     }
     return render(request, 'main/lead auditor/lead_auditor_monitoring_log.html', context)
 
-@login_required
-@user_passes_test(is_lead_auditor)
-def lead_auditor_forms_view(request):
-    """
-    View for Lead Auditor to access and manage forms.
-    """
-    templates = TemplateModel.objects.all()
-    return render(request, 'main/lead auditor/lead_auditor_forms.html', {'templates': templates})
 
-@login_required
-@user_passes_test(is_lead_auditor)
-def lead_auditor_guideline_list(request):
-    """
-    View for Lead Auditor to list all guidelines.
-    """
-    guidelines = Guideline.objects.all()
-    return render(request, 'main/lead auditor/lead_auditor_guidelines.html', {'guidelines': guidelines})
 
-@login_required
-@user_passes_test(is_lead_auditor)
-def lead_auditor_upload_guideline(request):
-    """
-    View for Lead Auditor to upload guidelines.
-    """
-    if request.method == "POST":
-        form = GuidelineForm(request.POST, request.FILES)
-        if form.is_valid():
-            guideline = form.save(commit=False)
-            guideline.uploaded_by = request.user
-            guideline.save()
-            messages.success(request, "Guideline uploaded successfully.")
-            return redirect('lead_auditor_guideline_list')
-        else:
-            messages.error(request, "Failed to upload guideline. Please check the form.")
-    else:
-        form = GuidelineForm()
-
-    return render(request, 'main/lead auditor/upload_guideline.html', {'form': form})
-
-@login_required
-@user_passes_test(is_lead_auditor)
-def lead_auditor_edit_guideline(request, pk):
-    """
-    View for Lead Auditor to edit guidelines.
-    """
-    guideline = get_object_or_404(Guideline, pk=pk)
-    if request.method == "POST":
-        form = GuidelineForm(request.POST, request.FILES, instance=guideline)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Guideline updated successfully.")
-            return redirect('lead_auditor_guideline_list')
-        else:
-            messages.error(request, "Failed to update guideline. Please check the form.")
-    else:
-        form = GuidelineForm(instance=guideline)
-
-    return render(request, 'main/lead auditor/edit_guideline.html', {'form': form, 'guideline': guideline})
-
-@login_required
-@user_passes_test(is_lead_auditor)
-def lead_auditor_delete_guideline(request, pk):
-    """
-    View for Lead Auditor to delete guidelines.
-    """
-    guideline = get_object_or_404(Guideline, pk=pk)
-    if request.method == "POST":
-        guideline.delete()
-        messages.success(request, "Guideline deleted successfully.")
-        return redirect('lead_auditor_guideline_list')
-
-    return render(request, 'main/lead auditor/delete_guideline.html', {'guideline': guideline})
-
-@login_required
 def lead_auditor_manage_user(request):
-    # Your logic for managing users as a Lead Auditor
-    return render(request, 'main/lead_auditor/lead_auditor_manage_user.html', {})
+    # Example messages
+    for message in messages.get_messages(request):
+        message.icon = 'success' if 'success' in message.tags else 'error'
 
-@login_required
-@user_passes_test(is_lead_auditor)
-def lead_auditor_manage_users_view(request):
-    """
-    Allow Lead Auditor to manage users like Admin.
-    """
     users = User.objects.all()
     user_profiles = UserProfile.objects.select_related('user').all()
-
-    # Role display for template
     user_roles = {profile.user.id: profile.get_role_display() for profile in user_profiles}
-    add_user_form = UserCreationForm()
 
     context = {
         'users': users,
         'user_roles': user_roles,
-        'add_user_form': add_user_form,
+    }
+    return render(request, 'main/lead auditor/lead_auditor_manage_user.html', context)
+
+@login_required
+@user_passes_test(is_lead_auditor)
+def lead_auditor_manage_users_view(request):
+    # Get all users and their profiles with role information
+    users = User.objects.all()
+    user_profiles = UserProfile.objects.select_related('user').all()
+
+    # Create a dictionary of user IDs and roles for easy access in the template
+    user_roles = {profile.user.id: profile.get_role_display() for profile in user_profiles}
+
+    # Create an empty form for adding users
+    add_user_form = UserCreationForm()
+
+    # Context to pass to the template
+    context = {
+        'users': users,  # List of users to display
+        'user_roles': user_roles,  # Dictionary of user roles by user ID
+        'add_user_form': add_user_form,  # Empty form for adding users
     }
 
-    return render(request, 'main/lead-auditor/lead_auditor_manage_users.html', context)
-
-
+    return render(request, 'main/lead auditor/lead_auditor_manage_user.html', context)

@@ -122,7 +122,7 @@
     <!-- Add Non-Conformity Button -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Non-Conformities</h2>
-        <a class="btn btn-primary" href="{% url 'add_non_conformity' %}">
+        <a class="btn btn-primary" href="{% url 'lead_auditor_add_non_conformity' %}">
             <i class="bi bi-plus-lg me-2"></i>Add Non-Conformity
         </a>
     </div>
@@ -182,7 +182,7 @@
             {% for nc in non_conformities %}
             <tr data-status="{{ nc.status|lower }}" data-id="{{ nc.id }}">
                 <td>
-                    <a class="text-decoration-none text-dark fw-bold" href="{% url 'non_conformity_detail' nc.id %}">
+                    <a class="text-decoration-none text-dark fw-bold" href="{% url 'lead_auditor_non_conformity_detail' nc.id %}">
                         {{ nc.non_conformity }}
                     </a>
                 </td>

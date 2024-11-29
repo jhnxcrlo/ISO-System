@@ -5,15 +5,15 @@
 {% block content %}
     <div class="container mt-4">
         <!-- Page Header -->
-        <h2 class="mb-4" style="color: #A33331; font-weight: bold;">AUDIT TASK: ASSESS PROCESS OWNER COMPLIANCE WITH
+        <h2 class="mb-5" style="color: #A33331; font-weight: bold;">AUDIT TASK: ASSESS PROCESS OWNER COMPLIANCE WITH
             RFA</h2>
 
         <div class="row">
             <!-- Left Column: Non-Conformance Details and Follow-Up Actions -->
-            <div class="col-md-4">
+            <div class="col-md-12">
                 <!-- Non-Conformance Details -->
                 <a> </a>
-                <h4 class="text-red"><strong> {{ non_conformity.non_conformity }}</strong></h4>
+                <h4 class="text-red mb-4"><strong> {{ non_conformity.non_conformity }}</strong></h4>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"><strong>ISO Clause/Reference:</strong> {{ non_conformity.iso_clause }}
                     </li>
@@ -34,14 +34,15 @@
             </div>
 
             <!-- Right Column: Step-by-Step Progress -->
-            <div class="col-md-8">
-            <div class="text-end mt-3">
-                <a href="{% url 'preview_rfa' non_conformity.id %}" class="btn btn-primary">
-                    View RFA
-                </a>
-            </div>
+            <div class="col-md-12 mt-5">
+
                 <h4>Step-by-Step Progress</h4>
 
+                <div class="text-start mt-1 mb-3">
+                    <a href="{% url 'lead_auditor_preview_rfa' non_conformity.id %}" class="btn btn-tertiary">
+                        View Request For Action Form here...
+                    </a>
+                </div>
                 <!-- Step 1: Immediate Action -->
                 <div class="progress-step">
                     <h6 class="d-flex justify-content-between align-items-center" id="step1-header">
@@ -50,22 +51,54 @@
                         </a>
                         <span class="step-status-icon"></span>
                     </h6>
-                    <div class="collapse show" id="step1Content">
+                    <div class="collapse show m-5" id="step1Content">
                         <p class="text-muted">Review the immediate action taken by the process owner to address the
                             non-conformance.</p>
                         <ul class="list-group">
                             <li class="list-group-item"><strong>Action
                                 Description:</strong> {{ immediate_action.action_description }}</li>
                         </ul>
-                        <div class="add-comment d-flex mt-3">
-                            <input placeholder="Add a comment..." type="text" class="form-control me-2">
-                            <button type="button" class="btn btn-outline-danger"><i class="bi bi-send"></i></button>
+
+                        <!-- Immediate Action Comments -->
+                        <div class="comments-section mt-4">
+                            <h6><strong>Comments:</strong></h6>
+                            <ul class="list-group">
+                                {% for comment in immediate_action_comments %}
+                                    <li class="list-group-item">
+                                        <strong>{{ comment.author.username }}</strong> -
+                                        <small>{{ comment.created_at|date:"M d, Y H:i" }}</small>
+                                        <p>{{ comment.content }}</p>
+                                        <!-- Replies -->
+                                        <ul class="list-group mt-2 ps-4">
+                                            {% for reply in comment.replies.all %}
+                                                <li class="list-group-item">
+                                                    <strong>{{ reply.author.username }}</strong> -
+                                                    <small>{{ reply.created_at|date:"M d, Y H:i" }}</small>
+                                                    <p>{{ reply.content }}</p>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <!-- Add Comment Form -->
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="section" value="immediate_action">
+                                <div class="input-group mt-3">
+                                    <input type="text" name="comment_content" class="form-control"
+                                           placeholder="Write a comment..." required>
+                                   <button type="submit" class="btn btn-danger">Comment</button>
+                                </div>
+                            </form>
                         </div>
+
                         <button type="button" class="btn btn-danger mt-3 complete-step-btn w-20" data-step="1">Complete
                             Step
                         </button>
                     </div>
                 </div>
+
 
                 <!-- Step 2: Root Cause Analysis -->
                 <div class="progress-step">
@@ -75,7 +108,7 @@
                         </a>
                         <span class="step-status-icon"></span>
                     </h6>
-                    <div class="collapse" id="step2Content">
+                    <div class="collapse show m-5" id="step2Content">
                         <p class="text-muted">Evaluate the root cause analysis provided by the process owner.</p>
                         <ul class="list-group">
                             <li class="list-group-item"><strong>Root
@@ -88,23 +121,59 @@
                                 Date:</strong> {{ root_cause_analysis.estimated_close_date }}</li>
                         </ul>
 
-                        <!-- 5 Why's Analysis -->
-                        <h6 class="mt-4"><strong>5 Why's Analysis:</strong></h6>
+                        <!-- Supporting Evidence Section -->
+                        <h6 class="mt-4"><strong>Supporting Evidence:</strong></h6>
                         <ul class="list-group">
-                            {% for key, value in root_cause_analysis.five_whys.items %}
-                                <li class="list-group-item">
-                                    <strong>{{ key|title }}:</strong> {{ value }}
+                            {% if root_cause_analysis.supporting_evidence %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><i
+                            class="bi bi-file-earmark-text me-2"></i>{{ root_cause_analysis.supporting_evidence.name|slice:":50" }}</span>
+                                    <a href="{{ root_cause_analysis.supporting_evidence.url }}"
+                                       class="btn btn-link btn-sm" target="_blank">
+                                        View / Download
+                                    </a>
                                 </li>
-                            {% empty %}
-                                <li class="list-group-item text-muted">No 5 Why's Analysis provided.</li>
-                            {% endfor %}
+                            {% else %}
+                                <li class="list-group-item text-muted">
+                                    <i class="bi bi-exclamation-circle me-2"></i>No supporting evidence uploaded.
+                                </li>
+                            {% endif %}
                         </ul>
 
-                        <!-- Add Comment Section -->
-                        <div class="add-comment d-flex mt-3">
-                            <input placeholder="Add a comment..." type="text" class="form-control me-2">
-                            <button type="button" class="btn btn-outline-danger"><i class="bi bi-send"></i></button>
+                        <!-- Root Cause Analysis Comments -->
+                        <div class="comments-section mt-4">
+                            <h6><strong>Comments:</strong></h6>
+                            <ul class="list-group">
+                                {% for comment in root_cause_comments %}
+                                    <li class="list-group-item">
+                                        <strong>{{ comment.author.username }}</strong> -
+                                        <small>{{ comment.created_at|date:"M d, Y H:i" }}</small>
+                                        <p>{{ comment.content }}</p>
+                                        <!-- Replies -->
+                                        <ul class="list-group mt-2 ps-4">
+                                            {% for reply in comment.replies.all %}
+                                                <li class="list-group-item">
+                                                    <strong>{{ reply.author.username }}</strong> -
+                                                    <small>{{ reply.created_at|date:"M d, Y H:i" }}</small>
+                                                    <p>{{ reply.content }}</p>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <!-- Add Comment Form -->
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="section" value="root_cause_analysis">
+                                <div class="input-group mt-3">
+                                    <input type="text" name="comment_content" class="form-control"
+                                           placeholder="Write a comment..." required>
+                                    <button type="submit" class="btn btn-danger">Comment</button>
+                                </div>
+                            </form>
                         </div>
+
 
                         <!-- Complete Step Button -->
                         <button type="button" class="btn btn-danger mt-3 complete-step-btn w-20" data-step="2">Complete
@@ -122,7 +191,7 @@
                         </a>
                         <span class="step-status-icon"></span>
                     </h6>
-                    <div class="collapse show" id="step3Content">
+                    <div class="collapse show m-5" id="step3Content">
                         <p class="text-muted">Assess the corrective actions implemented by the process owner.</p>
 
                         <!-- Corrective Action Plan Table -->
@@ -174,6 +243,41 @@
                                     <p><strong>Date:</strong> {{ latest_review.review_date|date:"M d, Y" }}</p>
                                 </div>
 
+                                <!-- Corrective Action Plan Comments -->
+                                <div class="comments-section mt-4">
+                                    <h6><strong>Comments:</strong></h6>
+                                    <ul class="list-group">
+                                        {% for comment in corrective_action_comments %}
+                                            <li class="list-group-item">
+                                                <strong>{{ comment.author.username }}</strong> -
+                                                <small>{{ comment.created_at|date:"M d, Y H:i" }}</small>
+                                                <p>{{ comment.content }}</p>
+                                                <!-- Replies -->
+                                                <ul class="list-group mt-2 ps-4">
+                                                    {% for reply in comment.replies.all %}
+                                                        <li class="list-group-item">
+                                                            <strong>{{ reply.author.username }}</strong> -
+                                                            <small>{{ reply.created_at|date:"M d, Y H:i" }}</small>
+                                                            <p>{{ reply.content }}</p>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                    <!-- Add Comment Form -->
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="section" value="corrective_action_plan">
+                                        <div class="input-group mt-3">
+                                            <input type="text" name="comment_content" class="form-control"
+                                                   placeholder="Write a comment..." required>
+                                            <button type="submit" class="btn btn-danger">Comment</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+
                                 <!-- Complete Step Button -->
                                 {% if latest_review.effectiveness == 'Accepted' %}
                                     <div class="mt-3">
@@ -185,11 +289,11 @@
                             </div>
                         {% else %}
                             <!-- Review Form -->
-                            <div class="mt-4">
+                            <div class="mt-5 mb-5">
                                 <h5>Submit Review for the Entire Plan</h5>
                                 {% if corrective_action_plans and corrective_action_plans.first.id %}
                                     <form method="post"
-                                          action="{% url 'add_review' corrective_action_plans.first.id %}">
+                                          action="{% url 'lead_auditor_add_review' corrective_action_plans.first.id %}">
                                         {% csrf_token %}
                                         <div class="form-group">
                                             <label for="effectiveness"><strong>Effectiveness:</strong></label>
@@ -224,8 +328,8 @@
                         </a>
                         <span class="step-status-icon"></span>
                     </h6>
-                    <div class="collapse show" id="step4Content">
-                        <p class="text-muted">Have you followed up your solution implementation?</p>
+                    <div class="collapse show m-5" id="step4Content">
+                        <p class="text-muted mb-4">Have you followed up your solution implementation?</p>
 
                         <!-- Follow-Up History Table -->
                         <h5>Follow-Up History</h5>
@@ -255,10 +359,10 @@
 
                         <!-- Add Follow-Up Form -->
                         {% if not follow_up_actions %}
-                            <h5 class="mt-4">Add New Follow-Up Action</h5>
-                            <form method="post" action="{% url 'add_follow_up' non_conformity.id %}">
+                        <h6 class="mt-5"><strong>Add New Follow-Up Action</strong></h6>
+                            <form method="post" action="{% url 'lead_auditor_add_follow_up' non_conformity.id %}">
                                 {% csrf_token %}
-                                <div class="form-group mb-3">
+                                <div class="form-group mb-4 mt-4">
                                     <label for="status"><strong>Status:</strong></label>
                                     <select id="status" name="status" class="form-control" required>
                                         <option value="" disabled selected>Select status...</option>
@@ -267,12 +371,12 @@
                                         <option value="Completed">Completed</option>
                                     </select>
                                 </div>
-                                <div class="form-group mb-3">
+                                <div class="form-group mb-4">
                                     <label for="responsible_person"><strong>Initials / Responsibility:</strong></label>
                                     <input type="text" id="responsible_person" name="responsible_person"
                                            class="form-control" placeholder="Enter initials or responsibility" required>
                                 </div>
-                                <div class="form-group mb-3">
+                                <div class="form-group mb-4">
                                     <label for="follow_up_date"><strong>Date:</strong></label>
                                     <input type="date" id="follow_up_date" name="follow_up_date" class="form-control"
                                            required>
@@ -298,13 +402,13 @@
                         </a>
                         <span class="step-status-icon"></span>
                     </h6>
-                    <div class="collapse show" id="step5Content">
-                        <p class="text-muted">Assess the effectiveness of the corrective actions implemented by the
+                    <div class="collapse show m-5" id="step5Content">
+                        <p class="text-muted mb-4">Assess the effectiveness of the corrective actions implemented by the
                             process owner.</p>
 
                         <!-- Verification History Table -->
-                        <h5>Verification History</h5>
-                        <table class="table table-bordered">
+                        <h6>Verification History</h6>
+                        <table class="table table-bordered mt-3 mb-4">
                             <thead>
                             <tr>
                                 <th>No. of Visits</th>
@@ -343,9 +447,9 @@
 
                         <!-- Add Verification Form -->
                         {% if not verifications or verifications.last.status == "not_effective" %}
-                            <h5 class="mt-4">Add New Verification</h5>
+                            <h6 class="mt-5">Add New Verification</h6>
                             {% if corrective_action_plan.id %}
-                                <form method="post" action="{% url 'action_verification' corrective_action_plan.id %}">
+                                <form method="post" action="{% url 'lead_auditor_action_verification' corrective_action_plan.id %}">
                                     {% csrf_token %}
                                     <div class="form-group mb-3">
                                         <label for="visit_number"><strong>No. of Visits:</strong></label>
@@ -398,9 +502,6 @@
                         {% endif %}
                     </div>
                 </div>
-
-
-                <!-- Step 6: Close Out -->
 
             </div>
         </div>
@@ -485,6 +586,7 @@
         .btn-outline-danger {
             display: flex;
             align-items: center;
+            padding:20px 8px;
         }
 
         .btn-outline-danger i {
@@ -505,6 +607,40 @@
             background-color: #004494;
             border-color: #004494;
         }
+
+        /* Tertiary Button with Red Outline and White Background */
+.btn-secondary-icon {
+    background-color: #ffffff; /* White background */
+    color: #dc3545; /* Red text */
+    border: 2px solid #dc3545; /* Red outline */
+    padding: 6px 20px;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.btn-secondary-icon:hover {
+    background-color: #d3d3d3;
+    color: #b02a37; /* Darker red text on hover */
+    border-color: #b02a37; /* Darker red outline on hover */
+    text-decoration: none; /* No underline */
+}
+
+.btn-secondary-icon:active {
+    background-color: #f5c6cb; /* Slightly darker red on active */
+    color: #881c28; /* Even darker red text */
+    border-color: #881c28; /* Darker red outline */
+}
+
+.btn-secondary-icon:disabled {
+    background-color: #ffffff; /* Keep the background white */
+    color: #f5c2c7; /* Muted red text */
+    border-color: #f5c2c7; /* Muted red outline */
+    cursor: not-allowed; /* Indicate unclickable state */
+    opacity: 0.65; /* Slight transparency for a disabled look */
+}
+
 
         /* Table Styles */
         table.table {
@@ -530,7 +666,7 @@
 
         /* Add comment section */
         .add-comment {
-            margin-top: 10px;
+
         }
 
         .add-comment input {
@@ -539,7 +675,37 @@
 
         .add-comment button {
             border-radius: 8px;
+            padding: 20px 8px;
         }
+
+        .list-group {
+    margin-bottom: 1rem; /* Add spacing below the entire list group */
+}
+
+.list-group-item {
+    padding: 15px 20px; /* Increase padding for better readability */
+    margin-bottom: 10px; /* Add spacing between items */
+    border-radius: 5px; /* Slight rounding of corners for a modern look */
+    border: 1px solid #ddd; /* Light border for definition */
+}
+
+.list-group-item:last-child {
+    margin-bottom: 0; /* Remove margin from the last item */
+}
+
+        .input-group input {
+    padding: 12px; /* Adds 15px padding inside the input */
+    height: auto; /* Adjust height based on padding */
+    border: 1px solid #ccc; /* Optional: a light border for the input */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 16px; /* Optional: set a font size */
+    box-sizing: border-box; /* Ensures padding is included in the element's total width and height */
+}
+
+.input-group {
+    display: flex; /* Aligns items in a row if there are multiple inputs */
+    gap: 8px; /* Space between input fields */
+}
     </style>
 
     <script>
@@ -605,7 +771,4 @@
             }
         });
     </script>
-
-
-
 {% endblock %}

@@ -15,35 +15,6 @@
 <div class="container">
     <div class="row d-flex justify-content-center align-items-center">
         <div class="col col-xl-10">
-            <!-- Announcements Section -->
-            <div class="greeting-section text-left mb-4"
-                 style="background-color: #f8f9fa; border-radius: 15px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div class="dropdown">
-                    <button class="btn btn-light w-100 text-left dropdown-toggle" type="button"
-                            id="announcementDropdown" data-bs-toggle="dropdown" aria-expanded="false"
-                            style="text-align: left; font-size: 1.2rem; font-weight: bold; color: #0f0f0f; background-color: #f8f9fa; border: none;">
-                        Latest Announcements
-                    </button>
-                    <ul class="dropdown-menu w-100 p-3 dropdown-menu-end" aria-labelledby="announcementDropdown"
-                        style="max-height: 300px; overflow-y: auto; border-radius: 15px; position: absolute; z-index: 1050;">
-                        {% for announcement in announcements %}
-                            <li class="mb-3">
-                                <div class="card shadow-sm">
-                                    <div class="card-body">
-                                        <h5 class="card-title mb-2">{{ announcement.title }}</h5>
-                                        <p class="card-text">{{ announcement.body }}</p>
-                                        <p class="card-text">
-                                            <small class="text-muted">Posted on {{ announcement.date_posted|date:"F d, Y" }}</small>
-                                        </p>
-                                    </div>
-                                </div>
-                            </li>
-                        {% empty %}
-                            <li class="text-center text-muted">No announcements to show at the moment.</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
 
             <!-- Task Section -->
             <div id="taskSection">

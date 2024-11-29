@@ -2,57 +2,29 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
 from .models import TemplateModel, Guideline, Announcement, NonConformity, ImmediateAction, RootCauseAnalysis, \
-    CorrectiveActionPlan, FollowUpAction, CorrectiveActionPlanReview, ActionVerification, CloseOut
+    CorrectiveActionPlan, FollowUpAction, CorrectiveActionPlanReview, ActionVerification, CloseOut, UserProfile
 
 
 class UserCreationForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput, required=False)
-    password_confirm = forms.CharField(widget=forms.PasswordInput, label="Confirm Password", required=False)
-    role = forms.ChoiceField(choices=[
-        ('Admin', 'Admin'),
-        ('Process Owner', 'Process Owner'),
-        ('Internal Auditor', 'Internal Auditor'),
-        ('Lead Auditor', 'Lead Auditor')
-    ])
+    role = forms.ChoiceField(choices=UserProfile.ROLE_CHOICES, required=True, label="Role")  # Ensure role is required
 
     first_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'First Name'}))
     last_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Last Name'}))
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name', 'password', 'password_confirm', 'role']
-
-    def clean(self):
-        cleaned_data = super().clean()
-        password = cleaned_data.get("password")
-        password_confirm = cleaned_data.get("password_confirm")
-
-        # Only enforce password confirmation for new users
-        if not self.instance.pk:
-            if not password:
-                # Set default password if not provided
-                cleaned_data['password'] = 'sorsu123'
-            elif password != password_confirm:
-                self.add_error('password_confirm', "Passwords do not match.")
-        return cleaned_data
+        fields = ['username', 'email', 'first_name', 'last_name', 'role']  # Ensure role is included
 
     def save(self, commit=True):
         user = super().save(commit=False)
-
-        # Set default password if none is provided
-        if not self.cleaned_data.get('password'):
-            user.set_password('sorsu123')
-        else:
-            user.set_password(self.cleaned_data['password'])
-
-        # Save user and profile role
         if commit:
             user.save()
-            if hasattr(user, 'userprofile'):
-                user.userprofile.role = self.cleaned_data['role']
-                user.userprofile.save()
-
+            UserProfile.objects.update_or_create(
+                user=user,
+                defaults={'role': self.cleaned_data['role']}
+            )
         return user
+
 
 
 # User update form for modifying existing user details
