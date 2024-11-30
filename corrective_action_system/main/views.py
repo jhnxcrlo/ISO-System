@@ -57,7 +57,7 @@ def login_view(request):
             elif user_profile.role == 'Lead Auditor':
                 return redirect('lead_auditor_dashboard')
             else:
-                return redirect('dashboard')
+                return redirect('lead_auditor_dashboard')
         else:
             return render(request, 'main/login.html', {'error': 'Invalid username or password'})
     return render(request, 'main/login.html')
