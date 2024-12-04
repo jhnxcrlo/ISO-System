@@ -1432,6 +1432,45 @@ h3 {
     text-decoration: underline; /* Optionally add underline on hover */
     color: #333; /* Slightly lighter on hover */
 }
+/* Compressed Profile Modal Styles */
+.modal-header {
+  border-bottom: none;
+  padding: 8px 16px;
+}
+
+.modal-content {
+  border-radius: 8px;
+}
+
+.profile-image-container img {
+  border: 3px solid #fff;
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-label {
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+
+.form-control {
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.btn-sm {
+  font-size: 0.8rem;
+}
+
 
 
 

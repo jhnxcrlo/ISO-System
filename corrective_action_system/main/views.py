@@ -1396,3 +1396,44 @@ def generate_audit_report_summary_pdf(request):
         return HttpResponse('An error occurred while generating the PDF', status=500)
 
     return response
+
+@login_required
+def user_profile_view(request):
+    # Handle GET request to fetch user profile data
+    if request.method == "GET":
+        profile = get_object_or_404(UserProfile, user=request.user)
+        data = {
+            "first_name": request.user.first_name,
+            "last_name": request.user.last_name,
+            "email": request.user.email,
+            "phone_number": profile.phone_number,
+            "position": profile.position,
+            "department": profile.department,
+            "role": profile.role,
+        }
+        return JsonResponse(data)
+
+    # Handle POST request to update user profile data
+    elif request.method == "POST":
+        try:
+            profile = get_object_or_404(UserProfile, user=request.user)
+            data = request.POST
+
+            # Update user fields
+            request.user.first_name = data.get("firstName", request.user.first_name)
+            request.user.last_name = data.get("lastName", request.user.last_name)
+            request.user.email = data.get("email", request.user.email)
+            request.user.save()
+
+            # Update profile fields
+            profile.phone_number = data.get("phone", profile.phone_number)
+            profile.position = data.get("position", profile.position)
+            profile.department = data.get("department", profile.department)
+            profile.save()
+
+            return JsonResponse({"message": "Profile updated successfully!"})
+        except Exception as e:
+            return JsonResponse({"message": "Error updating profile", "error": str(e)}, status=500)
+
+    # Return an error if request method is not GET or POST
+    return JsonResponse({"message": "Invalid request method"}, status=400)

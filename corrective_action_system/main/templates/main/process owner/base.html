@@ -39,7 +39,7 @@
             position: relative;
             width: 120px;
             height: 120px;
-            margin: 0 ;
+            margin: 0;
             margin-bottom: 20px; /* Adds space below the image */
             margin-left: 50px;
         }
@@ -86,9 +86,10 @@
             border-radius: 8px;
 
         }
+
         .custom-modal-width {
-    max-width: 50%; /* Adjust width as needed */
-  }
+            max-width: 50%; /* Adjust width as needed */
+        }
     </style>
 </head>
 <body>
@@ -202,7 +203,8 @@
                                 <span>{{ user.last_name }} {{ user.first_name|slice:":1" }}. ({{ user.userprofile.role }})</span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profileModal">View Profile</a></li>
+                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                       data-bs-target="#profileModal">View Profile</a></li>
                                 <li><a class="dropdown-item" href="{% url 'login' %}">Log Out</a></li>
                             </ul>
                         </div>
@@ -244,120 +246,97 @@
 
 <!-- Modal HTML -->
 <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered custom-modal-width ">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="profileModalLabel">Profile Details</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <section class="vh-90">
-          <div class="container ">
-            <div class="row d-flex justify-content-center align-items-center">
-              <div class="col-md-12 col-xl-12">
-
-                  <div class="card-body text-center">
-                    <div class="mt-3 mb-4">
-                      <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp"
-                        class="rounded-circle img-fluid" style="width: 100px;" />
-                    </div>
-                    <h4 class="mb-2">Jane Coop</h4>
-                    <p class="text-muted mb-4">@ProcessOwner <span class="mx-2">|</span>
-                      <a href="#!">example@gmail.com</a></p>
-                    <div class="mb-4 pb-2">
-                      <button type="button" class="btn btn-outline-primary btn-floating">
-                        <i class="fab fa-facebook-f fa-lg"></i>
-                      </button>
-                      <button type="button" class="btn btn-outline-primary btn-floating">
-                        <i class="fab fa-twitter fa-lg"></i>
-                      </button>
-                      <button type="button" class="btn btn-outline-primary btn-floating">
-                        <i class="fab fa-skype fa-lg"></i>
-                      </button>
-                    </div>
-
-                    <!-- First and Last Name -->
-                    <div class="row g-3">
-                      <div class="col-md-6">
-                        <label for="firstName" class="form-label text-start">First Name</label>
-                        <div class="input-group">
-                          <input type="text" class="form-control" id="firstName" value="Jane" disabled>
-                          <span class="input-group-text">
-                            <i class="bi bi-pencil"></i>
-                          </span>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <label for="lastName" class="form-label">Last Name</label>
-                        <div class="input-group">
-                          <input type="text" class="form-control" id="lastName" value="Coop" disabled>
-                          <span class="input-group-text">
-                            <i class="bi bi-pencil"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Email and Phone -->
-                    <div class="row g-3 mt-2">
-                      <div class="col-md-6">
-                        <label for="email" class="form-label">Email</label>
-                        <div class="input-group">
-                          <input type="email" class="form-control" id="email" value="jane234@example.com" disabled>
-                          <span class="input-group-text">
-                            <i class="bi bi-envelope"></i>
-                          </span>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <label for="phone" class="form-label">Phone Number</label>
-                        <div class="input-group">
-                          <input type="text" class="form-control" id="phone" value="(209) 555-0104" disabled>
-                          <span class="input-group-text">
-                            <i class="bi bi-telephone"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row g-3 mt-3">
-                      <div class="col-md-6">
-                        <label for="position" class="form-label">Position</label>
-                        <div class="input-group">
-                          <input type="text" class="form-control" id="position" value="Software Developer" disabled>
-                          <span class="input-group-text">
-                            <i class="bi bi-briefcase"></i>
-                          </span>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <label for="department" class="form-label">Department</label>
-                        <div class="input-group">
-                          <input type="text" class="form-control" id="department" value="IT" disabled>
-                          <span class="input-group-text">
-                            <i class="bi bi-building"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
+    <div class="modal-dialog modal-dialog-centered custom-modal-width">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-danger text-white py-2">
+                <h6 class="modal-title" id="profileModalLabel">
+                    <i class="bi bi-person-circle me-2"></i> Profile Details
+                </h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
 
-        </section>
-      </div>
+            <!-- Modal Body -->
+            <div class="modal-body px-4 py-3">
+                <section>
+                    <div class="text-center">
+                        <!-- Profile Image -->
+                        <div class="profile-image-container mb-3 mx-auto">
+                            <img id="profileImage"
+                                 src="{% static 'main/gray.png' %}"
+                                 class="rounded-circle shadow"
+                                 style="width: 80px; height: 80px;"
+                                 alt="User Avatar">
+                        </div>
+
+                        <h5 class="mb-1" id="profileName">Loading...</h5>
+                        <p class="text-muted mb-4" id="profileRole">Loading...</p>
+
+                        <!-- Editable Fields -->
+                        <form id="profileForm">
+                            <div class="row g-2">
+                                <!-- First and Last Name -->
+                                <div class="col-6">
+                                    <label for="firstName" class="form-label small">First Name</label>
+                                    <input type="text" class="form-control form-control-sm" id="firstName" value=""
+                                           disabled>
+                                </div>
+                                <div class="col-6">
+                                    <label for="lastName" class="form-label small">Last Name</label>
+                                    <input type="text" class="form-control form-control-sm" id="lastName" value=""
+                                           disabled>
+                                </div>
+
+                                <!-- Email and Phone -->
+                                <div class="col-6">
+                                    <label for="email" class="form-label small">Email</label>
+                                    <input type="email" class="form-control form-control-sm" id="email" value=""
+                                           disabled>
+                                </div>
+                                <div class="col-6">
+                                    <label for="phone" class="form-label small">Phone</label>
+                                    <input type="text" class="form-control form-control-sm" id="phone" value=""
+                                           disabled>
+                                </div>
+
+                                <!-- Position and Department -->
+                                <div class="col-6">
+                                    <label for="position" class="form-label small">Position</label>
+                                    <input type="text" class="form-control form-control-sm" id="position" value=""
+                                           disabled>
+                                </div>
+                                <div class="col-6">
+                                    <label for="department" class="form-label small">Department</label>
+                                    <input type="text" class="form-control form-control-sm" id="department" value=""
+                                           disabled>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Buttons -->
+                        <div class="mt-4 d-flex justify-content-center">
+                            <button type="button" id="editProfileBtn" class="btn btn-sm btn-secondary me-2">
+                                <i class="bi bi-pencil"></i> Edit
+                            </button>
+                            <button type="button" id="saveProfileBtn" class="btn btn-sm btn-danger d-none">
+                                <i class="bi bi-save"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
+
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales-all.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 <script>
     const chatButton = document.getElementById("chatButton");
     const chatbox = document.getElementById("chatbox");
@@ -382,6 +361,91 @@
         sidebar.classList.toggle('sidebar-collapsed');
         mainContent.classList.toggle('main-content-expanded');
     });
+    document.addEventListener("DOMContentLoaded", function () {
+        const profileEndpoint = "{% url 'user_profile' %}"; // Combined URL for all user profiles
+        const profileModal = document.getElementById("profileModal");
+        const editButton = document.getElementById("editProfileBtn");
+        const saveButton = document.getElementById("saveProfileBtn");
+        const formInputs = document.querySelectorAll("#profileForm input");
+
+        // CSRF Token Helper
+        const getCookie = (name) => {
+            const cookieValue = document.cookie
+                .split("; ")
+                .find((row) => row.startsWith(name))
+                ?.split("=")[1];
+            return decodeURIComponent(cookieValue);
+        };
+
+        // Fetch and Populate Profile Data
+        const fetchProfileData = () => {
+            fetch(profileEndpoint)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch profile data");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    // Populate fields with fetched data
+                    document.getElementById("profileName").textContent = `${data.first_name} ${data.last_name}`;
+                    document.getElementById("profileRole").textContent = `@${data.role}`;
+                    document.getElementById("firstName").value = data.first_name;
+                    document.getElementById("lastName").value = data.last_name;
+                    document.getElementById("email").value = data.email;
+                    document.getElementById("phone").value = data.phone_number;
+                    document.getElementById("position").value = data.position;
+                    document.getElementById("department").value = data.department;
+                })
+                .catch((error) => console.error("Error fetching profile data:", error));
+        };
+
+        // Enable Editing
+        const enableEditing = () => {
+            formInputs.forEach((input) => {
+                input.disabled = false;
+            });
+            editButton.classList.add("d-none");
+            saveButton.classList.remove("d-none");
+        };
+
+        // Save Profile Data
+        const saveProfileData = () => {
+            const formData = new FormData();
+            formInputs.forEach((input) => {
+                formData.append(input.id, input.value);
+            });
+
+            fetch(profileEndpoint, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to save profile data");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    alert(data.message || "Profile updated successfully!");
+                    formInputs.forEach((input) => {
+                        input.disabled = true;
+                    });
+                    saveButton.classList.add("d-none");
+                    editButton.classList.remove("d-none");
+                })
+                .catch((error) => console.error("Error saving profile data:", error));
+        };
+
+        // Event Listeners
+        profileModal.addEventListener("show.bs.modal", fetchProfileData);
+        editButton.addEventListener("click", enableEditing);
+        saveButton.addEventListener("click", saveProfileData);
+    });
+
 </script>
 </body>
 </html>

@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from . import views
 from .views import change_password, add_review, preview_rfa, generate_pdf, audit_report_summary_view, \
- generate_audit_report_summary_pdf
+    generate_audit_report_summary_pdf, user_profile_view
 
 urlpatterns = [
     # Authentication
@@ -89,6 +89,7 @@ urlpatterns = [
     path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='main/administrator/registration/password_reset_complete.html'), name='password_reset_complete'),
     path('audit-report-summary/', audit_report_summary_view, name='audit_report_summary'),
     path('audit-report-summary-pdf/', generate_audit_report_summary_pdf, name='audit_report_summary_pdf'),
+    path("profile/", user_profile_view, name="user_profile"),
 
 ]
 
