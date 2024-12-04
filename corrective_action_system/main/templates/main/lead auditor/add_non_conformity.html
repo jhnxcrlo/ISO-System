@@ -1,4 +1,4 @@
-{% extends 'main/lead auditor/base.html' %}
+{% extends 'main/internal audit/base.html' %}
 {% block title %}Add New Non-Conformity{% endblock %}
 
 {% block content %}
@@ -6,7 +6,7 @@
     /* Style for labels */
     .form-label {
         font-weight: bold; /* Make labels bold */
-        font-size: 22px; /* Default font size */
+        font-size: 18px; /* Default font size */
         line-height: 1.5; /* Improve readability */
         margin-bottom: 3px; /* Add space below labels */
     }
@@ -14,12 +14,12 @@
     /* Adjust spacing and alignment for inputs */
     .form-control {
         margin-top: 10px; /* Space between label and input */
-        font-size: 22px; /* Set input font size */
+        font-size: 16px; /* Set input font size */
     }
 
     /* Spacing for select dropdowns */
     .form-control {
-        padding: 8px; /* Add padding for better appearance */
+        padding: 12px; /* Add padding for better appearance */
     }
 
     /* Style for the form container */
@@ -151,7 +151,7 @@
                         <option value="" disabled selected>Select Category</option>
                         <option value="major">Major</option>
                         <option value="minor">Minor</option>
-                        <option value="others">OFI</option>
+                        <option value="others">Others</option>
                     </select>
                     <i class="bi bi-caret-down-fill position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;"></i>
                 </div>
@@ -193,8 +193,8 @@
     // Adding a fallback validation message
     document.getElementById('addNonConformityForm').addEventListener('submit', function (event) {
         const form = event.target;
-            event.preventDefault(); // Prevent default submit behavior
         if (!form.checkValidity()) {
+            event.preventDefault(); // Prevent default submit behavior
             Array.from(form.elements).forEach(function (input) {
                 if (!input.validity.valid && input.required) {
                     input.setCustomValidity("Please fill out this field.");
