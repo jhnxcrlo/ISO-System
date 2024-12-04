@@ -153,37 +153,75 @@
             <nav class="navbar navbar-expand-lg">
                 <div class="container-fluid">
                     <div class="d-flex ms-auto align-items-center">
-                        <!-- Notifications -->
                         <div class="notification-icon me-3 position-relative">
-                            <a href="#" class="nav-link" id="navbarNotification" role="button"
+                            <!-- Notification icon -->
+                            <a href="#" class="nav-link hidden-arrow" id="navbarNotification" role="button"
                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bell"></i>
+                                <!-- Badge for unread notifications -->
+                                {% if user.notifications.unread|length > 0 %}
+                                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+                {{ user.notifications.unread|length }}
+            </span>
+                                {% endif %}
                             </a>
+
+                            <!-- Notification dropdown -->
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarNotification"
-                                style="width: 250px;">
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        <p class="small text-uppercase mb-2">06/26/2024</p>
-                                        <p class="mb-0">🛈 New notification message here</p>
-                                    </a>
-                                </li>
+                                style="width: 400px; max-height: 500px; overflow-y: auto;">
+                                {% with user.notifications.unread as unread_notifications %}
+                                    {% if unread_notifications %}
+                                        {% for notification in unread_notifications %}
+                                            <li>
+                                                <!-- Dynamically resolve URL based on the target's methods -->
+                                                <a href="
+                            {% if notification.target %}
+                                {% if user.userprofile.role == 'Process Owner' %}
+                                    {{ notification.target.get_task_url }}
+                                {% elif user.userprofile.role == 'Lead Auditor' %}
+                                    {{ notification.target.get_non_conformity_url }}
+                                {% elif user.userprofile.role == 'Internal Auditor' %}
+                                    {{ notification.target.get_non_conformity_url }}
+                                {% else %}
+                                    #
+                                {% endif %}
+                            {% else %}
+                                #
+                            {% endif %}
+                        " class="dropdown-item">
+                                                    <strong>{{ notification.verb }}</strong>: {{ notification.description }}
+                                                    <br>
+                                                    <small class="text-muted">{{ notification.timestamp|timesince }}
+                                                        ago</small>
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'mark_all_notifications_read' %}"
+                                               class="dropdown-item text-center text-muted">
+                                                Mark all as read
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li>
+                                            <p class="dropdown-item text-center text-muted">No new notifications</p>
+                                        </li>
+                                    {% endif %}
+                                {% endwith %}
                             </ul>
                         </div>
-                        <!-- User Dropdown -->
+
+
                         <div class="dropdown">
-                            <button aria-expanded="false" class="btn btn-light dropdown-toggle"
-                                    data-bs-toggle="dropdown">
+                            <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" type="button">
                                 <img alt="User" class="rounded-circle me-1" src="{% static 'main/img2.png' %}"
                                      width="30">
                                 <span>{{ user.last_name }} {{ user.first_name|slice:":1" }}. ({{ user.userprofile.role }})</span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><strong
-                                        class="dropdown-header">{{ user.last_name }} {{ user.first_name|slice:":1" }}.</strong>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
                                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
                                        data-bs-target="#profileModal">View Profile</a></li>
                                 <li><a class="dropdown-item" href="{% url 'login' %}">Log Out</a></li>
