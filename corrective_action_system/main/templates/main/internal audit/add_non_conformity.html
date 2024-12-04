@@ -188,4 +188,24 @@
         </div>
     </form>
 </div>
+
+<script>
+    // Adding a fallback validation message
+    document.getElementById('addNonConformityForm').addEventListener('submit', function (event) {
+        const form = event.target;
+        if (!form.checkValidity()) {
+            event.preventDefault(); // Prevent default submit behavior
+            Array.from(form.elements).forEach(function (input) {
+                if (!input.validity.valid && input.required) {
+                    input.setCustomValidity("Please fill out this field.");
+                } else {
+                    input.setCustomValidity(""); // Reset validity message
+                }
+            });
+            form.reportValidity(); // Trigger default browser validation UI
+        }
+    });
+</script>
 {% endblock %}
+
+

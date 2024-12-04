@@ -28,13 +28,13 @@
                         <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#editGuidelineModal" data-id="{{ guideline.id }}"
                                 data-title="{{ guideline.title }}" data-description="{{ guideline.description }}">
-                            Edit
+                           <i class="fas fa-edit"></i> Edit
                         </button>
                         <form method="POST" action="">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="guideline_id" value="{{ guideline.id }}">
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            <button type="submit" class="btn btn-danger btn-sm"> <i class="fas fa-trash" ></i> Delete</button>
                         </form>
                     </div>
                 </div>

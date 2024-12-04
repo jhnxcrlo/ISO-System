@@ -745,7 +745,6 @@ html {
 .form-select {
     border-radius: 8px;
     padding: 10px;
-    margin-top: 10px;
 }
 
 /* Chart Section */
@@ -1360,7 +1359,7 @@ h3 {
 .form-control, .form-select {
     border-radius: 8px;
     padding: 10px;
-    margin-top: 10px;
+
 }
 
 .greeting-section {

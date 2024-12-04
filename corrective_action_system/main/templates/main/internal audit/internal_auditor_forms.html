@@ -23,12 +23,12 @@
             </div>
             <div>
                 <!-- Button to trigger the edit modal -->
-                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editFormModal-{{ template.id }}">
+                <button class="btn btn-warning btn-md" style="margin-right:10px;" data-bs-toggle="modal" data-bs-target="#editFormModal-{{ template.id }}">
                     <i class="fas fa-edit"></i> Edit
                 </button>
                 <!-- Button to trigger the delete confirmation modal -->
-                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteFormModal-{{ template.id }}">
-                    <i class="fas fa-trash"></i> Delete
+                <button class="btn btn-danger btn-md" data-bs-toggle="modal" data-bs-target="#deleteFormModal-{{ template.id }}">
+                    <i class="fas fa-trash" ></i> Delete
                 </button>
             </div>
         </li>
@@ -79,7 +79,7 @@
                         <form method="POST" action="{% url 'delete_template' template.id %}">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger">Delete</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-tertiary" data-bs-dismiss="modal">Cancel</button>
                         </form>
                     </div>
                 </div>

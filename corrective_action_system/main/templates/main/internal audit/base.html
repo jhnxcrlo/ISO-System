@@ -26,7 +26,75 @@
     <!-- Bootstrap JavaScript (Including Popper.js) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+ <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
 
+        .account-info-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .profile-image-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 ;
+            margin-bottom: 20px; /* Adds space below the image */
+            margin-left: 50px;
+        }
+
+        .profile-image-container img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .edit-icon {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .form-control[disabled] {
+            background-color: #f8f9fa;
+        }
+
+        .form-label {
+            font-weight: 600;
+            font-size: 14px;
+
+        }
+
+        .bio-textarea {
+            height: 100px;
+        }
+
+        /* Adjust input group height */
+        .input-group .form-control,
+        .input-group .input-group-text {
+            height: 40px; /* New height */
+            line-height: 1.5;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 8px;
+
+        }
+        .custom-modal-width {
+    max-width: 50%; /* Adjust width as needed */
+  }
+    </style>
 </head>
 <body>
 <div class="container-fluid">
@@ -128,6 +196,7 @@
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
+                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profileModal">View Profile</a></li>
                                 <li><a class="dropdown-item" href="{% url 'login' %}">Log Out</a></li>
                             </ul>
                         </div>
@@ -177,7 +246,115 @@
         <button class="send-button" type="button"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
+<!-- Modal HTML -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered custom-modal-width ">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="profileModalLabel">Profile Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <section class="vh-90">
+          <div class="container ">
+            <div class="row d-flex justify-content-center align-items-center">
+              <div class="col-md-12 col-xl-12">
 
+                  <div class="card-body text-center">
+                    <div class="mt-3 mb-4">
+                      <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp"
+                        class="rounded-circle img-fluid" style="width: 100px;" />
+                    </div>
+                    <h4 class="mb-2">Jane Coop</h4>
+                    <p class="text-muted mb-4">@ProcessOwner <span class="mx-2">|</span>
+                      <a href="#!">example@gmail.com</a></p>
+                    <div class="mb-4 pb-2">
+                      <button type="button" class="btn btn-outline-primary btn-floating">
+                        <i class="fab fa-facebook-f fa-lg"></i>
+                      </button>
+                      <button type="button" class="btn btn-outline-primary btn-floating">
+                        <i class="fab fa-twitter fa-lg"></i>
+                      </button>
+                      <button type="button" class="btn btn-outline-primary btn-floating">
+                        <i class="fab fa-skype fa-lg"></i>
+                      </button>
+                    </div>
+
+                    <!-- First and Last Name -->
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <label for="firstName" class="form-label text-start">First Name</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control" id="firstName" value="Jane" disabled>
+                          <span class="input-group-text">
+                            <i class="bi bi-pencil"></i>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control" id="lastName" value="Coop" disabled>
+                          <span class="input-group-text">
+                            <i class="bi bi-pencil"></i>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Email and Phone -->
+                    <div class="row g-3 mt-2">
+                      <div class="col-md-6">
+                        <label for="email" class="form-label">Email</label>
+                        <div class="input-group">
+                          <input type="email" class="form-control" id="email" value="jane234@example.com" disabled>
+                          <span class="input-group-text">
+                            <i class="bi bi-envelope"></i>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control" id="phone" value="(209) 555-0104" disabled>
+                          <span class="input-group-text">
+                            <i class="bi bi-telephone"></i>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row g-3 mt-3">
+                      <div class="col-md-6">
+                        <label for="position" class="form-label">Position</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control" id="position" value="Software Developer" disabled>
+                          <span class="input-group-text">
+                            <i class="bi bi-briefcase"></i>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="department" class="form-label">Department</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control" id="department" value="IT" disabled>
+                          <span class="input-group-text">
+                            <i class="bi bi-building"></i>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- JavaScript -->
 <script>
