@@ -3,7 +3,7 @@
 {% block title %}Lead Auditor Monitoring Log{% endblock %}
 
 {% block content %}
-    
+
     <style>
     /* Button Styles */
     .btn-primary {
@@ -116,6 +116,34 @@
     text-decoration: none !important; /* Default no underline */
 }
 
+        /* Style for the pagination */
+.pagination .page-item .page-link {
+    color: #A33331; /* Text color for not active */
+    background-color: white; /* Background color for not active */
+    transition: all 0.3s ease; /* Smooth hover transition */
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: #f8d7da; /* Light red hover effect */
+    color: #A33331; /* Text color stays red on hover */
+}
+
+/* Active pagination link */
+.pagination .page-item.active .page-link {
+    background-color: #A33331; /* Background for active */
+    color: white; /* Text color for active */
+    border: 1px solid #A33331; /* Border for active */
+    font-weight: bold; /* Emphasize active link */
+}
+
+/* Disabled pagination link */
+.pagination .page-item.disabled .page-link {
+    color: gray; /* Gray text for disabled */
+    background-color: #f8f9fa; /* Light gray background for disabled */
+    border: 1px solid #d3d3d3; /* Gray border for disabled */
+    cursor: not-allowed; /* Indicate that the link is not clickable */
+}
+
 </style>
 
 <div class="container mt-4">
@@ -208,8 +236,24 @@
             {% endfor %}
             </tbody>
         </table>
+        <nav aria-label="...">
+          <ul class="pagination justify-content-end m-4">
+            <li class="page-item disabled">
+              <a class="page-link">Previous</a>
+            </li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item " aria-current="page">
+              <a class="page-link" href="#">2 <span class="visually-hidden">(current)</span></a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+              <a class="page-link" href="#">Next</a>
+            </li>
+          </ul>
+        </nav>
     </div>
 </div>
+
 
 <script>
    document.addEventListener('DOMContentLoaded', function () {
@@ -217,6 +261,7 @@
     const tableBody = document.querySelector('#nonConformitiesTable tbody');
     const tableRows = Array.from(tableBody.querySelectorAll('tr'));
     const searchInput = document.getElementById('searchInput');
+    const paginationContainer = document.querySelector('.pagination');
 
     // Sort by Default: Latest Created First (by ID)
     const sortByIdDesc = () => {
@@ -246,9 +291,9 @@
 
         // Update tab counts
         document.querySelector('[data-filter="all"]').innerText = `All (${allCount})`;
-        document.querySelector('[data-filter="in_progress"]').innerText = `Ongoing (${ongoingCount})`;
-        document.querySelector('[data-filter="corrective_action_completed"]').innerText = `Finished (${finishedCount})`;
-        document.querySelector('[data-filter="postponed"]').innerText = `Postponed (${postponedCount})`;
+        document.querySelector('[data-filter="in_progress"]').innerText = `Open (${ongoingCount})`;
+        document.querySelector('[data-filter="corrective_action_completed"]').innerText = `Close(${finishedCount})`;
+        document.querySelector('[data-filter="postponed"]').innerText = `Pending (${postponedCount})`;
     };
 
     // Filter Rows by Tabs

@@ -7,26 +7,36 @@
         <!-- Page Header -->
         <h2 class="mb-4" style="color: #A33331; font-weight: bold;">AUDIT TASK: ASSESS PROCESS OWNER COMPLIANCE WITH
             RFA</h2>
-                <div class="row">
-                    <h4 class="text-red mb-4"><strong> {{ non_conformity.non_conformity }}</strong> </h4>
-                    <div class="col-md-6">
-                        <ul class="list-group list-group-light">
-                            <li class="list-group-item"><strong>ISO Clause/Reference:</strong> {{ non_conformity.iso_clause }}</li>
-                            <li class="list-group-item"><strong>Category:</strong> {{ non_conformity.get_category_display }}</li>
-                            <li class="list-group-item"><strong>Description:</strong> {{ non_conformity.description_of_non_conformance }}</li>
-                            <li class="list-group-item"><strong>Start Date:</strong> {{ non_conformity.start_date }}</li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <ul class="list-group list-group-light">
 
-                            <li class="list-group-item"><strong>Deadline:</strong> {{ non_conformity.deadline }}</li>
-                            <li class="list-group-item"><strong>Originator Name:</strong> {{ non_conformity.originator_name }}</li>
-                            <li class="list-group-item"><strong>Department/Unit:</strong> {{ non_conformity.unit_department }}</li>
-                        </ul>
-                    </div>
-                </div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <div class="row">
+            <!-- Details Columns --><h4 class="text-red mb-4"><strong> {{ non_conformity.non_conformity }}</strong> </h4>
+            <div class="col-md-6">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Originator Name:</strong> {{ non_conformity.originator_name }}</li>
+                    <li class="list-group-item"><strong>Unit/Department:</strong> {{ non_conformity.unit_department }}</li>
+                    <li class="list-group-item"><strong>Phone:</strong> {{ non_conformity.phone }}</li>
+                    <li class="list-group-item"><strong>Email:</strong> {{ non_conformity.email }}</li>
+                    <li class="list-group-item"><strong>RFA Intent:</strong> {{ non_conformity.get_rfa_intent_display }}</li>
+                    <li class="list-group-item"><strong>Department:</strong> {{ non_conformity.department }}</li>
+                    <li class="list-group-item"><strong>Non-Conformance Category:</strong> {{ non_conformity.get_non_conformance_category_display }}</li>
+                </ul>
             </div>
+            <div class="col-md-6">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Description of Non-Conformance:</strong> {{ non_conformity.description_of_non_conformance }}</li>
+                    <li class="list-group-item"><strong>ISO Clause:</strong> {{ non_conformity.iso_clause }}</li>
+                    <li class="list-group-item"><strong>Category:</strong> {{ non_conformity.get_category_display }}</li>
+                    <li class="list-group-item"><strong>Date Issued:</strong> {{ non_conformity.start_date }}</li>
+                    <li class="list-group-item"><strong>Status:</strong> {{ non_conformity.get_status_display }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
 
             <!-- Right Column: Step-by-Step Progress -->
             <div class="col-md-12 mt-5">
@@ -684,8 +694,8 @@
 }
 
 .list-group-item {
-    padding: 15px 20px; /* Increase padding for better readability */
-    margin-bottom: 10px; /* Add spacing between items */
+
+    margin-bottom: 8px; /* Add spacing between items */
     border-radius: 5px; /* Slight rounding of corners for a modern look */
     border: 1px solid #ddd; /* Light border for definition */
 }
@@ -707,6 +717,48 @@
     display: flex; /* Aligns items in a row if there are multiple inputs */
     gap: 8px; /* Space between input fields */
 }
+
+        /* Scoped styling for the card */
+.non-conformity-card {
+    margin-top: 1rem; /* Space above the card */
+    border: 1px solid #ddd; /* Default border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    background-color: #fff; /* White background */
+}
+
+.non-conformity-card .card-body {
+
+    padding: 2rem; /* Add padding inside the card body */
+}
+
+.non-conformity-card .list-group-item {
+    border: none; /* Remove list item borders */
+
+    font-size: 1rem; /* Default text size */
+}
+
+.non-conformity-card .list-group-item strong {
+    color: #333; /* Darker text for labels */
+    font-weight: 600; /* Make labels bold */
+}
+
+.non-conformity-card .list-group-item {
+    color: #555; /* Softer text color for values */
+}
+
+/* Columns specific styling */
+.non-conformity-card .col-md-6 {
+    padding-bottom: 1rem; /* Add space between columns */
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .non-conformity-card .col-md-6 {
+        margin-bottom: 1rem; /* Space between columns on smaller screens */
+    }
+}
+
     </style>
 
     <script>
