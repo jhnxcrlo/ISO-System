@@ -223,16 +223,30 @@
                                         required
                                         rows="4">{{ root_cause_analysis.cause_description|default_if_none:'' }}</textarea>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="rcaDate"><strong>Date of Root Cause
-                                    Analysis:</strong></label>
-                                <input
+                              <!-- Date of Root Cause Analysis -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="rcaDate"><strong>Date of Root Cause Analysis:</strong></label>
+                                    <input
                                         class="form-control"
                                         id="rcaDate"
                                         name="rca_date"
                                         required
                                         type="date"
                                         value="{{ root_cause_analysis.rca_date|date:'Y-m-d' }}">
+                                </div>
+
+                                <!-- Estimated Close Date -->
+                                <div class="col-md-6">
+                                    <label class="form-label" for="estimatedCloseDate"><strong>Estimated Close Date:</strong></label>
+                                    <input
+                                        class="form-control"
+                                        id="estimatedCloseDate"
+                                        name="estimated_close_date"
+                                        required
+                                        type="date"
+                                        value="{{ root_cause_analysis.estimated_close_date|date:'Y-m-d' }}">
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="responsibleOfficer"><strong>Responsible Officer:</strong></label>
@@ -244,18 +258,7 @@
                                         type="text"
                                         value="{{ root_cause_analysis.responsible_officer|default_if_none:'' }}">
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="estimatedCloseDate"><strong>Estimated Close
-                                    Date:</strong></label>
-                                <input
-                                        class="form-control"
-                                        id="estimatedCloseDate"
-                                        name="estimated_close_date"
-                                        required
-                                        type="date"
-                                        value="{{ root_cause_analysis.estimated_close_date|date:'Y-m-d' }}">
-                            </div>
-                            <div class="mb-3">
+                            <div class="mb-3 ">
                                 <label class="form-label"><strong>Supporting Evidence:</strong></label>
                                 {% if root_cause_analysis.supporting_evidence %}
                                     <p>

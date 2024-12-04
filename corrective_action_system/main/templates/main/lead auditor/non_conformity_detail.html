@@ -5,44 +5,36 @@
 {% block content %}
     <div class="container mt-4">
         <!-- Page Header -->
-        <h2 class="mb-5" style="color: #A33331; font-weight: bold;">AUDIT TASK: ASSESS PROCESS OWNER COMPLIANCE WITH
+        <h2 class="mb-4" style="color: #A33331; font-weight: bold;">AUDIT TASK: ASSESS PROCESS OWNER COMPLIANCE WITH
             RFA</h2>
+                <div class="row">
+                    <h4 class="text-red mb-4"><strong> {{ non_conformity.non_conformity }}</strong> </h4>
+                    <div class="col-md-6">
+                        <ul class="list-group list-group-light">
+                            <li class="list-group-item"><strong>ISO Clause/Reference:</strong> {{ non_conformity.iso_clause }}</li>
+                            <li class="list-group-item"><strong>Category:</strong> {{ non_conformity.get_category_display }}</li>
+                            <li class="list-group-item"><strong>Description:</strong> {{ non_conformity.description_of_non_conformance }}</li>
+                            <li class="list-group-item"><strong>Start Date:</strong> {{ non_conformity.start_date }}</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-group list-group-light">
 
-        <div class="row">
-            <!-- Left Column: Non-Conformance Details and Follow-Up Actions -->
-            <div class="col-md-12">
-                <!-- Non-Conformance Details -->
-                <a> </a>
-                <h4 class="text-red mb-4"><strong> {{ non_conformity.non_conformity }}</strong></h4>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><strong>ISO Clause/Reference:</strong> {{ non_conformity.iso_clause }}
-                    </li>
-                    <li class="list-group-item"><strong>Category:</strong> {{ non_conformity.get_category_display }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Description:</strong> {{ non_conformity.description_of_non_conformance }}</li>
-                    <li class="list-group-item"><strong>Start Date:</strong> {{ non_conformity.start_date }}</li>
-                    <li class="list-group-item"><strong>Deadline:</strong> {{ non_conformity.deadline }}</li>
-                    <li class="list-group-item"><strong>Originator Name:</strong> {{ non_conformity.originator_name }}
-                    </li>
-                    <li class="list-group-item"><strong>Department/Unit:</strong> {{ non_conformity.unit_department }}
-                    </li>
-                </ul>
-
-                <!-- Follow-Up Actions -->
-
+                            <li class="list-group-item"><strong>Deadline:</strong> {{ non_conformity.deadline }}</li>
+                            <li class="list-group-item"><strong>Originator Name:</strong> {{ non_conformity.originator_name }}</li>
+                            <li class="list-group-item"><strong>Department/Unit:</strong> {{ non_conformity.unit_department }}</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <!-- Right Column: Step-by-Step Progress -->
             <div class="col-md-12 mt-5">
 
-                <h4>Step-by-Step Progress</h4>
-
-                <div class="text-start mt-1 mb-3">
-                    <a href="{% url 'lead_auditor_preview_rfa' non_conformity.id %}" class="btn btn-tertiary">
+                <h4><i class="bi bi-list-check me-2"></i>Step-by-Step Progress <a href="{% url 'lead_auditor_preview_rfa' non_conformity.id %}" class="btn btn-tertiary">
                         View Request For Action Form here...
-                    </a>
-                </div>
+                    </a></h4>
+
                 <!-- Step 1: Immediate Action -->
                 <div class="progress-step">
                     <h6 class="d-flex justify-content-between align-items-center" id="step1-header">
@@ -360,29 +352,38 @@
                         <!-- Add Follow-Up Form -->
                         {% if not follow_up_actions %}
                         <h6 class="mt-5"><strong>Add New Follow-Up Action</strong></h6>
-                            <form method="post" action="{% url 'lead_auditor_add_follow_up' non_conformity.id %}">
-                                {% csrf_token %}
-                                <div class="form-group mb-4 mt-4">
-                                    <label for="status"><strong>Status:</strong></label>
-                                    <select id="status" name="status" class="form-control" required>
+
+
+                        <form method="post" action="{% url 'lead_auditor_add_follow_up' non_conformity.id %}">
+                        {% csrf_token %}
+                            <div class="form-group row mb-4 mt-4">
+                                <div class="position-relative col-md-6" >
+                                    <label for="status" class="form-label"><strong>Status:</strong></label>
+                                    <select id="status" name="status" class="form-control"  required>
                                         <option value="" disabled selected>Select status...</option>
                                         <option value="Pending">Pending</option>
                                         <option value="In Progress">In Progress</option>
                                         <option value="Completed">Completed</option>
                                     </select>
+                                     <i class="bi bi-caret-down-fill position-absolute" style="right: 22px; top: 75%; transform: translateY(-50%); pointer-events:none;"></i>
                                 </div>
-                                <div class="form-group mb-4">
-                                    <label for="responsible_person"><strong>Initials / Responsibility:</strong></label>
-                                    <input type="text" id="responsible_person" name="responsible_person"
-                                           class="form-control" placeholder="Enter initials or responsibility" required>
+                                <div class="col-md-6">
+                                    <label for="responsible_person" class="form-label"><strong>Initials / Responsibility:</strong></label>
+                                    <input type="text" id="responsible_person" name="responsible_person" class="form-control"
+                                           placeholder="Enter initials or responsibility" required>
                                 </div>
-                                <div class="form-group mb-4">
-                                    <label for="follow_up_date"><strong>Date:</strong></label>
-                                    <input type="date" id="follow_up_date" name="follow_up_date" class="form-control"
-                                           required>
+                            </div>
+                            <div class="form-group row mb-4">
+                                <div class="col-md-6">
+                                    <label for="follow_up_date" class="col-md-3 form-label"><strong>Date:</strong></label>
+                                    <input type="date" id="follow_up_date" name="follow_up_date" class="form-control" required>
                                 </div>
+                            </div>
+                            <div class="mt-4">
                                 <button type="submit" class="btn btn-danger">Add Follow-Up Action</button>
-                            </form>
+                            </div>
+                        </form>
+
                         {% else %}
                             <div class="mt-4">
                                 <button type="button" class="btn btn-danger complete-step-btn"
@@ -770,5 +771,65 @@
                 });
             }
         });
+        document.addEventListener('DOMContentLoaded', function () {
+    const collapseElements = document.querySelectorAll('.collapse');
+    const completeButtons = document.querySelectorAll('.complete-step-btn');
+
+    // Restore collapse states from localStorage
+    collapseElements.forEach((collapseElement) => {
+        const collapseId = collapseElement.id;
+        const isExpanded = localStorage.getItem(collapseId) === 'true';
+
+        if (isExpanded) {
+            collapseElement.classList.add('show'); // Add the 'show' class if it was open
+        } else {
+            collapseElement.classList.remove('show');
+        }
+
+        // Add event listener to update localStorage when toggled
+        collapseElement.addEventListener('shown.bs.collapse', function () {
+            localStorage.setItem(collapseId, 'true'); // Save open state
+        });
+
+        collapseElement.addEventListener('hidden.bs.collapse', function () {
+            localStorage.setItem(collapseId, 'false'); // Save closed state
+        });
+    });
+
+    // Complete Step Buttons Logic
+    completeButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const stepNumber = button.dataset.step;
+            const stepHeader = document.querySelector(`#step${stepNumber}-header`);
+            const stepContent = document.querySelector(`#step${stepNumber}Content`);
+
+            // Mark the step as completed
+            button.disabled = true;
+            button.textContent = 'Step Completed';
+            button.classList.remove('btn-danger');
+            button.classList.add('btn-success');
+
+            // Update the step title to indicate completion
+            const stepTitle = stepHeader.querySelector('.step-title');
+            if (stepTitle) {
+                stepTitle.classList.add('text-muted', 'fw-bold');
+                stepTitle.classList.remove('btn-link');
+                stepTitle.removeAttribute('data-bs-toggle');
+                stepTitle.removeAttribute('href');
+            }
+
+            // Add checkmark icon
+            const statusIcon = stepHeader.querySelector('.step-status-icon');
+            statusIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
+
+            // Optionally collapse the content
+            if (stepContent && stepContent.classList.contains('show')) {
+                stepContent.classList.remove('show');
+            }
+        });
+    });
+})
+
+
     </script>
 {% endblock %}

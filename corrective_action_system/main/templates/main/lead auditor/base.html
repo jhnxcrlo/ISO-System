@@ -68,6 +68,8 @@
         .form-label {
             font-weight: 600;
             font-size: 14px;
+            text-align: left;
+
 
         }
 
@@ -230,45 +232,45 @@
 
                         <!-- Editable Fields -->
                         <form id="profileForm">
-                            <div class="row g-2">
+                            <div class="row g-2 mt-4">
                                 <!-- First and Last Name -->
                                 <div class="col-6">
-                                    <label for="firstName" class="form-label small">First Name</label>
+                                    <label for="firstName" class="form-label small text-muted">First Name</label>
                                     <input type="text" class="form-control form-control-sm" id="firstName" value="" disabled>
                                 </div>
                                 <div class="col-6">
-                                    <label for="lastName" class="form-label small">Last Name</label>
+                                    <label for="lastName" class="form-label small text-muted">Last Name</label>
                                     <input type="text" class="form-control form-control-sm" id="lastName" value="" disabled>
                                 </div>
 
                                 <!-- Email and Phone -->
                                 <div class="col-6">
-                                    <label for="email" class="form-label small">Email</label>
+                                    <label for="email" class="form-label small text-muted">Email</label>
                                     <input type="email" class="form-control form-control-sm" id="email" value="" disabled>
                                 </div>
                                 <div class="col-6">
-                                    <label for="phone" class="form-label small">Phone</label>
+                                    <label for="phone" class="form-label small text-muted">Phone</label>
                                     <input type="text" class="form-control form-control-sm" id="phone" value="" disabled>
                                 </div>
 
                                 <!-- Position and Department -->
                                 <div class="col-6">
-                                    <label for="position" class="form-label small">Position</label>
+                                    <label for="position" class="form-label small text-muted">Position</label>
                                     <input type="text" class="form-control form-control-sm" id="position" value="" disabled>
                                 </div>
                                 <div class="col-6">
-                                    <label for="department" class="form-label small">Department</label>
+                                    <label for="department" class="form-label small text-muted">Department</label>
                                     <input type="text" class="form-control form-control-sm" id="department" value="" disabled>
                                 </div>
                             </div>
                         </form>
 
                         <!-- Save and Edit Buttons -->
-                        <div class="d-flex justify-content-center mt-3">
-                            <button type="button" class="btn btn-sm btn-secondary px-3 me-2" id="editProfileBtn">
-                                <i class="bi bi-pencil me-1"></i> Edit
+                        <div class="d-flex justify-content-center mt-4">
+                            <button type="button" class="btn btn-sm btn-tertiary px-4 me-2" id="editProfileBtn" style="border: 1px solid red;">
+                                <i class="bi bi-pencil me-1"></i> Edit Your Profile
                             </button>
-                            <button type="button" class="btn btn-sm btn-danger px-3 d-none" id="saveProfileBtn">
+                            <button type="button" class="btn btn-sm btn-danger px-4 d-none" id="saveProfileBtn">
                                 <i class="bi bi-save me-1"></i> Save
                             </button>
                         </div>
