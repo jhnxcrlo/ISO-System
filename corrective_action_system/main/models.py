@@ -262,6 +262,40 @@ class Comment(models.Model):
     def is_reply(self):
         return self.parent is not None
 
+class AuditDetails(models.Model):
+    date_range = models.CharField(max_length=255, verbose_name="Audit Date Range")
+    location = models.CharField(max_length=255, verbose_name="Audit Location")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.date_range} | {self.location}"
+
+
+class GoodPoints(models.Model):
+    campus = models.CharField(max_length=255, verbose_name="Campus Name")
+    description = models.TextField(verbose_name="Description")
+
+    def __str__(self):
+        return self.campus
+
+
+class AuditFinding(models.Model):
+    ref_no = models.IntegerField(verbose_name="Reference Number")
+    clause_no = models.CharField(max_length=50, verbose_name="Clause Number")
+    details = models.TextField(verbose_name="Details")
+    finding_type = models.CharField(
+        max_length=50,
+        choices=[('Major NC', 'Major NC'), ('Minor NC', 'Minor NC'), ('OFI', 'OFI'), ('AoC', 'AoC')],
+        verbose_name="Finding Type"
+    )
+    linked_rfa = models.ForeignKey(
+        NonConformity, null=True, blank=True, on_delete=models.SET_NULL, verbose_name="Linked RFA"
+    )
+
+    def __str__(self):
+        return f"Ref No: {self.ref_no}, Clause No: {self.clause_no}"
+
+
 
 
 

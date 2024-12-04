@@ -8,13 +8,13 @@
 
     <!-- Add and Search Users -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-    <div class="input-group w-50">
-        <input type="text" id="searchInput" class="form-control" placeholder="Search users by username..." onkeyup="filterUsers()">
+        <div class="input-group w-50">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search users by username..." onkeyup="filterUsers()">
+        </div>
+        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addUserModal">
+            <i class="fas fa-user-plus"></i> Add User
+        </button>
     </div>
-    <button class="btn btn-primary btn-lg" onclick="openAddUserForm()">
-        <i class="fas fa-user-plus"></i> Add User
-    </button>
-</div>
 
     <!-- User Table -->
     <div class="table-responsive rounded">
@@ -37,13 +37,15 @@
                     <td>{{ user_roles|get_item:user.id }}</td>
                     <td>
                         <button class="btn btn-sm btn-warning" title="Edit User" 
-                                onclick="openEditUserForm('{{ user.id }}', '{{ user.username }}', '{{ user.email }}', '{{ user_roles|get_item:user.id }}')">
+                                onclick="populateEditUserModal('{{ user.id }}', '{{ user.username }}', '{{ user.email }}', '{{ user_roles|get_item:user.id }}')" 
+                                data-bs-toggle="modal" data-bs-target="#editUserModal">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger" title="Delete User" 
-                                onclick="confirmDeletion('{{ user.username }}', '{% url 'delete_user' user.id %}')">
-                            <i class="fas fa-trash-alt"></i>
+                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal"
+                                onclick="populateDeleteUserModal('{{ user.username }}', '{% url 'delete_user' user.id %}')">
+                            <i class="fas fa-trash-alt"></i> 
                         </button>
+
                     </td>
                 </tr>
                 {% endfor %}
@@ -52,115 +54,132 @@
     </div>
 </div>
 
-<!-- Hidden Add/Edit User Form -->
-<form id="userForm" method="post" action="{% url 'add_user' %}" style="display: none;">
-    {% csrf_token %}
-    <input type="hidden" name="user_id" id="user_id">
-
-    <div class="mb-3">
-        <label for="id_username" class="form-label">Username</label>
-        <input type="text" name="username" id="id_username" class="form-control" placeholder="Enter username" required>
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm" method="post" action="{% url 'add_user' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="addUsername" class="form-label">Username</label>
+                        <input type="text" name="username" id="addUsername" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addEmail" class="form-label">Email</label>
+                        <input type="email" name="email" id="addEmail" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addRole" class="form-label">Role</label>
+                        <select name="role" id="addRole" class="form-select" required>
+                            <option value="" disabled selected>Select Role</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Process Owner">Process Owner</option>
+                            <option value="Internal Auditor">Internal Auditor</option>
+                            <option value="Lead Auditor">Lead Auditor</option>
+                            <option value="External Auditor">External Auditor</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Add User</button>
+                </form>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div class="mb-3">
-        <label for="id_email" class="form-label">Email</label>
-        <input type="email" name="email" id="id_email" class="form-control" placeholder="Enter email" required>
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editUserForm" method="post" action="">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="editUsername" class="form-label">Username</label>
+                        <input type="text" name="username" id="editUsername" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEmail" class="form-label">Email</label>
+                        <input type="email" name="email" id="editEmail" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editRole" class="form-label">Role</label>
+                        <select name="role" id="editRole" class="form-select" required>
+                            <option value="" disabled>Select Role</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Process Owner">Process Owner</option>
+                            <option value="Internal Auditor">Internal Auditor</option>
+                            <option value="Lead Auditor">Lead Auditor</option>
+                            <option value="External Auditor">External Auditor</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+                </form>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div class="mb-3">
-        <label for="id_role" class="form-label">Role</label>
-        <select name="role" id="id_role" class="form-select" required>
-            <option value="" disabled selected>Select Role</option>
-            <option value="Admin">Admin</option>
-            <option value="Process Owner">Process Owner</option>
-            <option value="Internal Auditor">Internal Auditor</option>
-            <option value="Lead Auditor">Lead Auditor</option>
-            <option value="External Auditor">External Auditor</option>
-        </select>
+<!-- Delete User Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h6 class="modal-title" id="deleteUserModalLabel"><i class="fas fa-exclamation-triangle"></i> Confirm Delete</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>
+                    Are you sure you want to delete user <strong id="userToDelete" class="text-danger"></strong>?
+                </p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <form method="POST" id="deleteUserForm" action="">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancel</button>
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete</button>
+                </form>
+            </div>
+        </div>
     </div>
-</form>
-    
-    <script>
-function filterUsers() {
-    const searchValue = document.getElementById('searchInput').value.toLowerCase();
-    const userRows = document.querySelectorAll('#userTableBody tr'); // Use table rows instead
+</div>
 
-    userRows.forEach((row) => {
-        const username = row.cells[1].textContent.toLowerCase(); // Username is in the second cell
-        if (username.includes(searchValue)) {
-            row.style.display = ''; // Show the row
-        } else {
-            row.style.display = 'none'; // Hide the row
-        }
-    });
-}
-// Confirm Deletion with SweetAlert2
-function confirmDeletion(username, deleteUrl) {
-    Swal.fire({
-        title: `Delete User "${username}"?`,
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Delete",
-        cancelButtonText: "Cancel",
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#6c757d",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = deleteUrl; // Redirect to delete URL
-        }
-    });
-}
 
-// Open Add User Form
-function openAddUserForm() {
-    const form = document.getElementById('userForm');
-    form.action = "{% url 'add_user' %}";
 
-    // Clear form fields
-    document.getElementById('user_id').value = '';
-    document.getElementById('id_username').value = '';
-    document.getElementById('id_email').value = '';
-    document.getElementById('id_role').value = '';
+<script>
+    function populateEditUserModal(userId, username, email, role) {
+        const form = document.getElementById('editUserForm');
+        form.action = "{% url 'edit_user' 0 %}".replace('0', userId);
 
-    showForm('Add User');
-}
+        document.getElementById('editUsername').value = username;
+        document.getElementById('editEmail').value = email;
+        document.getElementById('editRole').value = role;
+    }
 
-// Open Edit User Form
-function openEditUserForm(userId, username, email, role) {
-    const form = document.getElementById('userForm');
-    form.action = "{% url 'edit_user' 0 %}".replace('0', userId);
+    function populateDeleteUserModal(username, deleteUrl) {
+        // Set the username in the modal's body
+        document.getElementById('userToDelete').textContent = username;
+        // Update the form action URL dynamically
+        document.getElementById('deleteUserForm').action = deleteUrl;
+    }
 
-    // Populate form fields
-    document.getElementById('user_id').value = userId;
-    document.getElementById('id_username').value = username;
-    document.getElementById('id_email').value = email;
-    document.getElementById('id_role').value = role;
 
-    showForm('Edit User');
-}
+    function filterUsers() {
+        const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        const userRows = document.querySelectorAll('#userTableBody tr');
 
-// Show Form in SweetAlert Modal
-function showForm(title) {
-    const form = document.getElementById('userForm'); // Use the original form
-    form.style.display = 'block'; // Temporarily show the form
-
-    Swal.fire({
-        title: title,
-        html: form, // Embed the form into SweetAlert
-        showCancelButton: true,
-        confirmButtonText: 'Save',
-        cancelButtonText: 'Cancel',
-        focusConfirm: false,
-        preConfirm: () => {
-            form.submit(); // Submit the form
-        },
-        willClose: () => {
-            form.style.display = 'none'; // Hide the form after modal closes
-        },
-    });
-}
-
-    </script>
-    
+        userRows.forEach(row => {
+            const username = row.cells[1].textContent.toLowerCase();
+            row.style.display = username.includes(searchValue) ? '' : 'none';
+        });
+    }
+</script>
 {% endblock %}

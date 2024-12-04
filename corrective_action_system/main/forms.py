@@ -2,7 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
 from .models import TemplateModel, Guideline, Announcement, NonConformity, ImmediateAction, RootCauseAnalysis, \
-    CorrectiveActionPlan, FollowUpAction, CorrectiveActionPlanReview, ActionVerification, CloseOut, UserProfile
+    CorrectiveActionPlan, FollowUpAction, CorrectiveActionPlanReview, ActionVerification, CloseOut, UserProfile, \
+    GoodPoints, AuditFinding, AuditDetails
 
 
 class UserCreationForm(forms.ModelForm):
@@ -184,4 +185,34 @@ class CloseOutForm(forms.ModelForm):
         widgets = {
             'auditor_date': forms.DateInput(attrs={'type': 'date'}),
             'process_owner_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+class AuditDetailsForm(forms.ModelForm):
+    class Meta:
+        model = AuditDetails
+        fields = ['date_range', 'location']
+        widgets = {
+            'date_range': forms.TextInput(attrs={'placeholder': 'e.g., January 15 – 18, 2024', 'class': 'form-control'}),
+            'location': forms.TextInput(attrs={'placeholder': 'e.g., Sorsogon State University', 'class': 'form-control'}),
+        }
+
+class GoodPointsForm(forms.ModelForm):
+    class Meta:
+        model = GoodPoints
+        fields = ['campus', 'description']
+        widgets = {
+            'campus': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+        }
+
+class AuditFindingForm(forms.ModelForm):
+    class Meta:
+        model = AuditFinding
+        fields = ['ref_no', 'clause_no', 'details', 'finding_type', 'linked_rfa']
+        widgets = {
+            'ref_no': forms.NumberInput(attrs={'class': 'form-control'}),
+            'clause_no': forms.TextInput(attrs={'class': 'form-control'}),
+            'details': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'finding_type': forms.Select(attrs={'class': 'form-control'}),
+            'linked_rfa': forms.Select(attrs={'class': 'form-control'}),
         }

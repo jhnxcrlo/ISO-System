@@ -9,7 +9,8 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib.auth import update_session_auth_hash
-from django.http import HttpResponse, FileResponse, Http404, HttpResponseServerError, HttpResponseForbidden
+from django.http import HttpResponse, FileResponse, Http404, HttpResponseServerError, HttpResponseForbidden, \
+    JsonResponse
 from django.templatetags.static import static
 from django.contrib import messages
 from django.utils.timezone import now
@@ -24,14 +25,14 @@ from .models import (
     LoginEvent, UserProfile, ImmediateAction, RootCauseAnalysis,
     CorrectiveActionPlan, FollowUpAction, ActionVerification,
     CorrectiveActionPlanReview, CloseOut, Comment, NonConformity,
-    TemplateModel, Guideline, Announcement
+    TemplateModel, Guideline, Announcement, AuditDetails, GoodPoints, AuditFinding
 )
 
 from .forms import (
     UserCreationForm, UserUpdateForm, RootCauseAnalysisForm,
     ImmediateActionForm, CorrectiveActionPlanForm, FollowUpActionForm,
     CorrectiveActionPlanReviewForm, CloseOutForm, ActionVerificationForm,
-    GuidelineForm, AnnouncementForm, CustomPasswordChangeForm
+    GuidelineForm, AnnouncementForm, CustomPasswordChangeForm, AuditDetailsForm, GoodPointsForm, AuditFindingForm
 )
 
 s = URLSafeTimedSerializer('your-secret-key')
@@ -154,24 +155,29 @@ def edit_user(request, user_id):
     }
     return render(request, 'main/lead auditor/lead_auditor_manage_user.html', context)
 
-
 @login_required
 def delete_user_view(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
-    # Check if the request is POST and the user has permission to delete
-    if request.method == 'POST':
-        if request.user.is_superuser or request.user == user:
-            # Delete the user and show a success message
-            user.delete()
-            messages.success(request, 'User account has been successfully deleted.')
-            logger.info(f'User {user.username} deleted.')
-            return redirect('lead_auditor_manage_user')
-        else:
-            return HttpResponse('Unauthorized', status=403)
+    # Ensure only superusers or the user themselves can delete the account
+    if not (request.user.is_superuser or request.user == user):
+        return HttpResponse('Unauthorized', status=403)
 
-    # If it's not a POST request, render the confirmation page
-    return render(request, 'main/lead auditor/confirm_delete.html', {'user': user})
+    if request.method == 'POST':
+        try:
+            # Log username before deletion
+            username = user.username
+            user.delete()
+            messages.success(request, f'User "{username}" has been successfully deleted.')
+            logger.info(f'User {username} was deleted by {request.user.username}.')
+            return redirect('lead_auditor_manage_user')
+        except Exception as e:
+            logger.error(f'Error deleting user {user.username}: {e}')
+            messages.error(request, 'An error occurred while deleting the user.')
+            return redirect('lead_auditor_manage_user')
+
+    # If it's not a POST request, return an error
+    return HttpResponse('Invalid request method', status=405)
 
 @login_required
 def change_password(request):
@@ -1311,3 +1317,82 @@ def lead_auditor_manage_users_view(request):
     }
 
     return render(request, 'main/lead auditor/lead_auditor_manage_user.html', context)
+
+def audit_report_summary_view(request):
+    # Audit Details
+    audit_details = AuditDetails.objects.last()
+    audit_details_form = AuditDetailsForm(request.POST or None, instance=audit_details)
+
+    # Good Points
+    good_points = GoodPoints.objects.all()
+    good_points_form = GoodPointsForm(request.POST or None)
+
+    # Audit Findings
+    audit_findings = AuditFinding.objects.all()
+    audit_finding_form = AuditFindingForm(request.POST or None)
+
+    if request.method == 'POST':
+        # Handle Audit Details Form Submission
+        if 'audit_details_submit' in request.POST and audit_details_form.is_valid():
+            audit_details_form.save()
+            return redirect('audit_report_summary')
+
+        # Handle Good Points Form Submission
+        elif 'good_points_submit' in request.POST and good_points_form.is_valid():
+            good_points_form.save()
+            return redirect('audit_report_summary')
+
+        # Handle Audit Findings Form Submission
+        elif 'audit_finding_submit' in request.POST and audit_finding_form.is_valid():
+            audit_finding_form.save()
+            return redirect('audit_report_summary')
+
+    context = {
+        'audit_details': audit_details,
+        'audit_details_form': audit_details_form,
+        'good_points': good_points,
+        'good_points_form': good_points_form,
+        'audit_findings': audit_findings,
+        'audit_finding_form': audit_finding_form,
+    }
+    return render(request, 'main/internal audit/audit_report_summary.html', context)
+
+def generate_audit_report_summary_pdf(request):
+    # Fetch the data for the Audit Report Summary
+    audit_details = AuditDetails.objects.last()
+    good_points = GoodPoints.objects.all()
+    audit_findings = AuditFinding.objects.all()
+
+    current_site = request.build_absolute_uri('/')  # Get the current site URL
+
+    # Prepare the context for rendering
+    context = {
+        'audit_details': audit_details,
+        'good_points': good_points,
+        'audit_findings': audit_findings,
+        'left_logo_url': current_site + static('main/iso-sorsu-logo.png'),
+        'right_logo_url': current_site + static('main/bagong-pilipinas-logo.png'),
+    }
+
+    # Render the HTML template
+    html = render_to_string('main/internal audit/audit_report_summary.html', context)
+
+    # Debugging: Save the HTML to a file for inspection
+    with open('debug_audit_report_summary.html', 'w', encoding='utf-8') as file:
+        file.write(html)
+
+    # Generate PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="Audit_Report_Summary.pdf"'
+
+    # Convert HTML to PDF
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    # Check for errors
+    if pisa_status.err:
+        # Log the error to a file for debugging
+        with open('audit_pdf_error_log.txt', 'w', encoding='utf-8') as error_file:
+            error_file.write(f"Error during PDF generation: {pisa_status.err}")
+        return HttpResponse('An error occurred while generating the PDF', status=500)
+
+    return response
