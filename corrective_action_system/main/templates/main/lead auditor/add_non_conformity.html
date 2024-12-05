@@ -1,4 +1,4 @@
-{% extends 'main/internal audit/base.html' %}
+{% extends 'main/lead auditor/base.html' %}
 {% block title %}Add New Non-Conformity{% endblock %}
 
 {% block content %}
@@ -143,24 +143,26 @@
         </div>
 
         <!-- Category -->
-        <div class="row m-4">
-            <div class="col-md-6">
-                <label class="form-label">Category</label>
-                <div class="position-relative">
-                    <select class="form-control pe-5" id="category" name="category" required>
-                        <option value="" disabled selected>Select Category</option>
-                        <option value="major">Major</option>
-                        <option value="minor">Minor</option>
-                        <option value="others">Others</option>
-                    </select>
-                    <i class="bi bi-caret-down-fill position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;"></i>
+        <!-- Category -->
+            <div class="row m-4">
+                <div class="col-md-6">
+                    <label class="form-label">Category</label>
+                    <div class="position-relative">
+                        <select class="form-control pe-5" id="category" name="category" required>
+                            <option value="" disabled selected>Select Category</option>
+                            <option value="major">Major</option>
+                            <option value="minor">Minor</option>
+                            <option value="ofi">OFI</option> <!-- Change 'others' to 'ofi' -->
+                        </select>
+                        <i class="bi bi-caret-down-fill position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;"></i>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="startDate" class="form-label">Date Issued</label>
+                    <input type="date" class="form-control" id="startDate" name="start_date" required>
                 </div>
             </div>
-            <div class="col-md-6">
-                <label for="startDate" class="form-label">Date Issued</label>
-                <input type="date" class="form-control" id="startDate" name="start_date" required>
-            </div>
-        </div>
+
 
 
         <!-- Process Owner Selection -->
