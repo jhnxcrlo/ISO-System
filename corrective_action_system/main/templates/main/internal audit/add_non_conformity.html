@@ -195,8 +195,8 @@
     // Adding a fallback validation message
     document.getElementById('addNonConformityForm').addEventListener('submit', function (event) {
         const form = event.target;
-        if (!form.checkValidity()) {
             event.preventDefault(); // Prevent default submit behavior
+        if (!form.checkValidity()) {
             Array.from(form.elements).forEach(function (input) {
                 if (!input.validity.valid && input.required) {
                     input.setCustomValidity("Please fill out this field.");

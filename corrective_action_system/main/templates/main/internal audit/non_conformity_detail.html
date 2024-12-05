@@ -751,7 +751,7 @@
 }
     </style>
 
-    <script>
+     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const completeButtons = document.querySelectorAll('.complete-step-btn');
             const effectivenessSelect = document.getElementById('effectiveness');
@@ -813,7 +813,6 @@
                 });
             }
         });
-
         document.addEventListener('DOMContentLoaded', function () {
     const collapseElements = document.querySelectorAll('.collapse');
     const completeButtons = document.querySelectorAll('.complete-step-btn');
@@ -839,56 +838,41 @@
         });
     });
 
-    // Restore completed step states from localStorage
-    completeButtons.forEach((button) => {
-        const stepNumber = button.dataset.step;
-        const stepKey = `step-${stepNumber}-completed`;
-
-        // Check if the step was completed
-        if (localStorage.getItem(stepKey) === 'true') {
-            markStepAsCompleted(button, stepNumber); // Mark the step as completed
-        }
-
-        // Add event listener to handle button click
+    // Complete Step Buttons Logic
+    completeButtons.forEach(button => {
         button.addEventListener('click', function () {
-            markStepAsCompleted(button, stepNumber);
-            localStorage.setItem(stepKey, 'true'); // Save completed state
+            const stepNumber = button.dataset.step;
+            const stepHeader = document.querySelector(`#step${stepNumber}-header`);
+            const stepContent = document.querySelector(`#step${stepNumber}Content`);
+
+            // Mark the step as completed
+            button.disabled = true;
+            button.textContent = 'Step Completed';
+            button.classList.remove('btn-danger');
+            button.classList.add('btn-success');
+
+            // Update the step title to indicate completion
+            const stepTitle = stepHeader.querySelector('.step-title');
+            if (stepTitle) {
+                stepTitle.classList.add('text-muted', 'fw-bold');
+                stepTitle.classList.remove('btn-link');
+                stepTitle.removeAttribute('data-bs-toggle');
+                stepTitle.removeAttribute('href');
+            }
+
+            // Add checkmark icon
+            const statusIcon = stepHeader.querySelector('.step-status-icon');
+            statusIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
+
+            // Optionally collapse the content
+            if (stepContent && stepContent.classList.contains('show')) {
+                stepContent.classList.remove('show');
+            }
         });
     });
+})
 
-    /**
-     * Marks a step as completed.
-     * @param {HTMLElement} button - The complete step button
-     * @param {string} stepNumber - The step number
-     */
-    function markStepAsCompleted(button, stepNumber) {
-        const stepHeader = document.querySelector(`#step${stepNumber}-header`);
-        const stepContent = document.querySelector(`#step${stepNumber}Content`);
 
-        // Disable the button
-        button.disabled = true;
-        button.textContent = 'Step Completed';
-        button.classList.remove('btn-danger');
-        button.classList.add('btn-success');
-
-        // Update the step title to indicate completion
-        const stepTitle = stepHeader.querySelector('.step-title');
-        if (stepTitle) {
-            stepTitle.classList.add('text-muted', 'fw-bold');
-            stepTitle.classList.remove('btn-link');
-            stepTitle.removeAttribute('data-bs-toggle');
-            stepTitle.removeAttribute('href');
-        }
-
-        // Add checkmark icon
-        const statusIcon = stepHeader.querySelector('.step-status-icon');
-        statusIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
-
-        // Optionally collapse the content
-        if (stepContent && stepContent.classList.contains('show')) {
-            stepContent.classList.remove('show');
-        }
-    }
-});
     </script>
+
 {% endblock %}
