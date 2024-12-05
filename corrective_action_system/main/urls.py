@@ -13,7 +13,6 @@ urlpatterns = [
     path('verify/<str:token>/', views.verify_email, name='verify_email'),
 
     # User Management
-    path('manage_users/', views.manage_users_view, name='manage_users'),
     path('add_user/', views.add_user, name='add_user'),
     path('edit_user/<int:user_id>/', views.edit_user, name='edit_user'),
     path('delete_user/<int:user_id>/', views.delete_user_view, name='delete_user'),

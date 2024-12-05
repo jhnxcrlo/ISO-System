@@ -34,7 +34,6 @@ from .forms import (
     CorrectiveActionPlanReviewForm, CloseOutForm, ActionVerificationForm,
     GuidelineForm, AnnouncementForm, CustomPasswordChangeForm, AuditDetailsForm, GoodPointsForm, AuditFindingForm
 )
-
 s = URLSafeTimedSerializer('your-secret-key')
 
 def login_view(request):
@@ -65,11 +64,42 @@ def login_view(request):
 
 @login_required
 def lead_auditor_dashboard_view(request):
-    return render(request, 'main/lead auditor/lead_auditor_dashboard.html')
+    total_non_conformities_count = NonConformity.objects.count()
+    total_ofi_count = NonConformity.objects.filter(rfa_intent='improvement').count()
+    major_nc_count = NonConformity.objects.filter(category='major').count()
+    minor_nc_count = NonConformity.objects.filter(category='minor').count()
+    ofi_count = NonConformity.objects.filter(rfa_intent='improvement').count()
+    good_points_count = AuditFinding.objects.filter(finding_type='Good Points').count()
+
+    context = {
+        "total_non_conformities_count": total_non_conformities_count,
+        "total_ofi_count": total_ofi_count,
+        "major_nc_count": major_nc_count,
+        "minor_nc_count": minor_nc_count,
+        "ofi_count": ofi_count,
+        "good_points_count": good_points_count,
+    }
+
+    return render(request, 'main/lead auditor/lead_auditor_dashboard.html', context)
 
 @login_required
 def internal_auditor_dashboard_view(request):
-    return render(request, 'main/internal audit/internal_auditor_dashboard.html')
+    # Get the total count of Non-Conformities
+    total_non_conformities_count = NonConformity.objects.count()
+    major_nc_count = NonConformity.objects.filter(category='major').count()
+    minor_nc_count = NonConformity.objects.filter(category='minor').count()
+    ofi_count = NonConformity.objects.filter(rfa_intent='improvement').count()
+    good_points_count = AuditFinding.objects.filter(finding_type='Good Points').count()
+    # Prepare context
+    context = {
+        "total_non_conformities_count": total_non_conformities_count,
+        "major_nc_count": major_nc_count,
+        "minor_nc_count": minor_nc_count,
+        "ofi_count": ofi_count,
+        "good_points_count": good_points_count,
+    }
+
+    return render(request, 'main/internal audit/internal_auditor_dashboard.html', context)
 
 @login_required
 def process_owner_dashboard_view(request):
@@ -77,27 +107,6 @@ def process_owner_dashboard_view(request):
     return render(request, 'main/process owner/process_owner_dashboard.html', {'tasks': tasks})
 
 logger = logging.getLogger(__name__)
-
-@login_required
-def manage_users_view(request):
-    # Get all users and their profiles with role information
-    users = User.objects.all()
-    user_profiles = UserProfile.objects.select_related('user').all()
-
-    # Create a dictionary of user IDs and roles for easy access in the template
-    user_roles = {profile.user.id: profile.get_role_display() for profile in user_profiles}
-
-    # Create an empty form for adding users
-    add_user_form = UserCreationForm()
-
-    # Context to pass to the template
-    context = {
-        'users': users,  # List of users to display
-        'user_roles': user_roles,  # Dictionary of user roles by user ID
-        'add_user_form': add_user_form,  # Empty form for adding users
-    }
-
-    return render(request, 'main/lead auditor/lead_auditor_manage_user.html', context)
 
 @login_required
 def add_user(request):
@@ -121,11 +130,6 @@ def add_user(request):
             print("Form validation errors:", form.errors)  # Debugging
             messages.error(request, 'Failed to add user. Please check the form.')
     return redirect('lead_auditor_manage_user')
-
-
-
-
-
 
 @login_required
 def edit_user(request, user_id):
@@ -945,30 +949,24 @@ def action_verification(request, cap_id):
     verifications = ActionVerification.objects.filter(corrective_action_plan=corrective_action_plan).order_by('-date')
 
     if request.method == 'POST':
-        # Handle the verification form submission
         verification_form = ActionVerificationForm(request.POST)
         if verification_form.is_valid():
             verification = verification_form.save(commit=False)
             verification.corrective_action_plan = corrective_action_plan
             verification.save()
 
-            # Notify Process Owner
             process_owner = non_conformity.assigned_to
             if process_owner:
                 if verification.status == "effective":
-                    # Notify Process Owner about effective action
-                    notify.send(
-                        sender=request.user,
-                        recipient=process_owner,
-                        verb="Action Verified Effective",
-                        description=f"Corrective action plan for '{non_conformity.non_conformity}' has been verified as effective.",
-                        target=verification
-                    )
-                    # Automatically create or update CloseOut record
+                    # If verification is effective, update NonConformity status to 'completed'
+                    non_conformity.status = 'completed'
+                    non_conformity.save()  # Save the updated status
+
+                    # Create or update CloseOut record
                     CloseOut.objects.update_or_create(
                         non_conformity=non_conformity,
                         defaults={
-                            'auditor_name': request.user.get_full_name() or request.user.username,
+                            'auditor_name': request.user.get_full_name(),
                             'auditor_date': verification.date,
                             'process_owner_name': process_owner.get_full_name(),
                             'process_owner_date': verification.date,
@@ -1002,7 +1000,8 @@ def action_verification(request, cap_id):
                         status='pending',
                         assigned_to=process_owner
                     )
-                    messages.warning(request, f"Corrective action plan deemed not effective. New RFA issued: {new_rfa.non_conformity}")
+                    messages.warning(request,
+                                     f"Corrective action plan deemed not effective. New RFA issued: {new_rfa.non_conformity}")
 
             # Redirect based on role
             if is_lead_auditor:
@@ -1025,6 +1024,7 @@ def action_verification(request, cap_id):
         return render(request, 'main/lead auditor/non_conformity_detail.html', context)
     else:
         return render(request, 'main/internal audit/non_conformity_detail.html', context)
+
 
 @login_required
 def close_out_action(request, nc_id):
@@ -1246,17 +1246,6 @@ def internal_audit_view(request):
 def is_lead_auditor(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Lead Auditor'
 
-@login_required
-@user_passes_test(is_lead_auditor)
-def lead_auditor_dashboard_view(request):
-    """
-    Dashboard view for Lead Auditor. Fetch and display tasks or other relevant data.
-    """
-    tasks = NonConformity.objects.filter(status__in=['pending', 'in_progress'])
-    context = {
-        'tasks': tasks,
-    }
-    return render(request, 'main/lead auditor/lead_auditor_dashboard.html', context)
 
 @login_required
 @user_passes_test(is_lead_auditor)
@@ -1280,7 +1269,6 @@ def lead_auditor_monitoring_log(request):
     return render(request, 'main/lead auditor/lead_auditor_monitoring_log.html', context)
 
 
-
 def lead_auditor_manage_user(request):
     # Example messages
     for message in messages.get_messages(request):
@@ -1296,57 +1284,40 @@ def lead_auditor_manage_user(request):
     }
     return render(request, 'main/lead auditor/lead_auditor_manage_user.html', context)
 
-@login_required
-@user_passes_test(is_lead_auditor)
-def lead_auditor_manage_users_view(request):
-    # Get all users and their profiles with role information
-    users = User.objects.all()
-    user_profiles = UserProfile.objects.select_related('user').all()
-
-    # Create a dictionary of user IDs and roles for easy access in the template
-    user_roles = {profile.user.id: profile.get_role_display() for profile in user_profiles}
-
-    # Create an empty form for adding users
-    add_user_form = UserCreationForm()
-
-    # Context to pass to the template
-    context = {
-        'users': users,  # List of users to display
-        'user_roles': user_roles,  # Dictionary of user roles by user ID
-        'add_user_form': add_user_form,  # Empty form for adding users
-    }
-
-    return render(request, 'main/lead auditor/lead_auditor_manage_user.html', context)
-
 def audit_report_summary_view(request):
-    # Audit Details
-    audit_details = AuditDetails.objects.last()
-    audit_details_form = AuditDetailsForm(request.POST or None, instance=audit_details)
+    # Fetch latest audit details, good points, and audit findings
+    audit_details = AuditDetails.objects.last()  # Get the latest audit details
+    good_points = GoodPoints.objects.all()  # Get all good points
 
-    # Good Points
-    good_points = GoodPoints.objects.all()
-    good_points_form = GoodPointsForm(request.POST or None)
+    # Create AuditFindings from NonConformity if they don't already exist
+    non_conformities = NonConformity.objects.filter(status='completed')  # Adjust as needed
+    for nc in non_conformities:
+        if not AuditFinding.objects.filter(linked_rfa=nc).exists():  # Ensure the AuditFinding doesn't already exist
+            AuditFinding.create_from_non_conformity(nc)  # Create AuditFinding from NonConformity
 
-    # Audit Findings
+    # Fetch all audit findings to display
     audit_findings = AuditFinding.objects.all()
+
+    # Initialize forms for AuditDetails, GoodPoints, and AuditFinding
+    audit_details_form = AuditDetailsForm(request.POST or None, instance=audit_details)
+    good_points_form = GoodPointsForm(request.POST or None)
     audit_finding_form = AuditFindingForm(request.POST or None)
 
     if request.method == 'POST':
-        # Handle Audit Details Form Submission
+        # Handle form submissions based on the button clicked
         if 'audit_details_submit' in request.POST and audit_details_form.is_valid():
             audit_details_form.save()
             return redirect('audit_report_summary')
 
-        # Handle Good Points Form Submission
         elif 'good_points_submit' in request.POST and good_points_form.is_valid():
             good_points_form.save()
             return redirect('audit_report_summary')
 
-        # Handle Audit Findings Form Submission
         elif 'audit_finding_submit' in request.POST and audit_finding_form.is_valid():
             audit_finding_form.save()
             return redirect('audit_report_summary')
 
+    # Context for rendering the template
     context = {
         'audit_details': audit_details,
         'audit_details_form': audit_details_form,
@@ -1355,7 +1326,8 @@ def audit_report_summary_view(request):
         'audit_findings': audit_findings,
         'audit_finding_form': audit_finding_form,
     }
-    return render(request, 'main/internal audit/audit_report_summary.html', context)
+
+    return render(request, 'main/internal audit/audit_report.html', context)
 
 def generate_audit_report_summary_pdf(request):
     # Fetch the data for the Audit Report Summary

@@ -244,39 +244,6 @@
     </div>
 </div>
 
-<!-- Chat Button -->
-<div class="chat-button" id="chatButton">
-    <i class="fas fa-comment-alt"></i>
-</div>
-
-<!-- Chatbox Container -->
-<div class="chatbox" id="chatbox">
-    <div class="chatbox-header">
-        <h5>Chat with us <span class="status-dot"></span></h5>
-        <span class="close" id="closeChatbox">&times;</span>
-    </div>
-    <div class="chatbox-body">
-        <div class="message">
-            <h6>Internal Auditor Support</h6> <!-- Changed the header -->
-            <p>How can we assist you with your internal audit today?</p> <!-- Updated message -->
-            <div class="quick-replies">
-                <button class="btn">Reviewed the audit findings <i class="bi bi-send"></i></button>
-                <button class="btn">Implemented corrective action <i class="bi bi-send"></i></button>
-                <button class="btn">Audit documentation completed <i class="bi bi-send"></i></button>
-                <button class="btn">Need clarification on compliance <i class="bi bi-send"></i></button>
-            </div>
-        </div>
-    </div>
-    <div class="chatbox-footer">
-        <label class="file-upload-label" for="file-upload">
-            <i class="fas fa-paperclip"></i>
-            <span class="tooltip-text">Attach audit report</span> <!-- Changed tooltip text -->
-        </label>
-        <input id="file-upload" type="file">
-        <input placeholder="Write a message..." type="text">
-        <button class="send-button" type="button"><i class="fas fa-paper-plane"></i></button>
-    </div>
-</div>
 <!-- Modal HTML -->
 <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered custom-modal-width">
@@ -359,21 +326,6 @@
 
 
 <!-- JavaScript -->
-<script>
-    const chatButton = document.getElementById("chatButton");
-    const chatbox = document.getElementById("chatbox");
-    const closeChatbox = document.getElementById("closeChatbox");
-
-    chatButton.addEventListener("click", () => {
-        chatbox.style.display = "block";
-        chatButton.style.display = "none";
-    });
-
-    closeChatbox.addEventListener("click", () => {
-        chatbox.style.display = "none";
-        chatButton.style.display = "flex";
-    });
-</script>
 
 <script>
     // Sidebar toggle and save state to localStorage

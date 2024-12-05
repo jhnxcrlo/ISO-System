@@ -136,17 +136,17 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" data-filter="in_progress" href="#">
-                Ongoing ({{ ongoing_count }})
+                Open ({{ ongoing_count }})
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-filter="corrective_action_completed" href="#">
-                Finished ({{ finished_count }})
+                Closed ({{ finished_count }})
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-filter="postponed" href="#">
-                Postponed ({{ postponed_count }})
+                Pending ({{ postponed_count }})
             </a>
         </li>
     </ul>
@@ -168,8 +168,8 @@
 
     <!-- Non-Conformities Table -->
     <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle" id="nonConformitiesTable">
-            <thead>
+    <table class="table table-striped table-hover align-middle" id="nonConformitiesTable">
+        <thead>
             <tr>
                 <th>Non-Conformities</th>
                 <th>Assignees</th>
@@ -177,38 +177,55 @@
                 <th>Created Date</th>
                 <th>Status</th>
             </tr>
-            </thead>
-            <tbody>
-            {% for nc in non_conformities %}
-            <tr data-status="{{ nc.status|lower }}" data-id="{{ nc.id }}">
-                <td>
-                    <a class="text-decoration-none text-dark fw-bold" href="{% url 'non_conformity_detail' nc.id %}">
-                        {{ nc.non_conformity }}
-                    </a>
-                </td>
-                <td>{{ nc.assigned_to }}</td>
-                <td>{{ nc.unit_department }}</td>
-                <td>{{ nc.start_date|date:"M d, Y" }}</td>
-                <td>
-                <span class="badge
-                    {% if nc.status == 'pending' %} bg-warning text-dark
-                    {% elif nc.status == 'immediate_action_in_progress' %} bg-info text-dark
-                    {% elif nc.status == 'root_cause_analysis_in_progress' %} bg-primary text-light
-                    {% elif nc.status == 'corrective_action_in_progress' %} bg-secondary text-light
-                    {% elif nc.status == 'corrective_action_completed' %} bg-success
-                    {% else %} bg-dark {% endif %}">
-                    {% if nc.status == 'corrective_action_completed' %}
-                        Completed
+        </thead>
+        <tbody>
+        {% for nc in non_conformities %}
+    <tr data-status="{{ nc.status }}" data-id="{{ nc.id }}">
+        <td>
+            <a class="text-decoration-none text-dark fw-bold" href="{% url 'non_conformity_detail' nc.id %}">
+                {{ nc.non_conformity }}
+            </a>
+        </td>
+        <td>{{ nc.assigned_to }}</td>
+        <td>{{ nc.unit_department }}</td>
+        <td>{{ nc.start_date|date:"M d, Y" }}</td>
+        <td>
+            <span class="badge
+                {% comment %} Check if the related ActionVerification status is 'effective' (i.e., completed) {% endcomment %}
+                {% with verification=nc.corrective_action_plans.first.action_verifications.last %}
+                    {% if verification and verification.status == 'effective' %}
+                        bg-success text-light  <!-- Completed -->
+                    {% elif nc.status == 'pending' %}
+                        bg-warning text-dark  <!-- Pending -->
+                    {% elif nc.status == 'in_progress' %}
+                        bg-info text-dark  <!-- In Progress -->
                     {% else %}
-                        {{ nc.get_status_display }}
+                        bg-dark  <!-- Default color -->
                     {% endif %}
-                </span>
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                {% endwith %}
+            ">
+
+            {% comment %} Display text based on ActionVerification status {% endcomment %}
+            {% with verification=nc.corrective_action_plans.first.action_verifications.last %}
+                {% if verification and verification.status == 'effective' %}
+                    Completed
+                {% elif nc.status == 'pending' %}
+                    Pending
+                {% elif nc.status == 'in_progress' %}
+                    In Progress
+                {% else %}
+                    {{ nc.get_status_display }}
+                {% endif %}
+            {% endwith %}
+            </span>
+        </td>
+    </tr>
+{% endfor %}
+
+
+        </tbody>
+    </table>
+</div>
 </div>
 
 <script>
@@ -231,25 +248,34 @@
         tableRows.forEach(row => tableBody.appendChild(row));
     };
 
-    // Update tab numbers dynamically
     const updateTabCounts = () => {
-        const allCount = tableRows.length;
+    const allCount = tableRows.length;
 
-        // Count rows by specific statuses
-        const ongoingCount = tableRows.filter(row => {
-            const status = row.getAttribute('data-status');
-            return status === 'pending' || status === 'in_progress';
-        }).length;
+    // Count rows by specific statuses based on the last ActionVerification status (effective or not)
+    const pendingCount = tableRows.filter(row => {
+        const status = row.getAttribute('data-status');
+        return status === 'pending' || status === 'in_progress';
+    }).length;
 
-        const finishedCount = tableRows.filter(row => row.getAttribute('data-status') === 'corrective_action_completed').length;
-        const postponedCount = tableRows.filter(row => row.getAttribute('data-status') === 'postponed').length;
+    const finishedCount = tableRows.filter(row => {
+        // Check if the latest ActionVerification status is 'effective'
+        const verificationStatus = row.querySelector('[data-verification-status]').getAttribute('data-status');
+        return verificationStatus === 'effective';  // Status is "closed" or "completed"
+    }).length;
 
-        // Update tab counts
-        document.querySelector('[data-filter="all"]').innerText = `All (${allCount})`;
-        document.querySelector('[data-filter="in_progress"]').innerText = `Ongoing (${ongoingCount})`;
-        document.querySelector('[data-filter="corrective_action_completed"]').innerText = `Finished (${finishedCount})`;
-        document.querySelector('[data-filter="postponed"]').innerText = `Postponed (${postponedCount})`;
-    };
+    const postponedCount = tableRows.filter(row => {
+        // You can add your custom condition here for "postponed" if needed
+        const status = row.getAttribute('data-status');
+        return status === 'postponed';
+    }).length;
+
+    // Update tab counts dynamically
+    document.querySelector('[data-filter="all"]').innerText = `All (${allCount})`;
+    document.querySelector('[data-filter="pending"]').innerText = `Open (${pendingCount})`;
+    document.querySelector('[data-filter="corrective_action_completed"]').innerText = `Closed (${finishedCount})`;
+    document.querySelector('[data-filter="postponed"]').innerText = `Pending (${postponedCount})`;
+};
+
 
     // Filter Rows by Tabs
     const filterRowsByTab = (filter) => {

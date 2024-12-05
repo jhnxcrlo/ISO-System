@@ -103,7 +103,7 @@ class NonConformity(models.Model):
     description_of_non_conformance = models.TextField()
     iso_clause = models.CharField(max_length=50)
 
-    TASK_CATEGORY_CHOICES = [('major', 'Major'), ('minor', 'Minor'), ('others', 'Others')]
+    TASK_CATEGORY_CHOICES = [('major', 'Major'), ('minor', 'Minor'), ('ofi', 'OFI')]
     category = models.CharField(max_length=20, choices=TASK_CATEGORY_CHOICES)
     start_date = models.DateField()
 
@@ -218,10 +218,7 @@ class ActionVerification(models.Model):
     new_target_date = models.DateField(null=True, blank=True)
     status = models.CharField(
         max_length=50,
-        choices=[
-            ("effective", "Close (Effective)"),
-            ("not_effective", "Close (Not Effective)")
-        ]
+        choices=[("effective", "Close (Effective)"), ("not_effective", "Close (Not Effective)")]
     )
     new_rfa_number = models.CharField(max_length=50, blank=True, null=True, verbose_name="New RFA #")
 
@@ -280,20 +277,39 @@ class GoodPoints(models.Model):
 
 
 class AuditFinding(models.Model):
-    ref_no = models.IntegerField(verbose_name="Reference Number")
-    clause_no = models.CharField(max_length=50, verbose_name="Clause Number")
-    details = models.TextField(verbose_name="Details")
+    ref_no = models.AutoField(primary_key=True)  # Auto increment for ref_no
+    clause_no = models.CharField(
+        max_length=50,
+        verbose_name="Clause Number"
+    )
+    details = models.TextField(
+        verbose_name="Details"
+    )
     finding_type = models.CharField(
         max_length=50,
-        choices=[('Major NC', 'Major NC'), ('Minor NC', 'Minor NC'), ('OFI', 'OFI'), ('AoC', 'AoC')],
+        choices=NonConformity.TASK_CATEGORY_CHOICES,  # Use the task category choices
         verbose_name="Finding Type"
     )
     linked_rfa = models.ForeignKey(
-        NonConformity, null=True, blank=True, on_delete=models.SET_NULL, verbose_name="Linked RFA"
+        NonConformity,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        verbose_name="Linked RFA"
     )
 
     def __str__(self):
         return f"Ref No: {self.ref_no}, Clause No: {self.clause_no}"
+
+    @classmethod
+    def create_from_non_conformity(cls, non_conformity: NonConformity):
+        """Method to create an AuditFinding from a NonConformity instance."""
+        return cls.objects.create(
+            clause_no=non_conformity.iso_clause,
+            details=non_conformity.description_of_non_conformance,
+            finding_type=non_conformity.category,
+            linked_rfa=non_conformity
+        )
 
 
 
