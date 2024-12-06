@@ -90,6 +90,31 @@
         .custom-modal-width {
             max-width: 50%; /* Adjust width as needed */
         }
+
+        /* Custom Style for Dropdown Notification Header */
+.dropdown-notification-header {
+    background-color: #f8f9fa; /* Dark background for the header */
+    color: #black; /* White text color */
+    padding: 10px 15px; /* Padding for spacing */
+    font-size: 2rem; /* Font size for the header */
+    font-weight: bolder; /* Bold font weight */
+    display: flex; /* Flexbox for alignment */
+    align-items: center; /* Vertically center the content */
+    justify-content: space-between; /* Space between title and links */
+    border-bottom: 1px solid #495057; /* Border for separation */
+}
+
+.dropdown-notification-header a {
+    color: #ffffff; /* White color for links */
+    text-decoration: none; /* Remove underline from links */
+    font-size: 0.875rem; /* Smaller font for links */
+    margin-left: 10px; /* Spacing between links */
+}
+
+.dropdown-notification-header a:hover {
+    color: #adb5bd; /* Muted color on hover */
+    text-decoration: underline; /* Add underline on hover */
+}
     </style>
 </head>
 <body>
@@ -151,25 +176,33 @@
 
                             <!-- Notification dropdown -->
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarNotification"
-                                style="width: 400px; max-height: 500px; overflow-y: auto;">
+                                style="width: 400px; max-height: 500px; overflow-y: auto; overflow-wrap: break-word; white-space: normal;">
+
                                 {% with user.notifications.unread as unread_notifications %}
                                     {% if unread_notifications %}
                                         {% for notification in unread_notifications %}
+                                             <h2 class="dropdown-notification-header px-3 py-2 d-flex align-items-center" >
+                                                Notifications
+                                                <div class="ms-auto">
+                                                    <a href="#" class="text-decoration-none text-white me-3">All</a>
+                                                    <a href="#" class="text-decoration-none text-muted">Unread</a>
+                                                </div>
+                                            </h2>
                                             <li>
                                                 <!-- Dynamically resolve URL based on the target's methods -->
                                                 <a href="
-                            {% if notification.target %}
-                                {% if user.userprofile.role == 'Process Owner' %}
-                                    {{ notification.target.get_task_url }}
-                                {% elif user.userprofile.role == 'Internal Auditor' %}
-                                    {{ notification.target.get_non_conformity_url }}
-                                {% else %}
-                                    #
-                                {% endif %}
-                            {% else %}
-                                #
-                            {% endif %}
-                        " class="dropdown-item">
+                                                    {% if notification.target %}
+                                                        {% if user.userprofile.role == 'Process Owner' %}
+                                                            {{ notification.target.get_task_url }}
+                                                        {% elif user.userprofile.role == 'Internal Auditor' %}
+                                                            {{ notification.target.get_non_conformity_url }}
+                                                        {% else %}
+                                                            #
+                                                        {% endif %}
+                                                    {% else %}
+                                                        #
+                                                    {% endif %}
+                                                " class="dropdown-item text-wrap">
                                                     <strong>{{ notification.verb }}</strong>: {{ notification.description }}
                                                     <br>
                                                     <small class="text-muted">{{ notification.timestamp|timesince }}
