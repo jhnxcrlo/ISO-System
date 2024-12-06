@@ -5,21 +5,23 @@
 {% block content %}
     <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-     <div class="container dashboard-section">
+
+    <div class="container dashboard-section">
         <div class="row g-4">
             <!-- Non-Conformities -->
             <div class="col-md-4">
-            <div class="dashboard-card d-flex align-items-center">
-                <i class="bi bi-kanban-fill dashboard-icon projects-icon"></i>
-                <div class="dashboard-text ms-3 d-flex flex-column align-items-start">
-                    <div class="d-flex align-items-center">
-                        <div class="stat-number">{{ total_non_conformities_count }}</div>
-                        <div class="stat-title ms-2">Non-Conformities</div>
+                <div class="dashboard-card d-flex align-items-center">
+                    <i class="bi bi-kanban-fill dashboard-icon projects-icon"></i>
+                    <div class="dashboard-text ms-3 d-flex flex-column align-items-start">
+                        <div class="d-flex align-items-center">
+                            <!-- Dynamically display the total count -->
+                            <div class="stat-number">{{ total_non_conformities_count }}</div>
+                            <div class="stat-title ms-2" style="font-size: 22px;">Non-Conformities</div>
+                        </div>
+                        <div class="stat-subtitle">Awaiting Processing</div>
                     </div>
                 </div>
             </div>
-        </div>
 
             <!-- Tasks -->
             <div class="col-md-4">
@@ -27,8 +29,9 @@
                     <i class="bi bi-file-earmark-text-fill dashboard-icon invoices-icon"></i>
                     <div class="dashboard-text ms-3 d-flex flex-column align-items-start">
                         <div class="d-flex align-items-center">
-                            <div class="stat-number">23</div>
-                            <div class="stat-title ms-2">Tasks</div>
+                            <!-- Dynamically display the OFI count -->
+                            <div class="stat-number">{{ ofi_count }}</div>
+                            <div class="stat-title ms-2">OFI</div>
                         </div>
                         <div class="stat-subtitle">Soon to be cleared</div>
                     </div>
@@ -37,20 +40,52 @@
 
             <!-- Members -->
             <div class="col-md-4">
-                <div class="dashboard-card d-flex align-items-center">
+                <div class="dashboard-card d-flex align-items-center" data-bs-toggle="modal"
+                     data-bs-target="#processOwnersModal"
+                     style="cursor: pointer; transition: transform 0.2s ease-in-out;">
                     <i class="bi bi-person-circle dashboard-icon members-icon"></i>
                     <div class="dashboard-text ms-3 d-flex flex-column align-items-start">
                         <div class="d-flex align-items-center">
-                            <div class="stat-number">94</div>
+                            <div class="stat-number" id="membersCount">{{ process_owners_count }}</div>
                             <div class="stat-title ms-2">Members</div>
                         </div>
-                        <div class="stat-subtitle">Working hard</div>
+                        <div class="stat-subtitle d-flex align-items-center">
+                            Process Owners
+                            <!-- Adding an arrow icon to indicate something clickable -->
+                            <i class="bi bi-arrow-down-circle ms-2" style="font-size: 1.2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for displaying Process Owners -->
+            <div class="modal fade" id="processOwnersModal" tabindex="-1" aria-labelledby="processOwnersModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="processOwnersModalLabel">Process Owners</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <ul id="processOwnersList" class="list-group">
+                                <!-- Process Owners will be dynamically loaded here -->
+                                {% for member in process_owners %}
+                                    <li class="list-group-item">
+                                        <strong>{{ member.user.username }}</strong> - {{ member.role }}
+                                        - {{ member.user.email }}
+                                    </li>
+                                {% empty %}
+                                    <li class="list-group-item text-muted">No process owners found.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
 
     <!-- Audit Section -->
     <div class="container-fluid mt-5">
@@ -138,43 +173,43 @@
     <!-- Chart.js Configuration -->
     <script>
         // Get dynamic data from the Django context
-    const majorNcCount = {{ major_nc_count }};
-    const minorNcCount = {{ minor_nc_count }};
-    const ofiCount = {{ ofi_count }};
-    const goodPointsCount = {{ good_points_count }};
-    
-    // Setup chart data with the real values
-    const ctx = document.getElementById('myChart').getContext('2d');
-    const data = {
-        labels: ['Major NC', 'Minor NC', 'OFI', 'Good Points'],
-        datasets: [{
-            data: [majorNcCount, minorNcCount, ofiCount, goodPointsCount],
-            backgroundColor: [
-                '#8E2524',  // Major NC (Red)
-                '#F86D27',  // Minor NC (Orange - brighter)
-                '#F1A839',  // Minor NC (Orange - soft)
-                '#F1D000',  // OFI (Yellow)
-                '#3BBF5D'   // Good Points (Green)
-            ],
-            hoverOffset: 4
-        }]
-    };
+        const majorNcCount = {{ major_nc_count }};
+        const minorNcCount = {{ minor_nc_count }};
+        const ofiCount = {{ ofi_count }};
+        const goodPointsCount = {{ good_points_count }};
 
-    // Create donut chart
-    const myChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: data,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false, // Disable the aspect ratio
-            plugins: {
-                legend: {
-                    display: false // Hide default legend
-                }
-            },
-            cutout: '70%' // Controls the inner radius of the donut
-        }
-    });
+        // Setup chart data with the real values
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const data = {
+            labels: ['Major NC', 'Minor NC', 'OFI', 'Good Points'],
+            datasets: [{
+                data: [majorNcCount, minorNcCount, ofiCount, goodPointsCount],
+                backgroundColor: [
+                    '#8E2524',  // Major NC (Red)
+                    '#F86D27',  // Minor NC (Orange - brighter)
+                    '#F1A839',  // Minor NC (Orange - soft)
+                    '#F1D000',  // OFI (Yellow)
+                    '#3BBF5D'   // Good Points (Green)
+                ],
+                hoverOffset: 4
+            }]
+        };
+
+        // Create donut chart
+        const myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Disable the aspect ratio
+                plugins: {
+                    legend: {
+                        display: false // Hide default legend
+                    }
+                },
+                cutout: '70%' // Controls the inner radius of the donut
+            }
+        });
     </script>
 
     <!-- JavaScript Libraries -->

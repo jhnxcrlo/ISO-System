@@ -3,123 +3,280 @@
 
 {% block content %}
 
-<style>
-#taskList tr:hover a {
-    text-decoration: underline !important; /* Underline on hover */
-}
+    <style>
+        /* Remove any default margin/padding from body and html */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
 
-#taskList a {
-    text-decoration: none !important; /* No underline by default */
-}
-</style>
-<div class="container">
-    <div class="row d-flex justify-content-center align-items-center">
-        <div class="col col-xl-10">
+        /* Ensure .container uses the full width and doesn't add extra spacing */
+        .container {
+            width: 100%; /* Ensure it takes full width of the screen */
+            padding-left: 5px;
+            padding-right: 5px;
+            margin: 0;
+            /* Remove external margin */
+        }
 
-            <!-- Task Section -->
-            <div id="taskSection">
-                <div class="task-header mb-4">
-                    <h1 class="fw-bold">Tasks</h1>
-                    <div id="taskCount" class="task-info-below-header text-muted">{{ tasks.count }} tasks</div>
+        /* Card Container */
+        .card-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            padding: 0 5px; /* Minimal padding on left and right */
+            box-sizing: border-box;
+        }
+
+        /* Individual Cards */
+        .dashboard-card {
+            display: flex;
+            height: 135px;
+            width: 30%; /* Keep original width */
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding: 10px; /* Reduced padding */
+            box-sizing: border-box;
+            align-items: center; /* Vertically center content */
+            justify-content: flex-start; /* Align content to the left */
+        }
+
+        /* Card Icon */
+        .dashboard-icon {
+            font-size: 2.7rem; /* Icon size */
+            color: #FF5733;
+            margin-right: 10px; /* Space between icon and text */
+        }
+
+        /* Card Text */
+        .dashboard-text {
+            display: flex;
+            flex-direction: row; /* Align number and title side by side */
+            align-items: center;
+            align-content: center; /* Vertically align the number and title */
+            justify-content: flex-start; /* Align to left */
+        }
+
+        .stat-number {
+            font-size: 2.5rem; /* Number size */
+            font-weight: bold;
+            color: #333;
+            margin-right: 10px; /* Space between number and title */
+        }
+
+        .stat-title {
+            font-size: 1.5rem; /* Title size */
+            font-weight: bold;
+            color: black;
+        }
+
+        /* Modal styling */
+        .modal-content {
+            padding: 20px;
+        }
+
+        /* Task Section */
+        .task-header {
+            margin-bottom: 1rem;
+        }
+
+        .search-bar-container {
+            margin-bottom: 1rem;
+        }
+
+        /* Table styling */
+        .table-responsive {
+            width: 100%; /* Ensure table fills the width */
+            margin: 0; /* No extra margins */
+        }
+
+        .table {
+            width: 100%; /* Ensure the table fills the available space */
+            margin: 0; /* No external margin */
+            border-collapse: collapse;
+        }
+
+        .table th, .table td {
+            padding: 10px 15px; /* Reduced padding for more compact cells */
+        }
+
+        /* Adjust the column to avoid space issues */
+        .col-xl-10 {
+            width: 100%; /* Remove any max-width and take full space */
+            padding-left: 0;
+            padding-right: 0;
+        }
+    </style>
+
+
+    <div class="container">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col-xl-10">
+
+                <!-- Non-Conformity Summary Cards -->
+                <div class="card-container">
+
+                    <!-- Major NC Card -->
+                    <div class="dashboard-card" data-bs-toggle="modal" data-bs-target="#majorNCModal">
+                        <!-- New Icon: 'bi bi-exclamation-triangle' with red color -->
+                        <i class="bi bi-exclamation-triangle dashboard-icon" style="color: darkred;"></i>
+                        <div class="dashboard-text">
+                            <div class="stat-number">{{ major_nc_count }}</div>
+                            <div class="stat-title">Major NC</div>
+                        </div>
+                    </div>
+
+                    <!-- Minor NC Card -->
+                    <div class="dashboard-card" data-bs-toggle="modal" data-bs-target="#minorNCModal">
+                        <!-- New Icon: 'bi bi-check-circle' with a similar color -->
+                        <i class="bi bi-check-circle dashboard-icon" style="color: darkred;"></i>
+                        <div class="dashboard-text">
+                            <div class="stat-number">{{ minor_nc_count }}</div>
+                            <div class="stat-title">Minor NC</div>
+                        </div>
+                    </div>
+
+                    <!-- OFI Card -->
+                    <div class="dashboard-card" data-bs-toggle="modal" data-bs-target="#ofiModal">
+                        <!-- New Icon: 'bi bi-lightbulb' with the same color -->
+                        <i class="bi bi-lightbulb dashboard-icon" style="color: darkred;"></i>
+                        <div class="dashboard-text">
+                            <div class="stat-number">{{ ofi_count }}</div>
+                            <div class="stat-title">OFI</div>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="search-bar-container mb-4 d-flex justify-content-between align-items-center">
-                    <input id="searchInput" class="form-control w-50" placeholder="Search task" type="text"/>
-                    <select id="sortDropdown" class="form-select w-25">
-                        <option value="id-desc" selected>Newest First</option>
-                        <option value="id-asc">Oldest First</option>
-                    </select>
-                </div>
 
-                <!-- Tasks Table -->
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped align-middle shadow-sm rounded"
-                           style="border-collapse: separate; border-spacing: 0; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-                        <thead style="background-color: #C74C4A; color: white;">
-                        <tr>
-                            <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Non-Conformities</th>
-                            <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Originator</th>
-                            <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Department</th>
-                            <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Start Date</th>
-                            <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left;">Status</th>
-                        </tr>
-                        </thead>
-                        <tbody id="taskList">
-                        {% for task in tasks %}
-                            <tr class="task-row {% if task.status == 'completed' %}table-success{% endif %}" 
-                                data-id="{{ task.id }}"
-                                style="transition: all 0.3s ease; cursor: pointer;"
-                                onmouseover="this.style.backgroundColor='#f2f2f2';"
-                                onmouseout="this.style.backgroundColor='';">
-                                <td style="padding: 15px 20px; text-align: left;">
-                                    <a href="{% url 'task_detail' task.id %}" style="text-decoration: none; color: #203040; font-weight: bold;">
-                                        {{ task.non_conformity }}
-                                    </a>
-                                </td>
-                                <td style="padding: 15px 20px; text-align: left;">{{ task.originator_name }}</td>
-                                <td style="padding: 15px 20px; text-align: left;">{{ task.department }}</td>
-                                <td style="padding: 15px 20px; text-align: left;">{{ task.start_date|date:"F d, Y" }}</td>
-                                <td style="padding: 15px 20px; text-align: left;">
-                                    <span class="badge {{ task.status|lower }}-badge"
-                                          style="padding: 5px 10px; font-size: 0.9rem; background-color:
-                                              {% if task.status == 'pending' %}#FFA726
-                                              {% elif task.status == 'in_progress' %}#29B6F6
-                                              {% elif task.status == 'completed' %}#66BB6A
-                                              {% endif %}; color: white; border-radius: 5px;">
-                                        {{ task.status|title }}
-                                    </span>
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="5" class="text-center text-muted" style="padding: 20px; font-size: 1rem;">
-                                    No tasks available
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+                <!-- Task Section -->
+<div id="taskSection">
+    <div class="task-header mb-4">
+        <h1 class="fw-bold">Tasks</h1>
+        <div id="taskCount" class="task-info-below-header text-muted">{{ tasks.count }} tasks</div>
+    </div>
+
+    <div class="search-bar-container mb-4 d-flex justify-content-between align-items-center">
+        <input id="searchInput" class="form-control w-50" placeholder="Search task" type="text"/>
+        <select id="sortDropdown" class="form-select w-25">
+            <option value="id-desc" selected>Newest First</option>
+            <option value="id-asc">Oldest First</option>
+        </select>
+    </div>
+
+    <!-- Tasks Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle shadow-sm rounded"
+               style="border-collapse: collapse; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%; margin-top: 0;">
+            <thead style="background-color: #ffffff; color: black;">
+                <tr>
+                    <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left; font-size: 1.1rem;">
+                        Non-Conformities
+                    </th>
+                    <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left; font-size: 1.1rem;">
+                        Originator
+                    </th>
+                    <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left; font-size: 1.1rem;">
+                        Department
+                    </th>
+                    <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left; font-size: 1.1rem;">
+                        Start Date
+                    </th>
+                    <th scope="col" style="padding: 15px 20px; font-weight: bold; text-align: left; font-size: 1.1rem;">
+                        Status
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="taskList">
+                {% for task in tasks %}
+                    <tr class="task-row {% if task.status == 'completed' %}table-success{% endif %}"
+                        data-id="{{ task.id }}"
+                        style="transition: all 0.3s ease; cursor: pointer; height: 60px;"
+                        onmouseover="this.style.backgroundColor='#f2f2f2';"
+                        onmouseout="this.style.backgroundColor='';">
+                        <td style="padding: 15px 20px; text-align: left; font-size: 1rem;">
+                            <a href="{% url 'task_detail' task.id %}"
+                               style="text-decoration: none; color: #203040; font-weight: bold;">
+                                {{ task.non_conformity }}
+                            </a>
+                        </td>
+                        <td style="padding: 15px 20px; text-align: left; font-size: 1rem;">
+                            {{ task.originator_name }}
+                        </td>
+                        <td style="padding: 15px 20px; text-align: left; font-size: 1rem;">
+                            {{ task.department }}
+                        </td>
+                        <td style="padding: 15px 20px; text-align: left; font-size: 1rem;">
+                            {{ task.start_date|date:"F d, Y" }}
+                        </td>
+                        <td style="padding: 15px 20px; text-align: left; font-size: 1rem;">
+                            <span class="badge {{ task.status|lower }}-badge"
+                                  style="padding: 6px 12px; font-size: 1rem; background-color:
+                                          {% if task.status == 'pending' %}#FFA726
+                                          {% elif task.status == 'in_progress' %}#29B6F6
+                                          {% elif task.status == 'completed' %}#66BB6A
+                                          {% endif %}; color: white; border-radius: 5px;">
+                                {{ task.status|title }}
+                            </span>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted"
+                            style="padding: 20px; font-size: 1rem;">
+                            No tasks available
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 
 
 
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchInput = document.getElementById('searchInput');
-        const sortDropdown = document.getElementById('sortDropdown');
-        const taskList = document.getElementById('taskList');
+            </div>
+        </div>
+    </div>
 
-        function filterTasks() {
-            const searchValue = searchInput.value.toLowerCase();
-            document.querySelectorAll('#taskList .task-row').forEach(row => {
-                const taskTitle = row.querySelector('td:first-child a').textContent.toLowerCase();
-                row.style.display = taskTitle.includes(searchValue) ? '' : 'none';
-            });
-        }
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchInput');
+            const sortDropdown = document.getElementById('sortDropdown');
+            const taskList = document.getElementById('taskList');
 
-        function sortTasks() {
-            const sortValue = sortDropdown.value;
-            const rowsArray = Array.from(taskList.querySelectorAll('.task-row'));
+            function filterTasks() {
+                const searchValue = searchInput.value.toLowerCase();
+                document.querySelectorAll('#taskList .task-row').forEach(row => {
+                    const taskTitle = row.querySelector('td:first-child a').textContent.toLowerCase();
+                    row.style.display = taskTitle.includes(searchValue) ? '' : 'none';
+                });
+            }
 
-            rowsArray.sort((a, b) => {
-                const idA = parseInt(a.getAttribute('data-id'));
-                const idB = parseInt(b.getAttribute('data-id'));
-                return sortValue === 'id-desc' ? idB - idA : idA - idB; // Sort by ID
-            });
+            function sortTasks() {
+                const sortValue = sortDropdown.value;
+                const rowsArray = Array.from(taskList.querySelectorAll('.task-row'));
 
-            rowsArray.forEach(row => taskList.appendChild(row));
-        }
+                rowsArray.sort((a, b) => {
+                    const idA = parseInt(a.getAttribute('data-id'));
+                    const idB = parseInt(b.getAttribute('data-id'));
+                    return sortValue === 'id-asc' ? idA - idB : idB - idA;
+                });
 
-        searchInput.addEventListener('input', filterTasks);
-        sortDropdown.addEventListener('change', sortTasks);
+                rowsArray.forEach(row => taskList.appendChild(row)); // Reorder rows
+            }
 
-        // Initial sorting
-        sortTasks();
-    });
-</script>
+            searchInput.addEventListener('input', filterTasks);
+            sortDropdown.addEventListener('change', sortTasks);
+        });
+    </script>
+
 {% endblock %}

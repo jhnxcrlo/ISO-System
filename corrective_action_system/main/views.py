@@ -70,6 +70,13 @@ def lead_auditor_dashboard_view(request):
     minor_nc_count = NonConformity.objects.filter(category='minor').count()
     ofi_count = NonConformity.objects.filter(rfa_intent='improvement').count()
     good_points_count = AuditFinding.objects.filter(finding_type='Good Points').count()
+    internal_auditors_count = UserProfile.objects.filter(role='Internal Auditor').count()
+    process_owners_count = UserProfile.objects.filter(role='Process Owner').count()
+
+    total_members = internal_auditors_count + process_owners_count
+
+    # Fetch Internal Auditors and Process Owners in one query
+    members = UserProfile.objects.filter(role__in=['Internal Auditor', 'Process Owner']).select_related('user')
 
     context = {
         "total_non_conformities_count": total_non_conformities_count,
@@ -78,6 +85,10 @@ def lead_auditor_dashboard_view(request):
         "minor_nc_count": minor_nc_count,
         "ofi_count": ofi_count,
         "good_points_count": good_points_count,
+        "internal_auditors_count": internal_auditors_count,
+        "process_owners_count": process_owners_count,
+        "total_members": total_members,
+        "members": members
     }
 
     return render(request, 'main/lead auditor/lead_auditor_dashboard.html', context)
@@ -90,6 +101,11 @@ def internal_auditor_dashboard_view(request):
     minor_nc_count = NonConformity.objects.filter(category='minor').count()
     ofi_count = NonConformity.objects.filter(rfa_intent='improvement').count()
     good_points_count = AuditFinding.objects.filter(finding_type='Good Points').count()
+
+    process_owners_count = UserProfile.objects.filter(role='Process Owner').count()
+
+    # Fetch only Process Owners for the modal list
+    process_owners = UserProfile.objects.filter(role='Process Owner').select_related('user')
     # Prepare context
     context = {
         "total_non_conformities_count": total_non_conformities_count,
@@ -97,6 +113,8 @@ def internal_auditor_dashboard_view(request):
         "minor_nc_count": minor_nc_count,
         "ofi_count": ofi_count,
         "good_points_count": good_points_count,
+        "process_owners_count": process_owners_count,
+        "process_owners": process_owners
     }
 
     return render(request, 'main/internal audit/internal_auditor_dashboard.html', context)
@@ -104,7 +122,19 @@ def internal_auditor_dashboard_view(request):
 @login_required
 def process_owner_dashboard_view(request):
     tasks = NonConformity.objects.filter(assigned_to=request.user, status='pending')
-    return render(request, 'main/process owner/process_owner_dashboard.html', {'tasks': tasks})
+    major_nc_count = NonConformity.objects.filter(category='major').count()
+    minor_nc_count = NonConformity.objects.filter(category='minor').count()
+    ofi_count = NonConformity.objects.filter(rfa_intent='improvement').count()
+
+    context = {
+        "tasks": tasks,
+        "major_nc_count": major_nc_count,
+        "minor_nc_count": minor_nc_count,
+        "ofi_count": ofi_count
+    }
+
+
+    return render(request, 'main/process owner/process_owner_dashboard.html', context)
 
 logger = logging.getLogger(__name__)
 
