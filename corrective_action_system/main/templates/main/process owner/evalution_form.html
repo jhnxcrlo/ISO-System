@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Evaluation Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f5fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-container {
+            max-width: 700px;
+            margin: 10px auto;
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-container-submit{
+            max-width: 700px;
+            margin: 10px auto;
+            padding: 10px;
+
+        }
+        .form-container-header {
+            max-width: 700px;
+            margin: 10px auto;
+            background: #ffffff;
+            padding: 10px;
+            border-top: 10px solid #673ab7;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-header h2 {
+            margin: 0;
+            font-size: 1.7rem;
+        }
+
+        .form-header p {
+            font-size: 1.2rem;
+            margin: 5px 0 0;
+        }
+
+        .form-content {
+            padding: 20px;
+        }
+
+        .instructions {
+            background-color: #f8f9fc;
+            padding: 15px;
+            border-left: 2px solid black;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+        .instructions ul p{
+            font-size: 0.9rem;
+        }
+
+        .field-container {
+            margin-bottom: 10px;
+        }
+
+        .field-container label {
+            display: block;
+            font-size: 1rem;
+            font-weight: 700px;
+        }
+
+        .field-container .required {
+            color: #d32f2f;
+            font-size: 0.85rem;
+        }
+
+        .form-control {
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .form-control:focus {
+            border-color: #673ab7;
+            box-shadow: 0 0 0 0.2rem rgba(103, 58, 183, 0.25);
+        }
+
+        /* Set background color and gap for each td */
+.tr-bg {
+    background-color: #f8f9fc;/* Light background color */
+    padding-bottom: 10px; /* Gap below each td */
+}
+        /* Enlarge Radio Buttons */
+/* Style for radio buttons */
+input[type="radio"] {
+    width: 20px; /* Increase width */
+    height: 20px; /* Increase height */
+    cursor: pointer; /* Change cursor to pointer for better UX */
+    accent-color: #673ab7; /* Set the default color for supported browsers */
+    margin: 0 5px; /* Add some spacing for better layout */
+    vertical-align: middle; /* Align properly with text */
+    box-shadow: none; /* Default state with no shadow */
+}
+
+/* Add a hover effect to the radio buttons */
+input[type="radio"]:hover {
+
+    transition: box-shadow 0.2s ease-in-out; /* Smooth transition for the shadow */
+}
+
+/* Style for checked radio button */
+input[type="radio"]:checked {
+    accent-color: #673ab7; /* Set the fill color to purple when selected */
+}
+
+.btn-submit {
+    background-color: #673ab7;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1rem;
+    border-radius: 4px;
+    width: 15%;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: background-color 0.2s ease, box-shadow 0.2s ease; /* Smooth transition */
+}
+
+.btn-submit:hover {
+    background-color: #5e35b1;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+}
+
+.btn-submit:focus {
+    outline: none; /* Removes the default focus outline */
+    box-shadow: 0 0 0 4px rgba(103, 58, 183, 0.3); /* Focus shadow with a subtle border */
+}
+
+.btn-submit:active {
+    background-color: #512da8;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(1px);
+    transition: background-color 0.1s, box-shadow 0.1s, transform 0.1s; /* Shorter transition for better visual feedback */
+}
+
+
+
+    </style>
+</head>
+<body>
+
+    <div class="form-container-header mt-5">
+        <!-- Header Section -->
+        <div class="form-header m-4">
+            <h2>Evaluation of Internal Auditor</h2>
+            <p>1st Sem of A.Y. 2024-2025</p>
+        </div>
+
+        <!-- Content Section -->
+        <div class="form-content">
+            <div class="instructions">
+                <p>Instruction: Assess the performance of the internal auditor, taking into account the specified areas
+                    identified by the indicators provided for each category. Use the scale provided below for your
+                    evaluation. We also encourage you to provide comments in each area as additional inputs for
+                    improvement.</p>
+                <ul>
+                    <li><strong>5 – Excellent:</strong> Outstanding performance; Consistently surpasses expectations, demonstrating
+                        exceptional competence</li>
+                    <li><strong>4 – Above Average: </strong>Exceeds expectations; Demonstrates strong proficiency and contributes positively</li>
+                    <li><strong>3 – Average: </strong>Meets expectations; Competent performance with room for improvement</li>
+                    <li><strong>2 – Below Average: </strong>Below expectations; Some improvement needed in this area</li>
+                    <li><strong>1 – Poor: </strong>Significantly below expectations; Requires substantial improvement and additional training</li>
+                    <p>Ensure that you complete all sections of the evaluation to provide a comprehensive assessment.</p>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="form-container">
+        <!-- Evaluator Details Section -->
+        <div class="field-container m-4">
+            <!-- Name of Evaluator -->
+            <label for="evaluator_name" class="mb-2"><strong>Name of Evaluator:</strong></label>
+            <input type="text" id="evaluator_name" name="evaluator_name" class="form-control mb-4" placeholder="Enter evaluator's name" required>
+
+            <!-- Position of Evaluator -->
+            <label class="mb-3"><strong>Position of Evaluator:</strong></label>
+            <div class="form-check d-flex align-items-center mb-2">
+                <input type="radio" id="process_owner" name="position_evaluator" value="Process Owner/Auditee" required>
+                <label for="process_owner" class="form-check-label ms-2">Process Owner/Auditee</label>
+            </div>
+            <div class="form-check d-flex align-items-center mb-2">
+                <input type="radio" id="co_auditor" name="position_evaluator" value="Co-Auditor" required>
+                <label for="co_auditor" class="form-check-label ms-2">Co-Auditor</label>
+            </div>
+            <div class="form-check d-flex align-items-center mb-2">
+                <input type="radio" id="lead_auditor" name="position_evaluator" value="Lead Auditor" required>
+                <label for="lead_auditor" class="form-check-label ms-2">Lead Auditor</label>
+            </div>
+            <div class="form-check d-flex align-items-center mb-2">
+                <input type="radio" id="iso_head" name="position_evaluator" value="ISO Head" required>
+                <label for="iso_head" class="form-check-label ms-2">ISO Head</label>
+            </div>
+        </div>
+
+
+        <!-- Internal Auditor Details -->
+        <div class="field-container m-4">
+            <label for="internal_auditor_name" class="mt-4"><strong>Name of Internal Auditor:</strong></label>
+            <input type="text" id="internal_auditor_name" name="internal_auditor_name" class="form-control" placeholder="Enter internal auditor's name" required>
+        </div>
+
+        <!-- Date and Place of Audit -->
+        <div class="field-container m-4">
+            <label for="audit_date" class="mt-4"><strong>Date of Audit:</strong></label>
+            <input type="date" id="audit_date" name="audit_date" class="form-control" required>
+
+            <label for="audit_place" class="mt-4"><strong>Place of Audit:</strong></label>
+            <input type="text" id="audit_place" name="audit_place" class="form-control" placeholder="Enter place of audit" required>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <!-- knowledge Section -->
+        <div class="field-container m-4">
+            <label for="knowledge" class="mb-3"><strong>A. Knowledge of ISO 9001:2015 Standards <span class="required">*</span></strong></label>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-start" style="width: 50%;"></th>
+                            <th scope="col" class="text-center">5</th>
+                            <th scope="col" class="text-center">4</th>
+                            <th scope="col" class="text-center">3</th>
+                            <th scope="col" class="text-center">2</th>
+                            <th scope="col" class="text-center">1</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="mb-4 td-bg">
+                            <td class="">The internal auditor demonstrates understanding of ISO 9001:2015 requirements.</td>
+                            <td class="text-center "><input type="radio" name="knowledge1" value="5" required></td>
+                            <td class="text-center "><input type="radio" name="knowledge1" value="4"></td>
+                            <td class="text-center "><input type="radio" name="knowledge1" value="3"></td>
+                            <td class="text-center "><input type="radio" name="knowledge1" value="2"></td>
+                            <td class="text-center "><input type="radio" name="knowledge1" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td class="">The internal auditor applies knowledge effectively during audits.</td>
+                            <td class="text-center "><input type="radio" name="knowledge2" value="5" required></td>
+                            <td class="text-center "><input type="radio" name="knowledge2" value="4"></td>
+                            <td class="text-center "><input type="radio" name="knowledge2" value="3"></td>
+                            <td class="text-center "><input type="radio" name="knowledge2" value="2"></td>
+                            <td class="text-center "><input type="radio" name="knowledge2" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td class="">The internal auditor stays updated on changes to the standard.</td>
+                            <td class="text-center "><input type="radio" name="knowledge3" value="5" required></td>
+                            <td class="text-center "><input type="radio" name="knowledge3" value="4"></td>
+                            <td class="text-center "><input type="radio" name="knowledge3" value="3"></td>
+                            <td class="text-center "><input type="radio" name="knowledge3" value="2"></td>
+                            <td class="text-center "><input type="radio" name="knowledge3" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td class="">The internal auditor stays updated on changes to the standard.</td>
+                            <td class="text-center "><input type="radio" name="knowledge4" value="5" required></td>
+                            <td class="text-center "><input type="radio" name="knowledge4" value="4"></td>
+                            <td class="text-center "><input type="radio" name="knowledge4" value="3"></td>
+                            <td class="text-center "><input type="radio" name="knowledge4" value="2"></td>
+                            <td class="text-center "><input type="radio" name="knowledge4" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td class="">The internal auditor stays updated on changes to the standard.</td>
+                            <td class="text-center "><input type="radio" name="knowledge5" value="5" required></td>
+                            <td class="text-center "><input type="radio" name="knowledge5" value="4"></td>
+                            <td class="text-center "><input type="radio" name="knowledge5" value="3"></td>
+                            <td class="text-center "><input type="radio" name="knowledge5" value="2"></td>
+                            <td class="text-center "><input type="radio" name="knowledge5" value="1"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-container">
+        <!-- Communication Section -->
+        <div class="field-container m-4">
+            <label for="communication" class="mb-3"><strong>B. Communication Skills <span class="required">*</span></strong></label>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-start" style="width: 50%;"></th>
+                            <th scope="col" class="text-center">5</th>
+                            <th scope="col" class="text-center">4</th>
+                            <th scope="col" class="text-center">3</th>
+                            <th scope="col" class="text-center">2</th>
+                            <th scope="col" class="text-center">1</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="mb-4 td-bg">
+                            <td>The internal auditor communicates effectively with auditees.</td>
+                            <td class="text-center"><input type="radio" name="communication1" value="5" required></td>
+                            <td class="text-center"><input type="radio" name="communication1" value="4"></td>
+                            <td class="text-center"><input type="radio" name="communication1" value="3"></td>
+                            <td class="text-center"><input type="radio" name="communication1" value="2"></td>
+                            <td class="text-center"><input type="radio" name="communication1" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td>The internal auditor listens actively and asks relevant questions.</td>
+                            <td class="text-center"><input type="radio" name="communication2" value="5" required></td>
+                            <td class="text-center"><input type="radio" name="communication2" value="4"></td>
+                            <td class="text-center"><input type="radio" name="communication2" value="3"></td>
+                            <td class="text-center"><input type="radio" name="communication2" value="2"></td>
+                            <td class="text-center"><input type="radio" name="communication2" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td>The internal auditor provides clear and constructive feedback.</td>
+                            <td class="text-center"><input type="radio" name="communication3" value="5" required></td>
+                            <td class="text-center"><input type="radio" name="communication3" value="4"></td>
+                            <td class="text-center"><input type="radio" name="communication3" value="3"></td>
+                            <td class="text-center"><input type="radio" name="communication3" value="2"></td>
+                            <td class="text-center"><input type="radio" name="communication3" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td>The internal auditor demonstrates proficiency in written and verbal communication.</td>
+                            <td class="text-center"><input type="radio" name="communication4" value="5" required></td>
+                            <td class="text-center"><input type="radio" name="communication4" value="4"></td>
+                            <td class="text-center"><input type="radio" name="communication4" value="3"></td>
+                            <td class="text-center"><input type="radio" name="communication4" value="2"></td>
+                            <td class="text-center"><input type="radio" name="communication4" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td>The internal auditor demonstrates proficiency in written and verbal communication.</td>
+                            <td class="text-center"><input type="radio" name="communication5" value="5" required></td>
+                            <td class="text-center"><input type="radio" name="communication5" value="4"></td>
+                            <td class="text-center"><input type="radio" name="communication5" value="3"></td>
+                            <td class="text-center"><input type="radio" name="communication5" value="2"></td>
+                            <td class="text-center"><input type="radio" name="communication5" value="1"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <!-- Audit Execution Section -->
+        <div class="field-container m-4">
+            <label for="execution" class="mb-3"><strong>C. Audit Execution <span class="required">*</span></strong></label>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-start" style="width: 50%;"></th>
+                            <th scope="col" class="text-center">5</th>
+                            <th scope="col" class="text-center">4</th>
+                            <th scope="col" class="text-center">3</th>
+                            <th scope="col" class="text-center">2</th>
+                            <th scope="col" class="text-center">1</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="mb-4 td-bg">
+                            <td>The internal auditor follows the established audit process.</td>
+                            <td class="text-center"><input type="radio" name="execution1" value="5" required></td>
+                            <td class="text-center"><input type="radio" name="execution1" value="4"></td>
+                            <td class="text-center"><input type="radio" name="execution1" value="3"></td>
+                            <td class="text-center"><input type="radio" name="execution1" value="2"></td>
+                            <td class="text-center"><input type="radio" name="execution1" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td>The internal auditor demonstrates professionalism and objectivity.</td>
+                            <td class="text-center"><input type="radio" name="execution2" value="5" required></td>
+                            <td class="text-center"><input type="radio" name="execution2" value="4"></td>
+                            <td class="text-center"><input type="radio" name="execution2" value="3"></td>
+                            <td class="text-center"><input type="radio" name="execution2" value="2"></td>
+                            <td class="text-center"><input type="radio" name="execution2" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td>The internal auditor adapts to unexpected situations during audits.</td>
+                            <td class="text-center"><input type="radio" name="execution3" value="5" required></td>
+                            <td class="text-center"><input type="radio" name="execution3" value="4"></td>
+                            <td class="text-center"><input type="radio" name="execution3" value="3"></td>
+                            <td class="text-center"><input type="radio" name="execution3" value="2"></td>
+                            <td class="text-center"><input type="radio" name="execution3" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td>The internal auditor uses effective questioning techniques to gather information.</td>
+                            <td class="text-center"><input type="radio" name="execution4" value="5" required></td>
+                            <td class="text-center"><input type="radio" name="execution4" value="4"></td>
+                            <td class="text-center"><input type="radio" name="execution4" value="3"></td>
+                            <td class="text-center"><input type="radio" name="execution4" value="2"></td>
+                            <td class="text-center"><input type="radio" name="execution4" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td>The internal auditor demonstrates a keen attention to detail during the audit process.</td>
+                            <td class="text-center"><input type="radio" name="execution5" value="5" required></td>
+                            <td class="text-center"><input type="radio" name="execution5" value="4"></td>
+                            <td class="text-center"><input type="radio" name="execution5" value="3"></td>
+                            <td class="text-center"><input type="radio" name="execution5" value="2"></td>
+                            <td class="text-center"><input type="radio" name="execution5" value="1"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <!-- Reporting and Documentation Section -->
+        <div class="field-container m-4">
+            <label for="reporting" class="mb-3"><strong>E. Continual Improvement <span class="required">*</span></strong></label>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-start" style="width: 50%;"></th>
+                            <th scope="col" class="text-center">5</th>
+                            <th scope="col" class="text-center">4</th>
+                            <th scope="col" class="text-center">3</th>
+                            <th scope="col" class="text-center">2</th>
+                            <th scope="col" class="text-center">1</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="mb-4 td-bg">
+                            <td>The internal auditor actively seeks feedback and identifies areas for personal improvement.</td>
+                            <td class="text-center"><input type="radio" name="reporting1" value="5" required></td>
+                            <td class="text-center"><input type="radio" name="reporting1" value="4"></td>
+                            <td class="text-center"><input type="radio" name="reporting1" value="3"></td>
+                            <td class="text-center"><input type="radio" name="reporting1" value="2"></td>
+                            <td class="text-center"><input type="radio" name="reporting1" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td>The internal auditor contributes to the improvement of the university's quality management system.</td>
+                            <td class="text-center"><input type="radio" name="reporting2" value="5" required></td>
+                            <td class="text-center"><input type="radio" name="reporting2" value="4"></td>
+                            <td class="text-center"><input type="radio" name="reporting2" value="3"></td>
+                            <td class="text-center"><input type="radio" name="reporting2" value="2"></td>
+                            <td class="text-center"><input type="radio" name="reporting2" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td>The internal auditor encourages a culture of continuous improvement within the team.</td>
+                            <td class="text-center"><input type="radio" name="reporting3" value="5" required></td>
+                            <td class="text-center"><input type="radio" name="reporting3" value="4"></td>
+                            <td class="text-center"><input type="radio" name="reporting3" value="3"></td>
+                            <td class="text-center"><input type="radio" name="reporting3" value="2"></td>
+                            <td class="text-center"><input type="radio" name="reporting3" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td>The internal auditor demonstrates a proactive approach to professional development.</td>
+                            <td class="text-center"><input type="radio" name="reporting4" value="5" required></td>
+                            <td class="text-center"><input type="radio" name="reporting4" value="4"></td>
+                            <td class="text-center"><input type="radio" name="reporting4" value="3"></td>
+                            <td class="text-center"><input type="radio" name="reporting4" value="2"></td>
+                            <td class="text-center"><input type="radio" name="reporting4" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td>The internal auditor integrates lessons learned from previous audits into current practices.</td>
+                            <td class="text-center"><input type="radio" name="reporting5" value="5" required></td>
+                            <td class="text-center"><input type="radio" name="reporting5" value="4"></td>
+                            <td class="text-center"><input type="radio" name="reporting5" value="3"></td>
+                            <td class="text-center"><input type="radio" name="reporting5" value="2"></td>
+                            <td class="text-center"><input type="radio" name="reporting5" value="1"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <!-- knowledge Section -->
+        <div class="field-container m-4">
+            <label for="knowledge" class="mb-3"><strong>General Comments/Feedback: <span class="required">*</span></strong></label>
+           <!-- Feedback Section -->
+           <div class="field-container">
+            <textarea id="feedback" class="form-control" rows="4" placeholder="Provide your feedback" required></textarea>
+        </div>
+
+        </div>
+    </div>
+
+    <div class="form-container-submit">
+        <div class="field-container ">
+            <div class="button-container d-flex justify-content-between align-items-center">
+                <!-- Submit Button -->
+                <button type="submit" class=" btn-submit">Submit</button>
+
+                <!-- Page Indicator -->
+                <span class="page-indicator d-flex align-items-center">
+                    <div class="progress me-2" style="width: 200px; height: 8px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 100%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <span class="m-3">Page 1/1</span>
+                </span>
+
+                <!-- Clear Form Button -->
+                <button type="button" class="btn btn-tertiary">Clear Form</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

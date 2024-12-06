@@ -177,17 +177,17 @@
                             <!-- Notification dropdown -->
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarNotification"
                                 style="width: 400px; max-height: 500px; overflow-y: auto; overflow-wrap: break-word; white-space: normal;">
-
-                                {% with user.notifications.unread as unread_notifications %}
-                                    {% if unread_notifications %}
-                                        {% for notification in unread_notifications %}
-                                             <h2 class="dropdown-notification-header px-3 py-2 d-flex align-items-center" >
+<h2 class="dropdown-notification-header px-3 py-2 d-flex align-items-center" >
                                                 Notifications
                                                 <div class="ms-auto">
                                                     <a href="#" class="text-decoration-none text-white me-3">All</a>
                                                     <a href="#" class="text-decoration-none text-muted">Unread</a>
                                                 </div>
                                             </h2>
+                                {% with user.notifications.unread as unread_notifications %}
+                                    {% if unread_notifications %}
+                                        {% for notification in unread_notifications %}
+
                                             <li>
                                                 <!-- Dynamically resolve URL based on the target's methods -->
                                                 <a href="

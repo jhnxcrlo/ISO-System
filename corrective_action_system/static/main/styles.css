@@ -230,3 +230,11 @@ body, html {
     color: #888; /* Light gray color */
     margin-top: 40px; /* Space above the text */
 }
+
+#login-container .countdown {
+    font-size: 18px;
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+}
+

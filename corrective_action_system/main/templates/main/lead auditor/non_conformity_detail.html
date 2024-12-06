@@ -3,6 +3,56 @@
 {% block title %}Audit Task: Assess Process Owner Compliance{% endblock %}
 
 {% block content %}
+
+<style>
+
+.btn-comment {
+  border: 2px solid #A33331; /* Border in #A33331 */
+  color: #A33331; /* Text color in #A33331 */
+  background-color: white; /* White background */
+  padding: 6px 15px; /* Adjust padding as needed */
+  font-size: 16px; /* Adjust font size as needed */
+  border-radius: 0 8px 8px 0; /* Rounded corners only on the right side */
+  margin-right: -8px; /* Creates a gap */
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Hover state */
+.btn-comment:hover {
+  background-color: #A33331; /* Background changes to #A33331 */
+  color: white; /* Text changes to white */
+  border-color: #A33331;
+}
+
+/* Focused state */
+.btn-comment:focus {
+  outline: none; /* Removes default outline */
+  box-shadow: 0 0 5px #A33331; /* Adds a glow in #A33331 */
+  border-color: #A33331;
+}
+
+/* Active state */
+.btn-comment:active {
+  background-color: #6F2524; /* Darker version of #A33331 */
+  color: white;
+  border-color: #6F2524;
+  transform: scale(0.98); /* Slightly shrinks button */
+}
+
+/* Disabled state */
+.btn-comment:disabled {
+  background-color: #f8f8f8; /* Light gray background */
+  color: #cccccc; /* Gray text */
+  border-color: #cccccc; /* Gray border */
+  cursor: not-allowed; /* Disabled cursor */
+  opacity: 0.7;
+}
+
+
+
+</style>
     <div class="container mt-4">
         <!-- Page Header -->
         <h2 class="mb-4" style="color: #A33331; font-weight: bold;">AUDIT TASK: ASSESS PROCESS OWNER COMPLIANCE WITH
@@ -90,7 +140,7 @@
                                 <div class="input-group mt-3">
                                     <input type="text" name="comment_content" class="form-control"
                                            placeholder="Write a comment..." required>
-                                   <button type="submit" class="btn btn-danger">Comment</button>
+                                   <button type="submit" class="btn-comment">Comment</button>
                                 </div>
                             </form>
                         </div>
@@ -274,7 +324,7 @@
                                         <div class="input-group mt-3">
                                             <input type="text" name="comment_content" class="form-control"
                                                    placeholder="Write a comment..." required>
-                                            <button type="submit" class="btn btn-danger">Comment</button>
+                                            <button type="submit" class="btn-comment">Comment</button>
                                         </div>
                                     </form>
                                 </div>
@@ -715,7 +765,7 @@
 
 .input-group {
     display: flex; /* Aligns items in a row if there are multiple inputs */
-    gap: 8px; /* Space between input fields */
+    gap: 1px; /* Space between input fields */
 }
 
         /* Scoped styling for the card */
