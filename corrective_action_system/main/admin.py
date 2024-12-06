@@ -3,7 +3,7 @@ from fontTools.feaLib.ast import Comment
 
 from .models import UserProfile, TemplateModel, NonConformity, RootCauseAnalysis, ImmediateAction, CorrectiveActionPlan, \
     FollowUpAction, ActionVerification, CorrectiveActionPlanReview, CloseOut, Comment, AuditDetails, GoodPoints, \
-    AuditFinding
+    AuditFinding, Announcement
 
 
 @admin.register(UserProfile)
@@ -14,6 +14,10 @@ class UserProfileAdmin(admin.ModelAdmin):
 @admin.register(TemplateModel)
 class TemplateModelAdmin(admin.ModelAdmin):
     list_display = ('template_name', 'description', 'file')
+
+
+# register the models of announcement
+admin.site.register(Announcement)
 
 # Register other models if needed independently
 admin.site.register(NonConformity)

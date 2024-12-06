@@ -56,102 +56,76 @@
     </div>
 
 
-    <!-- Announcement Section -->
-
     <!-- Audit Section -->
-    <div class="container-fluid mt-5">
-        <div class="row">
-            <!-- Donut Chart and Audit Summary -->
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <div class="chart-info">
-                        <h4 class="report-title">
-                            <i class="fas fa-clipboard-list"></i>Audit Summary
-                        </h4>
-                        <p>Audit Findings</p>
-                        <ul>
-                            <!-- Major NC -->
-                            <li>
-                                <span style="background-color:#8E2524; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
-                                <span>Major NC</span> <span>{{ major_nc_count }}</span>
-                            </li>
-                            <!-- Minor NC -->
-                            <li>
-                                <span style="background-color:#F86D27; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
-                                <span>Minor NC</span> <span>{{ minor_nc_count }}</span>
-                            </li>
-                            <!-- OFI (Improvement) -->
-                            <li>
-                                <span style="background-color:#F1D000; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
-                                <span>OFI</span> <span>{{ ofi_count }}</span>
-                            </li>
-                            <!-- Good Points -->
-                            <li>
-                                <span style="background-color:#3BBF5D; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
-                                <span>Good Points</span> <span>{{ good_points_count }}</span>
-                            </li>
-                        </ul>
-                        <button class="btn btn-tertiary">See Details...</button>
-                    </div>
-                    <div class="chart-canvas">
-                        <canvas id="myChart"></canvas>
-                    </div>
+    <!-- Audit Section -->
+<div class="container-fluid mt-5">
+    <div class="row">
+        <!-- Donut Chart and Audit Summary -->
+        <div class="col-md-6">
+            <div class="chart-container">
+                <div class="chart-info">
+                    <h4 class="report-title">
+                        <i class="fas fa-clipboard-list"></i> Audit Summary
+                    </h4>
+                    <p>Audit Findings</p>
+                    <ul>
+                        <!-- Major NC -->
+                        <li>
+                            <span style="background-color:#8E2524; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
+                            <span>Major NC</span> <span>{{ major_nc_count }}</span>
+                        </li>
+                        <!-- Minor NC -->
+                        <li>
+                            <span style="background-color:#F86D27; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
+                            <span>Minor NC</span> <span>{{ minor_nc_count }}</span>
+                        </li>
+                        <!-- OFI (Improvement) -->
+                        <li>
+                            <span style="background-color:#F1D000; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
+                            <span>OFI</span> <span>{{ ofi_count }}</span>
+                        </li>
+                        <!-- Good Points -->
+                        <li>
+                            <span style="background-color:#3BBF5D; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
+                            <span>Good Points</span> <span>{{ good_points_count }}</span>
+                        </li>
+                    </ul>
+                    <button class="btn btn-tertiary" onclick="window.location.href='{% url 'audit_report_summary' %}'">See Details...</button>
+                </div>
+                <div class="chart-canvas">
+                    <canvas id="myChart" width="400" height="200"></canvas>
                 </div>
             </div>
+        </div>
 
-
-            <!-- ISO Audit Report Section -->
-            <div class="col-md-6 ">
-                <div class="report-container">
-                    <h4 class="report-title"><i class="bi bi-file-earmark-check-fill"></i> ISO Audit Report</h4>
-                    <p class="report-subtitle">ISO 9001:2015 Corrective Management System</p>
-                    <div class="report-content">
-                        <ul class="report-lines">
-                            <li>
-                                <span>Finding 1: Non-conformance in Quality Management</span>
-                                <i class="bi bi-chevron-down"></i>
-                                <div class="report-expand-content">
-                                    <p>Details:</p>
-                                </div>
-                            </li>
-                            <li>
-                                <span>Finding 2: Documentation Errors</span>
-                                <i class="bi bi-chevron-down"></i>
-                                <div class="report-expand-content">
-                                    <p>Details: </p>
-                                </div>
-                            </li>
-                            <li>
-                                <span>Finding 3: Non-compliance in Training</span>
-                                <i class="bi bi-chevron-down"></i>
-                                <div class="report-expand-content">
-                                    <p>Details: </p>
-                                </div>
-                            </li>
-                            <li>
-                                <span>Finding 4: Inconsistent Safety Protocols</span>
-                                <i class="bi bi-chevron-down"></i>
-                                <div class="report-expand-content">
-                                    <p>Details: </p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+        <!-- ISO Clauses Pie Chart Section -->
+        <div class="col-md-6">
+            <div class="chart-container">
+                <div class="chart-info">
+                    <h4 class="report-title">
+                        <i class="fas fa-file-alt"></i> ISO Clauses Compliance
+                    </h4>
+                    <p>Compliance Status for ISO Clauses</p>
+                </div>
+                <div class="chart-canvas">
+                    <canvas id="isoClausesPieChart" width="400" height="200"></canvas>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-    // Get dynamic data from the Django context
-    const majorNcCount = {{ major_nc_count }};
-    const minorNcCount = {{ minor_nc_count }};
-    const ofiCount = {{ ofi_count }};
-    const goodPointsCount = {{ good_points_count }};
+</div>
     
-    // Setup chart data with the real values
-    const ctx = document.getElementById('myChart').getContext('2d');
-    const data = {
+
+<script>
+    // Get dynamic data from the Django context
+    const majorNcCount = {{ major_nc_count|default:0 }};
+    const minorNcCount = {{ minor_nc_count|default:0 }};
+    const ofiCount = {{ ofi_count|default:0 }};
+    const goodPointsCount = {{ good_points_count|default:0 }};
+    
+    // Setup chart data for Audit Summary (Major NC, Minor NC, OFI, Good Points)
+    const ctx1 = document.getElementById('myChart').getContext('2d');
+    const data1 = {
         labels: ['Major NC', 'Minor NC', 'OFI', 'Good Points'],
         datasets: [{
             data: [majorNcCount, minorNcCount, ofiCount, goodPointsCount],
@@ -166,23 +140,46 @@
         }]
     };
 
-    // Create donut chart
-    const myChart = new Chart(ctx, {
+    // Create the donut chart for Audit Summary
+    const myChart = new Chart(ctx1, {
         type: 'doughnut',
-        data: data,
+        data: data1,
         options: {
             responsive: true,
-            maintainAspectRatio: false, // Disable the aspect ratio
+            maintainAspectRatio: false,  // Disable the aspect ratio
+            animation: {
+                duration: 0  // Disable animation for better performance
+            },
             plugins: {
                 legend: {
-                    display: false // Hide default legend
+                    display: false  // Hide default legend
                 }
             },
-            cutout: '70%' // Controls the inner radius of the donut
+            cutout: '70%'  // Controls the inner radius of the donut
+        }
+    });
+    
+    // Setup chart data for ISO Clauses Compliance
+    const ctx = document.getElementById('isoClausesPieChart').getContext('2d');
+    const isoClausesPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Clause 4: Context', 'Clause 5: Leadership', 'Clause 6: Planning'],
+            datasets: [{
+                data: [{{ clause_4_compliance }}, {{ clause_5_compliance }}, {{ clause_6_compliance }}],
+                backgroundColor: ['#36A2EB', '#FF6384', '#FF9F40'],
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+            },
         }
     });
 </script>
-
 
 
     <!-- JavaScript Libraries -->

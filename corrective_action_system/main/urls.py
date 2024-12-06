@@ -18,12 +18,6 @@ urlpatterns = [
     path('delete_user/<int:user_id>/', views.delete_user_view, name='delete_user'),
     path('lead-auditor/lead_auditor_manage_user/', views.lead_auditor_manage_user, name='lead_auditor_manage_user'),
 
-    # Announcements
-    path('', views.announcement_list, name='announcement_list'),
-    path('create/', views.create_announcement, name='create_announcement'),
-    path('<int:pk>/update/', views.update_announcement, name='update_announcement'),
-    path('<int:pk>/delete/', views.delete_announcement, name='delete_announcement'),
-
     # Dashboards
     path('internal-auditor-dashboard/', views.internal_auditor_dashboard_view, name='internal_auditor_dashboard'),
     path('process-owner-dashboard/', views.process_owner_dashboard_view, name='process_owner_dashboard'),
@@ -86,9 +80,22 @@ urlpatterns = [
     path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name='main/administrator/registration/password_reset_done.html'), name='password_reset_done'),
     path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='main/administrator/registration/password_reset_confirm.html'), name='password_reset_confirm'),
     path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='main/administrator/registration/password_reset_complete.html'), name='password_reset_complete'),
-    path('audit-report-summary/', audit_report_summary_view, name='audit_report_summary'),
+    path('lead_auditor-report-summary/', audit_report_summary_view, name='audit_report_summary'),
     path('audit-report-summary-pdf/', generate_audit_report_summary_pdf, name='audit_report_summary_pdf'),
     path("profile/", user_profile_view, name="user_profile"),
+
+    # Announcements
+    # URL for viewing all announcements
+    path('announcements/', views.view_announcements, name='view_announcements'),
+
+    # URL for creating a new announcement
+    path('announcement/create/', views.create_announcement, name='create_announcement'),
+
+    # URL for updating an announcement
+    path('announcement/update/<int:id>/', views.update_announcement, name='update_announcement'),
+
+    # URL for deleting an announcement
+    path('announcement/delete/<int:id>/', views.delete_announcement, name='delete_announcement'),
 
 ]
 

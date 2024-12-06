@@ -237,46 +237,9 @@ def verify_email(request, token):
         messages.error(request, 'An unexpected error occurred.')
     return redirect('login')
 
-def announcement_list(request):
-    announcements = Announcement.objects.all()
-    form = AnnouncementForm()
-    return render(request, 'main/administrator/announcements/announcement_list.html',
-                  {'announcements': announcements, 'form': form})
-
-@login_required
-def create_announcement(request):
-    if request.method == 'POST':
-        form = AnnouncementForm(request.POST)
-        if form.is_valid():
-            announcement = form.save(commit=False)
-            announcement.created_by = request.user  # Set the creator
-            announcement.save()
-            return redirect('announcement_list')
-    else:
-        form = AnnouncementForm()
-
-    return render(request, 'main/administrator/announcements/announcement_list.html', {'form': form})
-
-@login_required
-def update_announcement(request, pk):
-    announcement = get_object_or_404(Announcement, pk=pk)
-    if request.method == 'POST':
-        form = AnnouncementForm(request.POST, instance=announcement)
-        if form.is_valid():
-            form.save()
-            return redirect('announcement_list')
-
-@login_required
-def delete_announcement(request, pk):
-    announcement = get_object_or_404(Announcement, pk=pk)
-    if request.method == 'POST':
-        announcement.delete()
-        return redirect('announcement_list')
-
 def role_allowed_to_manage_forms(user):
     """Check if user is Lead Auditor or Internal Auditor."""
     return hasattr(user, 'userprofile') and user.userprofile.role in ['Lead Auditor', 'Internal Auditor']
-
 
 @login_required
 @user_passes_test(role_allowed_to_manage_forms)
@@ -1327,7 +1290,7 @@ def audit_report_summary_view(request):
         'audit_finding_form': audit_finding_form,
     }
 
-    return render(request, 'main/internal audit/audit_report.html', context)
+    return render(request, 'main/lead auditor/audit_report.html', context)
 
 def generate_audit_report_summary_pdf(request):
     # Fetch the data for the Audit Report Summary
@@ -1347,7 +1310,7 @@ def generate_audit_report_summary_pdf(request):
     }
 
     # Render the HTML template
-    html = render_to_string('main/internal audit/audit_report_summary.html', context)
+    html = render_to_string('main/lead auditor/audit_report_summary.html', context)
 
     # Debugging: Save the HTML to a file for inspection
     with open('debug_audit_report_summary.html', 'w', encoding='utf-8') as file:
@@ -1409,3 +1372,40 @@ def user_profile_view(request):
 
     # Return an error if request method is not GET or POST
     return JsonResponse({"message": "Invalid request method"}, status=400)
+
+
+# View for creating an announcement
+# View for displaying all announcements
+def view_announcements(request):
+    announcements = Announcement.objects.all()
+    return render(request, 'main/lead auditor/announcements/view_announcement.html', {'announcements': announcements})
+
+# View for creating a new announcement
+# Create Announcement
+def create_announcement(request):
+    if request.method == 'POST':
+        form = AnnouncementForm(request.POST)
+        if form.is_valid():
+            announcement = form.save(commit=False)
+            announcement.created_by = request.user
+            announcement.save()
+            return redirect('view_announcements')
+    return redirect('view_announcements')  # Handle invalid cases
+
+# View for editing an existing announcement
+def update_announcement(request, id):
+    announcement = get_object_or_404(Announcement, id=id)
+    if request.method == 'POST':
+        form = AnnouncementForm(request.POST, instance=announcement)
+        if form.is_valid():
+            form.save()
+            return redirect('view_announcements')
+    return redirect('view_announcements')
+
+# Delete Announcement
+def delete_announcement(request, id):
+    announcement = get_object_or_404(Announcement, id=id)
+    if request.method == 'POST':
+        announcement.delete()
+        return redirect('view_announcements')
+    return redirect('view_announcements')

@@ -101,7 +101,7 @@
             <div class="text-center py-3">
                 <img alt="Management System Logo" class="img-fluid" src="{% static 'main/img2.png' %}"
                      style="max-width: 60%; height: auto; border-radius: 50%;">
-                <h4 class="mt-3 system-title" style="color:#272F3F">Management System</h4>
+                <h4 class="mt-3 system-title" style="color:#272F3F">CAMS</h4>
             </div>
             <ul class="nav flex-column">
                 <!-- Dashboard Link -->
@@ -132,6 +132,13 @@
                         <i class="fas fa-book me-2"></i> Guidelines
                     </a>
                 </li>
+                <!-- Audit Report Link -->
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'lead_auditor_audit_report' %}active{% endif %}"
+                       href="{% url 'audit_report_summary' %}">
+                        <i class="fas fa-clipboard-list me-2"></i> Audit Report
+                    </a>
+                </li>
                 <!-- Manage User Link -->
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'lead_auditor_manage_user' %}active{% endif %}"
@@ -153,16 +160,16 @@
             <nav class="navbar navbar-expand-lg">
                 <div class="container-fluid">
                     <div class="d-flex ms-auto align-items-center">
+                        <!-- Notification Icon -->
                         <div class="notification-icon me-3 position-relative">
-                            <!-- Notification icon -->
                             <a href="#" class="nav-link hidden-arrow" id="navbarNotification" role="button"
                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bell"></i>
                                 <!-- Badge for unread notifications -->
                                 {% if user.notifications.unread|length > 0 %}
                                     <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
-                {{ user.notifications.unread|length }}
-            </span>
+                                        {{ user.notifications.unread|length }}
+                                    </span>
                                 {% endif %}
                             </a>
 
@@ -173,32 +180,26 @@
                                     {% if unread_notifications %}
                                         {% for notification in unread_notifications %}
                                             <li>
-                                                <!-- Dynamically resolve URL based on the target's methods -->
-                                                <a href="
-                            {% if notification.target %}
-                                {% if user.userprofile.role == 'Process Owner' %}
-                                    {{ notification.target.get_task_url }}
-                                {% elif user.userprofile.role == 'Lead Auditor' %}
-                                    {{ notification.target.get_non_conformity_url }}
-                                {% elif user.userprofile.role == 'Internal Auditor' %}
-                                    {{ notification.target.get_non_conformity_url }}
-                                {% else %}
-                                    #
-                                {% endif %}
-                            {% else %}
-                                #
-                            {% endif %}
-                        " class="dropdown-item">
+                                                <a href="{% if notification.target %}
+                                                            {% if user.userprofile.role == 'Process Owner' %}
+                                                                {{ notification.target.get_task_url }}
+                                                            {% elif user.userprofile.role == 'Lead Auditor' %}
+                                                                {{ notification.target.get_non_conformity_url }}
+                                                            {% elif user.userprofile.role == 'Internal Auditor' %}
+                                                                {{ notification.target.get_non_conformity_url }}
+                                                            {% else %}
+                                                                #
+                                                            {% endif %}
+                                                          {% else %}
+                                                              #
+                                                          {% endif %}" class="dropdown-item">
                                                     <strong>{{ notification.verb }}</strong>: {{ notification.description }}
                                                     <br>
-                                                    <small class="text-muted">{{ notification.timestamp|timesince }}
-                                                        ago</small>
+                                                    <small class="text-muted">{{ notification.timestamp|timesince }} ago</small>
                                                 </a>
                                             </li>
                                         {% endfor %}
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
                                         <li>
                                             <a href="{% url 'mark_all_notifications_read' %}"
                                                class="dropdown-item text-center text-muted">
@@ -213,12 +214,17 @@
                                 {% endwith %}
                             </ul>
                         </div>
+                    
+                        <div class="notification-icon me-3">
+                            <button id="createAnnouncementButton" class="btn btn-success">
+                                <i class="fas fa-bullhorn"></i>
+                            </button>
+                        </div>
 
-
+                        <!-- User Profile Dropdown -->
                         <div class="dropdown">
                             <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" type="button">
-                                <img alt="User" class="rounded-circle me-1" src="{% static 'main/img2.png' %}"
-                                     width="30">
+                                <img alt="User" class="rounded-circle me-1" src="{% static 'main/img2.png' %}" width="30">
                                 <span>{{ user.last_name }} {{ user.first_name|slice:":1" }}. ({{ user.userprofile.role }})</span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
@@ -239,6 +245,7 @@
         </div>
     </div>
 </div>
+
 <!-- Modal HTML -->
 <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered custom-modal-width">
@@ -302,7 +309,6 @@
                                 </div>
                             </div>
                         </form>
-
                         <!-- Save and Edit Buttons -->
                         <div class="d-flex justify-content-center mt-4">
                             <button type="button" class="btn btn-sm btn-tertiary px-4 me-2" id="editProfileBtn" style="border: 1px solid red;">
@@ -318,8 +324,6 @@
         </div>
     </div>
 </div>
-
-
 
 <!-- Core Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -439,6 +443,87 @@
     profileModal.addEventListener("show.bs.modal", fetchProfileData);
     editButton.addEventListener("click", enableEditing);
     saveButton.addEventListener("click", saveProfileData);
+    
+    // When the "Create Announcement" button is clicked, redirect to the create_announcement page
+    const createAnnouncementButton = document.getElementById("createAnnouncementButton");
+
+    if (createAnnouncementButton) {
+        createAnnouncementButton.addEventListener("click", function () {
+            window.location.href = "{% url 'view_announcements' %}"; // Redirect to the create announcement page
+        });
+    }
+
+    // Load existing announcements (if needed)
+    const loadAnnouncements = () => {
+        fetch("{% url 'view_announcements' %}")
+            .then(response => response.json())
+            .then(data => {
+                const announcementList = document.getElementById("announcementList");
+                announcementList.innerHTML = '';
+                if (data.announcements.length > 0) {
+                    data.announcements.forEach(announcement => {
+                        const li = document.createElement("li");
+                        li.classList.add("list-group-item");
+                        li.innerHTML = `
+                            <strong>${announcement.title}</strong><br>
+                            <p>${announcement.content}</p>
+                        `;
+                        announcementList.appendChild(li);
+                    });
+                } else {
+                    announcementList.innerHTML = `<li class="list-group-item text-muted">No announcements created yet.</li>`;
+                }
+            })
+            .catch(error => console.error("Error loading announcements:", error));
+    };
+
+    // Handle the form submission for creating announcements
+    const announcementForm = document.getElementById("announcementForm");
+    const announcementErrors = document.getElementById("announcementErrors");
+
+    if (announcementForm) {
+        announcementForm.addEventListener("submit", function (event) {
+            event.preventDefault();  // Prevent default form submission
+
+            const formData = new FormData(announcementForm);
+            fetch("{% url 'create_announcement' %}", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),  // CSRF token for security
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Announcement created successfully!");
+                    loadAnnouncements();  // Update the announcements list
+                    announcementForm.reset();  // Reset the form fields
+                    announcementErrors.style.display = 'none';  // Hide error box
+                } else {
+                    alert("There was an error creating the announcement. Please try again.");
+                    announcementErrors.style.display = 'block';  // Show error box
+                    announcementErrors.innerHTML = '';  // Clear previous errors
+
+                    // Loop through errors and display them
+                    for (const [field, errors] of Object.entries(data.errors)) {
+                        const errorList = document.createElement('ul');
+                        errors.forEach(error => {
+                            const li = document.createElement('li');
+                            li.textContent = error;
+                            errorList.appendChild(li);
+                        });
+                        announcementErrors.appendChild(errorList);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error("Error creating announcement:", error);
+                alert("Error creating announcement. Please try again.");
+            });
+        });
+    }
+
 });
 
 </script>

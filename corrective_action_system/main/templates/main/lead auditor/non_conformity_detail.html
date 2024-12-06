@@ -758,9 +758,8 @@
         margin-bottom: 1rem; /* Space between columns on smaller screens */
     }
 }
-
     </style>
-
+    
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const completeButtons = document.querySelectorAll('.complete-step-btn');
@@ -773,8 +772,8 @@
             completeButtons.forEach(button => {
                 button.addEventListener('click', function () {
                     const stepNumber = button.dataset.step;
-                    const stepHeader = document.querySelector(`#step${stepNumber}-header`);
-                    const stepContent = document.querySelector(`#step${stepNumber}Content`);
+                    const stepHeader = document.querySelector(#step${stepNumber}-header);
+                    const stepContent = document.querySelector(#step${stepNumber}Content);
 
                     // Mark the step as completed
                     button.disabled = true;
@@ -852,8 +851,8 @@
     completeButtons.forEach(button => {
         button.addEventListener('click', function () {
             const stepNumber = button.dataset.step;
-            const stepHeader = document.querySelector(`#step${stepNumber}-header`);
-            const stepContent = document.querySelector(`#step${stepNumber}Content`);
+            const stepHeader = document.querySelector(#step${stepNumber}-header);
+            const stepContent = document.querySelector(#step${stepNumber}Content);
 
             // Mark the step as completed
             button.disabled = true;
@@ -884,4 +883,5 @@
 
 
     </script>
+    
 {% endblock %}
