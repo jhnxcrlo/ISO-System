@@ -432,159 +432,178 @@
         </div>
     </div>
 
-<!-- Immediate Action Save Modal -->
-<div class="modal fade" id="saveImmediateActionModal" tabindex="-1" aria-labelledby="saveImmediateActionLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="saveImmediateActionLabel">Confirm Save</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to save this Immediate Action?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-tertiary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-secondary" id="confirmSaveImmediateAction">Yes, Save</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Root Cause Analysis Save Modal -->
-<div class="modal fade" id="saveRootCauseModal" tabindex="-1" aria-labelledby="saveRootCauseLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="saveRootCauseLabel">Confirm Save</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to save this Root Cause Analysis?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-tertiary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-secondary" id="confirmSaveRootCause">Yes, Save</button>
+    <!-- Immediate Action Save Modal -->
+    <div class="modal fade" id="saveImmediateActionModal" tabindex="-1" aria-labelledby="saveImmediateActionLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="saveImmediateActionLabel">Confirm Save</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to save this Immediate Action?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-tertiary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" id="confirmSaveImmediateAction">Yes, Save</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Corrective Action Plan Save Modal -->
-<div class="modal fade" id="saveCorrectiveActionModal" tabindex="-1" aria-labelledby="saveCorrectiveActionLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="saveCorrectiveActionLabel">Confirm Save</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to save this Corrective Action Plan?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-tertiary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-secondary" id="confirmSaveCorrectiveAction">Yes, Save</button>
+    <!-- Root Cause Analysis Save Modal -->
+    <div class="modal fade" id="saveRootCauseModal" tabindex="-1" aria-labelledby="saveRootCauseLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="saveRootCauseLabel">Confirm Save</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to save this Root Cause Analysis?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-tertiary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" id="confirmSaveRootCause">Yes, Save</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // ============================ Comment Section Management ============================
-
-        // Helper function to toggle visibility of elements
-        function toggleVisibility(element, show = true) {
-            if (element) {
-                element.classList.toggle('d-none', !show);
-            }
-        }
-
-        // Add event listeners to Reply buttons for comments
-        document.querySelectorAll('.reply-comment-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                const commentId = this.dataset.commentId;
-                const replyFormElement = document.getElementById(`reply-comment-form-${commentId}`);
-                toggleVisibility(replyFormElement, true);
-            });
-        });
-
-        // Add event listeners to Cancel buttons for replies
-        document.querySelectorAll('.cancel-reply-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                const commentId = this.dataset.commentId;
-                const replyFormElement = document.getElementById(`reply-comment-form-${commentId}`);
-                toggleVisibility(replyFormElement, false);
-            });
-        });
-
-        // ============================ Table Row Management ============================
-
-        const tableBody = document.getElementById('cap-table-body');
-        const addRowBtn = document.getElementById('add-row-btn');
-
-        // Function to create a new row
-        function createNewRow(rowIndex) {
-            return `
-                <tr>
-                    <td>${rowIndex}</td>
-                    <td><input type="text" class="form-control" name="activity_${rowIndex}" placeholder="Enter activity" required></td>
-                    <td><input type="text" class="form-control" name="responsible_person_${rowIndex}" placeholder="Enter responsible person" required></td>
-                    <td><input type="text" class="form-control" name="time_frame_${rowIndex}" placeholder="Enter time frame" required></td>
-                    <td><input type="text" class="form-control" name="resources_needed_${rowIndex}" placeholder="Enter resources needed" required></td>
-                    <td><input type="text" class="form-control" name="result_${rowIndex}" placeholder="Enter result"></td>
-                    <td class="text-center">
-                        <button type="button" class="btn btn-link delete-row-btn" title="Delete">
-                            <i class="bi bi-trash-fill text-danger"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-        }
-
-        // Add new row event
-        addRowBtn?.addEventListener('click', function () {
-            const rowCount = tableBody?.rows.length + 1 || 1;
-            const newRow = createNewRow(rowCount);
-            tableBody?.insertAdjacentHTML('beforeend', newRow);
-        });
-
-        // Delete row event
-        tableBody?.addEventListener('click', function (event) {
-            const target = event.target.closest('.delete-row-btn');
-            if (target) {
-                const row = target.closest('tr');
-                row.remove();
-
-                // Re-index remaining rows
-                Array.from(tableBody.rows).forEach((row, index) => {
-                    const newRowIndex = index + 1;
-                    row.cells[0].innerText = newRowIndex;
-                    row.querySelectorAll('input').forEach(input => {
-                        input.name = input.name.replace(/\d+$/, newRowIndex);
-                    });
-                });
-            }
-        });
-    });
-</script>
+    <!-- Corrective Action Plan Save Modal -->
+    <div class="modal fade" id="saveCorrectiveActionModal" tabindex="-1" aria-labelledby="saveCorrectiveActionLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="saveCorrectiveActionLabel">Confirm Save</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to save this Corrective Action Plan?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-tertiary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" id="confirmSaveCorrectiveAction">Yes, Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Immediate Action Save Confirmation
-        document.getElementById('confirmSaveImmediateAction').addEventListener('click', function () {
-            document.querySelector('form[action*="add_immediate_action"]').submit();
-        });
+   document.addEventListener('DOMContentLoaded', function () {
+    const saveImmediateActionButton = document.getElementById('confirmSaveImmediateAction');
+    const saveRootCauseButton = document.getElementById('confirmSaveRootCause');
+    const saveCorrectiveActionButton = document.getElementById('confirmSaveCorrectiveAction');
 
-        // Root Cause Analysis Save Confirmation
-        document.getElementById('confirmSaveRootCause').addEventListener('click', function () {
-            document.querySelector('form[action*="add_root_cause_analysis"]').submit();
+    // Save Immediate Action
+    if (saveImmediateActionButton) {
+        saveImmediateActionButton.addEventListener('click', function () {
+            // Target form inside the #immediate-action tab container
+            const form = document.querySelector('#immediate-action form');
+            if (form) {
+                form.submit();
+            } else {
+                console.log('Immediate Action Form not found! Check the selector.');
+            }
         });
+    }
 
-        // Corrective Action Plan Save Confirmation
-        document.getElementById('confirmSaveCorrectiveAction').addEventListener('click', function () {
-            document.querySelector('form[action*="corrective_action_plan"]').submit();
+    // Save Root Cause Analysis
+    if (saveRootCauseButton) {
+        saveRootCauseButton.addEventListener('click', function () {
+            // Target form inside the #root-cause tab container
+            const form = document.querySelector('#root-cause form');
+            if (form) {
+                form.submit();
+            } else {
+                console.log('Root Cause Form not found! Check the selector.');
+            }
+        });
+    }
+
+    // Save Corrective Action
+    if (saveCorrectiveActionButton) {
+        saveCorrectiveActionButton.addEventListener('click', function () {
+            // Target form inside the #corrective-action tab container
+            const form = document.querySelector('#corrective-action form');
+            if (form) {
+                form.submit();
+            } else {
+                console.log('Corrective Action Form not found! Check the selector.');
+            }
+        });
+    }
+
+    // ============================ Comment Section Management ============================
+    function toggleVisibility(element, show = true) {
+        if (element) {
+            element.classList.toggle('d-none', !show);
+        }
+    }
+
+    document.querySelectorAll('.reply-comment-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const commentId = this.dataset.commentId;
+            const replyFormElement = document.getElementById(`reply-comment-form-${commentId}`);
+            toggleVisibility(replyFormElement, true);
         });
     });
+
+    document.querySelectorAll('.cancel-reply-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const commentId = this.dataset.commentId;
+            const replyFormElement = document.getElementById(`reply-comment-form-${commentId}`);
+            toggleVisibility(replyFormElement, false);
+        });
+    });
+
+    // ============================ Table Row Management ============================
+    const tableBody = document.getElementById('cap-table-body');
+    const addRowBtn = document.getElementById('add-row-btn');
+
+    function createNewRow(rowIndex) {
+        return `
+        <tr>
+            <td>${rowIndex}</td>
+            <td><input type="text" class="form-control" name="activity_${rowIndex}" placeholder="Enter activity" required></td>
+            <td><input type="text" class="form-control" name="responsible_person_${rowIndex}" placeholder="Enter responsible person" required></td>
+            <td><input type="text" class="form-control" name="time_frame_${rowIndex}" placeholder="Enter time frame" required></td>
+            <td><input type="text" class="form-control" name="resources_needed_${rowIndex}" placeholder="Enter resources needed" required></td>
+            <td><input type="text" class="form-control" name="result_${rowIndex}" placeholder="Enter result"></td>
+            <td class="text-center">
+                <button type="button" class="btn btn-link delete-row-btn" title="Delete">
+                    <i class="bi bi-trash-fill text-danger"></i>
+                </button>
+            </td>
+        </tr>
+        `;
+    }
+
+    addRowBtn?.addEventListener('click', function () {
+        const rowCount = tableBody?.rows.length + 1 || 1;
+        const newRow = createNewRow(rowCount);
+        tableBody?.insertAdjacentHTML('beforeend', newRow);
+    });
+
+    tableBody?.addEventListener('click', function (event) {
+        const target = event.target.closest('.delete-row-btn');
+        if (target) {
+            const row = target.closest('tr');
+            row.remove();
+
+            // Re-index remaining rows
+            Array.from(tableBody.rows).forEach((row, index) => {
+                const newRowIndex = index + 1;
+                row.cells[0].innerText = newRowIndex;
+                row.querySelectorAll('input').forEach(input => {
+                    input.name = input.name.replace(/\d+$/, newRowIndex);
+                });
+            });
+        }
+    });
+});
 </script>
 
 

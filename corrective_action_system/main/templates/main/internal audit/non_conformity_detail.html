@@ -343,33 +343,6 @@
                             </div>
                         {% else %}
                             <!-- Review Form -->
-                            <div class="mt-5 mb-5">
-                                <h5>Submit Review for the Entire Plan</h5>
-                                {% if corrective_action_plans and corrective_action_plans.first.id %}
-                                    <form method="post"
-                                          action="{% url 'add_review' corrective_action_plans.first.id %}">
-                                        {% csrf_token %}
-                                        <div class="form-group">
-                                            <label for="effectiveness"><strong>Effectiveness:</strong></label>
-                                            <select id="effectiveness" name="effectiveness" class="form-control"
-                                                    required>
-                                                <option value="" disabled selected>Select...</option>
-                                                <option value="Accepted">Accepted</option>
-                                                <option value="Not Accepted">Not Accepted</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group mt-2">
-                                            <label for="reason"><strong>Reason (if Not Accepted):</strong></label>
-                                            <textarea id="reason" name="reason" class="form-control" rows="3"
-                                                      placeholder="Provide reason if rejected"></textarea>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary mt-3">Submit Review</button>
-                                    </form>
-                                {% else %}
-                                    <p class="text-danger">Cannot submit a review as no corrective action plans
-                                        exist.</p>
-                                {% endif %}
-                            </div>
                         {% endif %}
                     </div>
                 </div>
@@ -410,41 +383,12 @@
                             {% endfor %}
                             </tbody>
                         </table>
-
-                        <!-- Add Follow-Up Form -->
-                        {% if not follow_up_actions %}
-                        <h6 class="mt-5"><strong>Add New Follow-Up Action</strong></h6>
-                            <form method="post" action="{% url 'add_follow_up' non_conformity.id %}">
-                                {% csrf_token %}
-                                <div class="form-group mb-4 mt-4">
-                                    <label for="status"><strong>Status:</strong></label>
-                                    <select id="status" name="status" class="form-control" required>
-                                        <option value="" disabled selected>Select status...</option>
-                                        <option value="Pending">Pending</option>
-                                        <option value="In Progress">In Progress</option>
-                                        <option value="Completed">Completed</option>
-                                    </select>
-                                </div>
-                                <div class="form-group mb-4">
-                                    <label for="responsible_person"><strong>Initials / Responsibility:</strong></label>
-                                    <input type="text" id="responsible_person" name="responsible_person"
-                                           class="form-control" placeholder="Enter initials or responsibility" required>
-                                </div>
-                                <div class="form-group mb-4">
-                                    <label for="follow_up_date"><strong>Date:</strong></label>
-                                    <input type="date" id="follow_up_date" name="follow_up_date" class="form-control"
-                                           required>
-                                </div>
-                                <button type="submit" class="btn btn-danger">Add Follow-Up Action</button>
-                            </form>
-                        {% else %}
                             <div class="mt-4">
                                 <button type="button" class="btn btn-danger complete-step-btn"
                                         id="complete-follow-up-step-btn" data-step="4">
                                     Complete Step
                                 </button>
                             </div>
-                        {% endif %}
                     </div>
                 </div>
 
@@ -498,62 +442,12 @@
                             {% endif %}
                             </tbody>
                         </table>
-
-                        <!-- Add Verification Form -->
-                        {% if not verifications or verifications.last.status == "not_effective" %}
-                            <h6 class="mt-5">Add New Verification</h6>
-                            {% if corrective_action_plan.id %}
-                                <form method="post" action="{% url 'action_verification' corrective_action_plan.id %}">
-                                    {% csrf_token %}
-                                    <div class="form-group mb-3">
-                                        <label for="visit_number"><strong>No. of Visits:</strong></label>
-                                        <input type="number" id="visit_number" name="visit_number" class="form-control"
-                                               required>
-                                    </div>
-                                    <div class="form-group mb-3">
-                                        <label for="date"><strong>Date:</strong></label>
-                                        <input type="date" id="date" name="date" class="form-control" required>
-                                    </div>
-                                    <div class="form-group mb-3">
-                                        <label for="follow_up_audit_result"><strong>Follow-Up Audit
-                                            Result:</strong></label>
-                                        <textarea id="follow_up_audit_result" name="follow_up_audit_result"
-                                                  class="form-control" rows="3" required></textarea>
-                                    </div>
-                                    <div class="form-group mb-3">
-                                        <label for="new_target_date"><strong>New Target Date (if
-                                            applicable):</strong></label>
-                                        <input type="date" id="new_target_date" name="new_target_date"
-                                               class="form-control">
-                                    </div>
-                                    <div class="form-group mb-3">
-                                        <label for="status"><strong>Status:</strong></label>
-                                        <select id="status" name="status" class="form-control" required>
-                                            <option value="effective">Close (Effective)</option>
-                                            <option value="not_effective">Close (Not Effective)</option>
-                                        </select>
-                                    </div>
-                                    <!-- New RFA Number Field -->
-                                    <div class="form-group mb-3" id="new_rfa_field" style="display: none;">
-                                        <label for="new_rfa_number"><strong>New RFA # (if Not
-                                            Effective):</strong></label>
-                                        <input type="text" id="new_rfa_number" name="new_rfa_number"
-                                               class="form-control">
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Add Verification</button>
-                                </form>
-                            {% else %}
-                                <p class="text-danger">Error: Corrective Action Plan ID is missing. Cannot proceed with
-                                    adding a verification.</p>
-                            {% endif %}
-                        {% else %}
                             <div class="mt-4">
                                 <button class="btn btn-danger complete-step-btn" id="complete-verification-step-btn"
                                         data-step="5">
                                     Complete Step
                                 </button>
                             </div>
-                        {% endif %}
                     </div>
                 </div>
 

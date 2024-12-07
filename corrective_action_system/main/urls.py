@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from . import views
 from .views import change_password, add_review, preview_rfa, generate_pdf, audit_report_summary_view, \
-    generate_audit_report_summary_pdf, user_profile_view
+    generate_audit_report_summary_pdf, user_profile_view, save_audit_details
 
 urlpatterns = [
     # Authentication
@@ -80,10 +80,7 @@ urlpatterns = [
     path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name='main/administrator/registration/password_reset_done.html'), name='password_reset_done'),
     path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='main/administrator/registration/password_reset_confirm.html'), name='password_reset_confirm'),
     path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='main/administrator/registration/password_reset_complete.html'), name='password_reset_complete'),
-    path('lead_auditor-report-summary/', audit_report_summary_view, name='audit_report_summary'),
-    path('audit-report-summary-pdf/', generate_audit_report_summary_pdf, name='audit_report_summary_pdf'),
     path("profile/", user_profile_view, name="user_profile"),
-
     # Announcements
     # URL for viewing all announcements
     path('announcements/', views.view_announcements, name='view_announcements'),
@@ -96,6 +93,15 @@ urlpatterns = [
 
     # URL for deleting an announcement
     path('announcement/delete/<int:id>/', views.delete_announcement, name='delete_announcement'),
+
+    # path for saving audit details
+
+    path('save-audit-details/', views.save_audit_details, name='save_audit_details'),
+
+    path('lead_auditor-report-summary/<int:audit_details_id>/',audit_report_summary_view, name='audit_report_summary',),
+
+    path('audit-report-summary-pdf/<str:date_range>/', views.generate_audit_report_summary_pdf, name='audit_report_summary_pdf'),
+
 
 ]
 

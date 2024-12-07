@@ -1,5 +1,5 @@
 from django.core.exceptions import PermissionDenied
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives, send_mail
 from django.template.loader import render_to_string, get_template
 from django.urls import resolve
 from django.utils import timezone
@@ -14,6 +14,7 @@ from django.http import HttpResponse, FileResponse, Http404, HttpResponseServerE
 from django.templatetags.static import static
 from django.contrib import messages
 from django.utils.timezone import now
+from django.views.decorators.csrf import csrf_protect
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from xhtml2pdf import pisa
 import logging
@@ -74,7 +75,19 @@ def lead_auditor_dashboard_view(request):
     process_owners_count = UserProfile.objects.filter(role='Process Owner').count()
 
     total_members = internal_auditors_count + process_owners_count
+    audit_details = AuditDetails.objects.last()
 
+    iso_clauses = {
+        '4': "Context of the Organization",
+        '5': "Leadership",
+        '6': "Planning",
+        '7': "Support",
+        '8': "Operation",
+        '9': "Performance Evaluation",
+        '10': "Improvement",
+    }
+
+    non_conformities = NonConformity.objects.all()
     # Fetch Internal Auditors and Process Owners in one query
     members = UserProfile.objects.filter(role__in=['Internal Auditor', 'Process Owner']).select_related('user')
 
@@ -88,7 +101,11 @@ def lead_auditor_dashboard_view(request):
         "internal_auditors_count": internal_auditors_count,
         "process_owners_count": process_owners_count,
         "total_members": total_members,
-        "members": members
+        "members": members,
+        "iso_clauses": iso_clauses,
+        "non_conformities": non_conformities,
+        'audit_details': audit_details,
+
     }
 
     return render(request, 'main/lead auditor/lead_auditor_dashboard.html', context)
@@ -132,7 +149,6 @@ def process_owner_dashboard_view(request):
         "minor_nc_count": minor_nc_count,
         "ofi_count": ofi_count
     }
-
 
     return render(request, 'main/process owner/process_owner_dashboard.html', context)
 
@@ -477,11 +493,9 @@ def guideline_management_view(request):
 
     return render(request, template, context)
 
-@login_required
 def add_non_conformity(request):
-    # Determine the role or path to adjust behavior dynamically
-    current_view_name = resolve(request.path).url_name  # Get the name of the current view
-    is_lead_auditor = current_view_name == 'lead_auditor_add_non_conformity'
+    if not request.user.userprofile.role == 'Lead Auditor':
+        return HttpResponseForbidden("You do not have permission to access this page.")
 
     if request.method == 'POST':
         # Get form data
@@ -522,7 +536,7 @@ def add_non_conformity(request):
 
         # Send notification to the assigned Process Owner
         notify.send(
-            request.user,  # The user creating the Non-Conformity (Internal/Lead Auditor)
+            request.user,  # The user creating the Non-Conformity (Lead Auditor)
             recipient=assigned_to,  # Process Owner
             verb="New Task Assigned",
             description=f"You have been assigned a new Non-Conformity: {non_conformity_instance.non_conformity}.",
@@ -532,18 +546,14 @@ def add_non_conformity(request):
         # Add success message and redirect
         messages.success(request, 'Non-Conformity successfully created and Process Owner notified.')
 
-        # Redirect based on the role or path
-        if is_lead_auditor:
-            return redirect('lead_auditor_monitoring_log')  # Replace with the Lead Auditor's appropriate page
-        else:
-            return redirect('internal_auditor_monitoring_log')  # Redirect to Internal Auditor's page
+        # Redirect to Lead Auditor's monitoring log
+        return redirect('lead_auditor_monitoring_log')
 
     # Fetch all Process Owners for dropdown in the form
     process_owners = User.objects.filter(userprofile__role='Process Owner')
 
     # Render the appropriate template
-    template = 'main/lead auditor/add_non_conformity.html' if is_lead_auditor else 'main/internal audit/add_non_conformity.html'
-    return render(request, template, {
+    return render(request, 'main/lead auditor/add_non_conformity.html', {
         'process_owners': process_owners
     })
 
@@ -709,6 +719,7 @@ def task_detail(request, task_id):
 @login_required
 def add_immediate_action(request, task_id):
     task = get_object_or_404(NonConformity, id=task_id)
+
     if request.method == 'POST':
         # Get or create the ImmediateAction instance
         immediate_action, created = ImmediateAction.objects.get_or_create(non_conformity=task)
@@ -730,6 +741,29 @@ def add_immediate_action(request, task_id):
 
         # Save the updated ImmediateAction instance
         immediate_action.save()
+
+        # Notify Lead and Internal Auditors
+        lead_users = UserProfile.objects.filter(role='Lead Auditor')
+        internal_auditors = UserProfile.objects.filter(role='Internal Auditor')
+
+        # Send email notifications (optional)
+        for user_profile in lead_users.union(internal_auditors):
+            send_mail(
+                'New Immediate Action Added',
+                f'An immediate action has been added for task: {task.non_conformity}. Please review it.',
+                'from@example.com',  # Use your 'from' email
+                [user_profile.user.email],
+                fail_silently=False,
+            )
+
+            # Create in-app notifications for the users
+            notify.send(
+                request.user,  # sender
+                recipient=user_profile.user,  # recipient
+                verb='added an immediate action',  # action description
+                target=task,  # target object (task)
+                action_object=immediate_action  # action object (immediate action)
+            )
 
         messages.success(request, "Immediate Action saved successfully.")
         return redirect('task_detail', task_id=task.id)
@@ -767,7 +801,29 @@ def add_root_cause_analysis(request, task_id):
         # Save the updated root cause analysis
         root_cause_analysis.save()
 
-        # Notify the user and redirect
+        # Notify Lead and Internal Auditors
+        lead_users = UserProfile.objects.filter(role='Lead Auditor')
+        internal_auditors = UserProfile.objects.filter(role='Internal Auditor')
+
+        # Send email notifications (optional)
+        for user_profile in lead_users.union(internal_auditors):
+            send_mail(
+                'New Root Cause Analysis Created',
+                f'A root cause analysis has been created for task: {task.non_conformity}. Please review it.',
+                'from@example.com',  # Use your 'from' email
+                [user_profile.user.email],
+                fail_silently=False,
+            )
+
+            # Create in-app notifications for the users
+            notify.send(
+                request.user,  # sender
+                recipient=user_profile.user,  # recipient
+                verb='created a root cause analysis',  # action description
+                target=task,  # target object (task)
+                action_object=root_cause_analysis  # action object (root cause analysis)
+            )
+
         messages.success(request, "Root Cause Analysis saved successfully.")
         return redirect('task_detail', task_id=task.id)
 
@@ -777,6 +833,7 @@ def add_root_cause_analysis(request, task_id):
 @login_required
 def corrective_action_plan(request, task_id):
     task = get_object_or_404(NonConformity, id=task_id)
+
     if request.method == 'POST':
         # Remove existing plans only if necessary
         CorrectiveActionPlan.objects.filter(non_conformity=task).delete()
@@ -784,13 +841,36 @@ def corrective_action_plan(request, task_id):
         # Save multiple plans
         row_count = len([key for key in request.POST.keys() if key.startswith('activity_')])
         for i in range(1, row_count + 1):
-            CorrectiveActionPlan.objects.create(
+            corrective_action_plan = CorrectiveActionPlan.objects.create(
                 non_conformity=task,
                 activity=request.POST.get(f'activity_{i}'),
                 responsible_person=request.POST.get(f'responsible_person_{i}'),
                 time_frame=request.POST.get(f'time_frame_{i}'),
                 resources_needed=request.POST.get(f'resources_needed_{i}'),
                 result=request.POST.get(f'result_{i}', '')
+            )
+
+        # Notify Lead and Internal Auditors
+        lead_users = UserProfile.objects.filter(role='Lead Auditor')
+        internal_auditors = UserProfile.objects.filter(role='Internal Auditor')
+
+        # Send email notifications (optional)
+        for user_profile in lead_users.union(internal_auditors):
+            send_mail(
+                'New Corrective Action Plan Created',
+                f'A corrective action plan has been created for task: {task.non_conformity}. Please review it.',
+                'from@example.com',  # Use your 'from' email
+                [user_profile.user.email],
+                fail_silently=False,
+            )
+
+            # Create in-app notifications for the users
+            notify.send(
+                request.user,  # sender
+                recipient=user_profile.user,  # recipient
+                verb='created a corrective action plan',  # action description
+                target=task,  # target object (task)
+                action_object=corrective_action_plan  # action object (corrective action plan)
             )
 
         messages.success(request, "Corrective Action Plans saved successfully.")
@@ -802,7 +882,6 @@ def corrective_action_plan(request, task_id):
         'non_conformity': task,
         'corrective_action_plans': corrective_action_plans,
     })
-
 @login_required
 def add_review(request, cap_id):
     corrective_action_plan = get_object_or_404(CorrectiveActionPlan, id=cap_id)
@@ -1277,91 +1356,6 @@ def lead_auditor_manage_user(request):
     }
     return render(request, 'main/lead auditor/lead_auditor_manage_user.html', context)
 
-def audit_report_summary_view(request):
-    # Fetch latest audit details, good points, and audit findings
-    audit_details = AuditDetails.objects.last()  # Get the latest audit details
-    good_points = GoodPoints.objects.all()  # Get all good points
-
-    # Create AuditFindings from NonConformity if they don't already exist
-    non_conformities = NonConformity.objects.filter(status='completed')  # Adjust as needed
-    for nc in non_conformities:
-        if not AuditFinding.objects.filter(linked_rfa=nc).exists():  # Ensure the AuditFinding doesn't already exist
-            AuditFinding.create_from_non_conformity(nc)  # Create AuditFinding from NonConformity
-
-    # Fetch all audit findings to display
-    audit_findings = AuditFinding.objects.all()
-
-    # Initialize forms for AuditDetails, GoodPoints, and AuditFinding
-    audit_details_form = AuditDetailsForm(request.POST or None, instance=audit_details)
-    good_points_form = GoodPointsForm(request.POST or None)
-    audit_finding_form = AuditFindingForm(request.POST or None)
-
-    if request.method == 'POST':
-        # Handle form submissions based on the button clicked
-        if 'audit_details_submit' in request.POST and audit_details_form.is_valid():
-            audit_details_form.save()
-            return redirect('audit_report_summary')
-
-        elif 'good_points_submit' in request.POST and good_points_form.is_valid():
-            good_points_form.save()
-            return redirect('audit_report_summary')
-
-        elif 'audit_finding_submit' in request.POST and audit_finding_form.is_valid():
-            audit_finding_form.save()
-            return redirect('audit_report_summary')
-
-    # Context for rendering the template
-    context = {
-        'audit_details': audit_details,
-        'audit_details_form': audit_details_form,
-        'good_points': good_points,
-        'good_points_form': good_points_form,
-        'audit_findings': audit_findings,
-        'audit_finding_form': audit_finding_form,
-    }
-
-    return render(request, 'main/lead auditor/audit_report.html', context)
-
-def generate_audit_report_summary_pdf(request):
-    # Fetch the data for the Audit Report Summary
-    audit_details = AuditDetails.objects.last()
-    good_points = GoodPoints.objects.all()
-    audit_findings = AuditFinding.objects.all()
-
-    current_site = request.build_absolute_uri('/')  # Get the current site URL
-
-    # Prepare the context for rendering
-    context = {
-        'audit_details': audit_details,
-        'good_points': good_points,
-        'audit_findings': audit_findings,
-        'left_logo_url': current_site + static('main/iso-sorsu-logo.png'),
-        'right_logo_url': current_site + static('main/bagong-pilipinas-logo.png'),
-    }
-
-    # Render the HTML template
-    html = render_to_string('main/lead auditor/audit_report_summary.html', context)
-
-    # Debugging: Save the HTML to a file for inspection
-    with open('debug_audit_report_summary.html', 'w', encoding='utf-8') as file:
-        file.write(html)
-
-    # Generate PDF
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="Audit_Report_Summary.pdf"'
-
-    # Convert HTML to PDF
-    pisa_status = pisa.CreatePDF(html, dest=response)
-
-    # Check for errors
-    if pisa_status.err:
-        # Log the error to a file for debugging
-        with open('audit_pdf_error_log.txt', 'w', encoding='utf-8') as error_file:
-            error_file.write(f"Error during PDF generation: {pisa_status.err}")
-        return HttpResponse('An error occurred while generating the PDF', status=500)
-
-    return response
-
 @login_required
 def user_profile_view(request):
     # Handle GET request to fetch user profile data
@@ -1439,3 +1433,105 @@ def delete_announcement(request, id):
         announcement.delete()
         return redirect('view_announcements')
     return redirect('view_announcements')
+
+def audit_report_summary_view(request, audit_details_id):
+    # Fetch the specific AuditDetails instance
+    audit_details = get_object_or_404(AuditDetails, id=audit_details_id)
+
+    # Fetch GoodPoints linked to this AuditDetails
+    good_points = GoodPoints.objects.filter(audit_detail=audit_details)
+
+    non_conformities = NonConformity.objects.filter(status='completed')  # Adjust as needed
+    for nc in non_conformities:
+        if not AuditFinding.objects.filter(linked_rfa=nc).exists():  # Ensure the AuditFinding doesn't already exist
+            AuditFinding.create_from_non_conformity(nc)  # Create AuditFinding from NonConformity
+
+    # Fetch all audit findings to display
+    audit_findings = AuditFinding.objects.all()
+
+    audit_finding_form = AuditFindingForm(request.POST or None)
+
+    campus_name = good_points.first().campus if good_points.exists() else "Unknown Campus"
+
+    # Debugging outputs
+    print("Audit Details:", audit_details)
+    print("Good Points:", list(good_points))
+    print("Audit Findings:", list(audit_findings))
+
+    # Context for rendering the template
+    context = {
+        'audit_details': audit_details,
+        'good_points': good_points,
+        'audit_findings': audit_findings,
+        'audit_finding_form': audit_finding_form,
+        'campus_name': campus_name,
+    }
+
+    return render(request, 'main/lead auditor/audit_report.html', context)
+
+def generate_audit_report_summary_pdf(request, date_range):
+    # Fetch the audit details for the given date range
+    audit_details = AuditDetails.objects.filter(date_range=date_range).first()
+    if not audit_details:
+        return HttpResponse('No audit details found for the given date range.', status=404)
+
+    # Fetch associated GoodPoints
+    good_points = GoodPoints.objects.filter(audit_detail=audit_details)
+
+    # Fetch related NonConformities linked by location
+    non_conformities = NonConformity.objects.filter(unit_department=audit_details.location)
+
+    # Fetch AuditFindings
+    audit_findings = AuditFinding.objects.all()
+
+    campus_name = good_points.first().campus if good_points.exists() else "Unknown Campus"
+
+    # Prepare context for PDF rendering
+    context = {
+        'audit_details': audit_details,
+        'good_points': good_points,
+        'non_conformities': non_conformities,
+        'audit_findings': audit_findings,
+        'left_logo_url': request.build_absolute_uri(static('main/iso-sorsu-logo.png')),
+        'right_logo_url': request.build_absolute_uri(static('main/bagong-pilipinas-logo.png')),
+        'campus_name': campus_name,
+    }
+
+    # Render the HTML template to a string
+    html = render_to_string('main/lead auditor/audit_report_summary.html', context)
+
+    # Create the PDF response
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="Audit_Report_Summary_{date_range}.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    # Handle errors
+    if pisa_status.err:
+        return HttpResponse('An error occurred while generating the PDF.', status=500)
+
+    return response
+
+def save_audit_details(request):
+    if request.method == 'POST':
+        # Get the submitted data
+        date_range = request.POST.get('date_range')
+        location = request.POST.get('location')
+
+        # Check if a similar AuditDetails already exists
+        audit_details, created = AuditDetails.objects.get_or_create(
+            date_range=date_range,
+            location=location
+        )
+
+        # Save Good Points linked to this AuditDetails
+        good_points = request.POST.getlist('good_points[]')
+        for point in good_points:
+            if point.strip():  # Avoid saving empty points
+                GoodPoints.objects.create(
+                    audit_detail=audit_details,
+                    description=point.strip(),
+                    campus=location  # Example association
+                )
+
+        # Redirect to the summary view with the correct audit_details_id
+        return redirect('audit_report_summary', audit_details_id=audit_details.id)

@@ -134,11 +134,18 @@
                 </li>
                 <!-- Audit Report Link -->
                 <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'lead_auditor_audit_report' %}active{% endif %}"
-                       href="{% url 'audit_report_summary' %}">
-                        <i class="fas fa-clipboard-list me-2"></i> Audit Report
-                    </a>
+                    {% if audit_details %}
+                        <a class="nav-link {% if request.resolver_match.url_name == 'audit_report_summary' %}active{% endif %}"
+                           href="{% url 'audit_report_summary' audit_details.id %}">
+                            <i class="fas fa-clipboard-list me-2"></i> Audit Report
+                        </a>
+                    {% else %}
+                        <a class="nav-link disabled" href="#">
+                            <i class="fas fa-clipboard-list me-2"></i> Audit Report (Unavailable)
+                        </a>
+                    {% endif %}
                 </li>
+
                 <!-- Manage User Link -->
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'lead_auditor_manage_user' %}active{% endif %}"

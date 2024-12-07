@@ -9,80 +9,72 @@
             font-size: 12px;
             margin: 0;
             padding: 0;
+            line-height: 1.4;
+            color: #000;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 0;
+            margin: 10px 0;
         }
 
         td, th {
-            padding: 3px;
+            padding: 5px;
             border: 1px solid #000;
             vertical-align: top;
+            text-align: left;
+        }
+
+        th {
+            background-color: #e0e0e0;
+            font-weight: bold;
         }
 
         .header-table td {
             border: none;
+            text-align: center;
         }
 
         .left-logo, .right-logo {
-            text-align: center;
-            vertical-align: middle;
             width: 15%;
         }
 
         .center-text {
-            text-align: center;
             width: 70%;
-            line-height: 1.2;
+            text-align: center;
         }
 
         .audit-title {
-            text-align: center;
-            margin: 0;
             font-size: 14px;
             font-weight: bold;
+            margin: 5px 0;
         }
 
-        .section-title {
-            background-color: #f0f0f0;
-            font-weight: bold;
-            text-align: left;
+        ul {
+            margin: 0;
+            padding-left: 20px;
         }
 
-        .compressed td, .compressed th {
-            padding: 3px;
+        li {
+            margin-bottom: 5px;
         }
 
         .audit-findings th {
             background-color: #8f0512;
-            color: white;
+            color: #fff;
             text-align: center;
         }
 
-        /* Styling for the download button */
-        .download-btn {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 20px 0;
-            background-color: #007bff;
-            color: white;
-            font-weight: bold;
-            text-decoration: none;
-            border-radius: 5px;
-            text-align: center;
-        }
-
-        .download-btn:hover {
-            background-color: #0056b3;
-            cursor: pointer;
+        .audit-findings .details-column {
+            width: 50%; /* Make the Details column wider */
         }
     </style>
 </head>
 <body>
-<table class="header-table" style="margin-bottom: 5px;">
+
+<!-- Header Section -->
+<table class="header-table">
     <tr>
         <td class="left-logo">
             <img src="{{ left_logo_url }}" alt="ISO-SORSU Logo" style="width: 70px;">
@@ -94,7 +86,7 @@
             <p style="margin: 0; font-weight: bold;">ISO – Internal Quality Audit Unit</p>
             <p style="margin: 0;">Magsaysay Street, Salog (Pob.), Sorsogon City, Sorsogon</p>
             <p style="margin: 0;">Tel No.: 056 211-0103; Email Add.: qa.iso@sorsu.edu.ph</p>
-            <p class="audit-title" style="margin-top: 5px;">AUDIT REPORT SUMMARY</p>
+            <p class="audit-title">AUDIT REPORT SUMMARY</p>
         </td>
         <td class="right-logo">
             <img src="{{ right_logo_url }}" alt="Bagong Pilipinas Logo" style="width: 80px;">
@@ -102,14 +94,13 @@
     </tr>
 </table>
 
-<!-- Main Content of the Audit Report -->
-
-<table style="width: 100%; border-collapse: collapse;">
-    <tr style="background-color: #f0f0f0; border: 1px solid #000; text-align: left;">
-        <th style="padding: 2px 5px; text-align: left;">I. Date and Place of Internal Audit</th>
+<!-- Date and Place Section -->
+<table>
+    <tr>
+        <th>Date and Place of Internal Audit</th>
     </tr>
-    <tr style="border: 1px solid #000;">
-        <td style="padding: 2px 5px; text-align: left;">
+    <tr>
+        <td>
             {% if audit_details %}
                 {{ audit_details.date_range }} | {{ audit_details.location }}
             {% else %}
@@ -119,50 +110,48 @@
     </tr>
 </table>
 
-<!-- Good Points Table -->
-<table style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
-    <tr style="background-color: #f0f0f0; border: 1px solid #000; text-align: left;">
-        <th style="padding: 2px 5px; text-align: left;">II. Good Points</th>
+<!-- Good Points Section -->
+<table>
+    <tr>
+        <th>Good Points</th>
     </tr>
-    <tr style="border: 1px solid #000;">
-        <td style="padding: 2px 5px; text-align: left;">
-            {% for point in good_points %}
-                <strong>{{ point.campus }}</strong>
-                <p style="margin: 2px 0; text-align: left;">{{ point.description }}</p>
-            {% empty %}
-                <p style="text-align: left;">No good points added.</p>
-            {% endfor %}
+    <tr>
+        <td>
+        <strong>Bulan Campus</strong>
+            {% if good_points %}
+                <ul>
+                    {% for point in good_points %}
+                        <li>{{ point.description }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No good points available for this audit.</p>
+            {% endif %}
         </td>
     </tr>
 </table>
 
-<!-- Audit Findings Table -->
-<h5 style="margin-top: 3px; font-size: 12px;">III. Audit Findings:</h5>
-<table style="width: 100%; border-collapse: collapse; margin-bottom: 1px; border: 1px solid #000;">
-    <tr style="background-color: #8f0512; color: white; text-align: center;">
-        <th style="padding: 4px 8px; border: 1px solid #000;">Ref No.</th>
-        <th style="padding: 4px 8px; border: 1px solid #000;">Clause No.</th>
-        <th style="padding: 4px 8px; border: 1px solid #000; width: 50%;">Details of any finding(s) raised</th>
-        <th style="padding: 4px 8px; border: 1px solid #000;">Type</th>
+<!-- Audit Findings Section -->
+<table class="audit-findings">
+    <tr>
+        <th>Ref No.</th>
+        <th>Clause No.</th>
+        <th class="details-column">Details</th>
+        <th>Type</th>
     </tr>
     {% for finding in audit_findings %}
         <tr>
-            <td style="padding: 8px; text-align: center; border: 1px solid #000;">{{ finding.ref_no }}</td>
-            <td style="padding: 8px; text-align: center; border: 1px solid #000;">{{ finding.clause_no }}</td>
-            <td style="padding: 10px; text-align: left; border: 1px solid #000; line-height: 1.6;">
-                {{ finding.details }}
-            </td>
-            <td style="padding: 8px; text-align: center; border: 1px solid #000;">{{ finding.finding_type }}</td>
+            <td>{{ finding.ref_no }}</td>
+            <td>{{ finding.clause_no }}</td>
+            <td>{{ finding.details }}</td>
+            <td>{{ finding.finding_type }}</td>
         </tr>
     {% empty %}
         <tr>
-            <td colspan="4" style="padding: 10px; text-align: center; border: 1px solid #000;">No audit findings
-                available.
-            </td>
+            <td colspan="4">No audit findings available.</td>
         </tr>
     {% endfor %}
 </table>
-
 
 </body>
 </html>

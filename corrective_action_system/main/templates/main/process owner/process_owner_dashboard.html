@@ -23,10 +23,10 @@
 
         /* Card Container */
         .card-container {
-        margin: 0 50px 25px 50px;
             display: flex;
             justify-content: space-between;
             gap: 1rem;
+            margin-bottom: 1rem;
             flex-wrap: wrap;
             padding: 0 5px; /* Minimal padding on left and right */
             box-sizing: border-box;
@@ -35,15 +35,19 @@
         /* Individual Cards */
         .dashboard-card {
             display: flex;
-            height: 115px;
+            height: 135px;
             width: 30%; /* Keep original width */
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding: 10px;
             padding: 8px; /* Reduced padding */
             box-sizing: border-box;
+            align-items: center;
+            justify-content: center; /* Center content */
+            text-align: center;
             align-items: center; /* Vertically center content */
             justify-content: center; /* Align content to the left */
         }
@@ -53,6 +57,8 @@
             font-size: 2.7rem; /* Icon size */
             color: #FF5733;
             margin-right: 15px; /* Space between icon and text */
+            color: darkred;
+            margin-bottom: 10px; /* Space between icon and text */
         }
 
         /* Card Text */
@@ -95,14 +101,12 @@
         .table-responsive {
             width: 100%; /* Ensure table fills the width */
             margin: 0; /* No extra margins */
-            border-radius: 15px;
         }
 
         .table {
             width: 100%; /* Ensure the table fills the available space */
             margin: 0; /* No external margin */
             border-collapse: collapse;
-
         }
 
         .table th, .table td {

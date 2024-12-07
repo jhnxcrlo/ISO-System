@@ -1,176 +1,224 @@
 {% extends "main/lead auditor/base.html" %}
-
 {% load static %}
 
 {% block content %}
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        font-size: 12px;
-        margin: 0;
-        padding: 0;
-    }
+    <style>
+        /* Global Styling */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.2; /* Reduced line height */
+            color: #333;
+            margin: 0;
+            padding: 10px; /* Reduced padding */
+            background-color: #f9f9f9;
+        }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 0;
-    }
+        .header-table {
+            width: 100%;
+            margin-bottom: 5px; /* Further reduced margin */
+        }
 
-    td, th {
-        padding: 3px;
-        border: 1px solid #000;
-        vertical-align: top;
-    }
+        .header-table td {
+            vertical-align: middle;
+            text-align: center;
+            padding: 1px; /* Further reduced padding */
+        }
 
-    .header-table td {
-        border: none;
-    }
+        .form-section {
+            margin-bottom: 15px; /* Further reduced margin */
+            padding: 10px; /* Further reduced padding */
+            background-color: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtler shadow */
+        }
 
-    .left-logo, .right-logo {
-        text-align: center;
-        vertical-align: middle;
-        width: 15%;
-    }
+        .form-section label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 3px; /* Reduced margin */
+        }
 
-    .center-text {
-        text-align: center;
-        width: 70%;
-        line-height: 1.2;
-    }
+        .form-section input,
+        .form-section textarea {
+            width: 100%;
+            padding: 8px; /* Further reduced padding */
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px; /* Further reduced margin */
+            font-size: 13px; /* Slightly smaller font size */
+        }
 
-    .audit-title {
-        text-align: center;
-        margin: 0;
-        font-size: 14px;
-        font-weight: bold;
-    }
+        .form-section button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 10px; /* Further reduced padding */
+            font-size: 13px; /* Slightly smaller font size */
+            border-radius: 4px; /* Reduced border radius */
+            cursor: pointer;
+        }
 
-    .compressed td, .compressed th {
-        padding: 3px;
-    }
+        .form-section button:hover {
+            background-color: #0056b3;
+        }
 
-    .audit-findings th {
-        background-color: #8f0512;
-        color: white;
-        text-align: center;
-    }
+        .table-container {
+            margin-bottom: 15px; /* Further reduced margin */
+        }
 
-    /* Styling for the download button */
-    .download-btn {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #dc3545; /* Red (danger) color */
-        color: white;
-        font-weight: bold;
-        text-decoration: none;
-        border-radius: 5px;
-        text-align: center;
-        margin-top: 20px;
-    }
+        .table-container h5 {
+            margin-bottom: 5px; /* Further reduced margin */
+            font-size: 15px; /* Slightly smaller font size */
+            font-weight: bold;
+        }
 
-    .download-btn:hover {
-        background-color: #c82333; /* Darker red when hovered */
-        cursor: pointer;
-    }
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-    /* Align the button to the right */
-    .download-btn-container {
-        text-align: right;
-        margin-top: 20px;
-    }
-</style>
+        .table-container th,
+        .table-container td {
+            padding: 6px; /* Further reduced padding */
+            border: 1px solid #ddd;
+            text-align: left;
+        }
 
-<!-- Header Section -->
-<table class="header-table" style="margin-bottom: 5px;">
-    <tr>
-        <td class="left-logo">
-            <img src="{% static 'main/iso-sorsu-logo.png' %}" alt="ISO-SORSU Logo" style="width: 90px;">
-        </td>
-        <td class="center-text">
-            <p style="margin: 0; font-size: 14px;">Republic of the Philippines</p>
-            <p style="margin: 0; font-size: 14px; font-weight: bold;">SORSOGON STATE UNIVERSITY</p>
-            <p style="margin: 0;font-size: 14px;">Quality Assurance Office</p>
-            <p style="margin: 0;font-size: 14px; font-weight: bold;">ISO – Internal Quality Audit Unit</p>
-            <p style="margin: 0;font-size: 14px;">Magsaysay Street, Salog (Pob.), Sorsogon City, Sorsogon</p>
-            <p style="margin: 0;font-size: 14px;">Tel No.: 056 211-0103; Email Add.: qa.iso@sorsu.edu.ph</p>
-            <p class="audit-title" style="margin-top: 15px; font-size: 17px;">AUDIT REPORT SUMMARY</p>
-        </td>
-        <td class="right-logo">
-            <img src="{% static 'main/bagong-pilipinas-logo.png' %}" alt="Bagong Pilipinas Logo" style="width: 100px;">
-        </td>
-    </tr>
-</table>
+        .table-container th {
+            background-color: #f4f4f4;
+        }
 
-<!-- Audit Details Section -->
-<table style="width: 100%; border-collapse: collapse;">
-    <tr style="background-color: #f0f0f0; border: 1px solid #000; text-align: left;">
-        <th style="padding: 2px 5px; text-align: left;">I. Date and Place of Internal Audit</th>
-    </tr>
-    <tr style="border: 1px solid #000;">
-        <td style="padding: 2px 5px; text-align: left;">
-            {% if audit_details %}
-                {{ audit_details.date_range }} | {{ audit_details.location }}
-            {% else %}
-                No details provided.
-            {% endif %}
-        </td>
-    </tr>
-</table>
+        .audit-findings th {
+            background-color: #8b0000; /* Dark red header */
+            color: white;
+            text-align: center;
+        }
 
-<!-- Good Points Section -->
-<table style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
-    <tr style="background-color: #f0f0f0; border: 1px solid #000; text-align: left;">
-        <th style="padding: 2px 5px; text-align: left;">II. Good Points</th>
-    </tr>
-    <tr style="border: 1px solid #000;">
-        <td style="padding: 2px 5px; text-align: left;">
-            {% for point in good_points %}
-                <strong>{{ point.campus }}</strong>
-                <p style="margin: 2px 0; text-align: left;">{{ point.description }}</p>
-            {% empty %}
-                <p style="text-align: left;">No good points added.</p>
-            {% endfor %}
-        </td>
-    </tr>
-</table>
+        .download-btn {
+            display: inline-block;
+            padding: 8px 10px; /* Further reduced padding */
+            background-color: #8f0512;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 4px; /* Reduced border radius */
+            text-align: center;
+            margin-top: 10px; /* Further reduced margin */
+        }
 
-<!-- Audit Findings Section -->
-<h5 style="margin-top: 3px; font-size: 12px;">III. Audit Findings:</h5>
-<table style="width: 100%; border-collapse: collapse; margin-bottom: 1px; border: 1px solid #000;">
-    <tr style="background-color: #8f0512; color: white; text-align: center;">
-        <th style="padding: 4px 8px; border: 1px solid #000;">Ref No.</th>
-        <th style="padding: 4px 8px; border: 1px solid #000;">Clause No.</th>
-        <th style="padding: 4px 8px; border: 1px solid #000; width: 50%;">Details of any finding(s) raised</th>
-        <th style="padding: 4px 8px; border: 1px solid #000;">Type</th>
-    </tr>
-    {% for finding in audit_findings %}
+        .download-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+
+    <!-- Header Section -->
+    <table class="header-table">
         <tr>
-            <td style="padding: 8px; text-align: center; border: 1px solid #000;">{{ finding.ref_no }}</td>
-            <td style="padding: 8px; text-align: center; border: 1px solid #000;">{{ finding.clause_no }}</td>
-            <td style="padding: 10px; text-align: left; border: 1px solid #000; line-height: 1.6;">
-                {{ finding.details }}
+            <td class="left-logo">
+                <img src="{% static 'main/iso-sorsu-logo.png' %}" alt="ISO-SORSU Logo" style="width: 90px;">
             </td>
-            <td style="padding: 8px; text-align: center; border: 1px solid #000;">
-                {% if finding.finding_type == 'ofi' %}
-                    OFI
-                {% else %}
-                    {{ finding.finding_type|title }}
-                {% endif %}
+            <td class="center-text">
+                <p>Republic of the Philippines</p>
+                <p><strong>SORSOGON STATE UNIVERSITY</strong></p>
+                <p>Quality Assurance Office</p>
+                <p><strong>ISO – Internal Quality Audit Unit</strong></p>
+                <p>Magsaysay Street, Salog (Pob.), Sorsogon City, Sorsogon</p>
+                <p>Tel No.: 056 211-0103; Email Add.: qa.iso@sorsu.edu.ph</p>
+                <p class="audit-title" style="font-size: 20px; font-weight: bold">AUDIT REPORT SUMMARY</p>
+            </td>
+            <td class="right-logo">
+                <img src="{% static 'main/bagong-pilipinas-logo.png' %}" alt="Bagong Pilipinas Logo"
+                     style="width: 100px;">
             </td>
         </tr>
-    {% empty %}
-        <tr>
-            <td colspan="4" style="padding: 10px; text-align: center; border: 1px solid #000;">No audit findings available.</td>
-        </tr>
-    {% endfor %}
-</table>
+    </table>
 
-<!-- Download Button (Right-aligned, Danger color) -->
-<div class="download-btn-container">
-    <a href="{% url 'audit_report_summary_pdf' %}" class="download-btn" target="_blank">
-        Download PDF
-    </a>
-</div>
+    <!-- Form Section -->
+    <form method="post" action="{% url 'save_audit_details' %}">
+        {% csrf_token %}
+        <input type="hidden" name="audit_details_id" value="{{ audit_details.id }}">
 
+        <div class="form-section">
+            <label for="date_range">Date Range:</label>
+            <input
+                type="text"
+                id="date_range"
+                name="date_range"
+                value="{% if audit_details %}{{ audit_details.date_range }}{% endif %}"
+                placeholder="Enter date range"
+                required />
+
+            <label for="location">Location:</label>
+            <input
+                type="text"
+                id="location"
+                name="location"
+                value="{% if audit_details %}{{ audit_details.location }}{% endif %}"
+                placeholder="Enter location"
+                required />
+
+            <label for="good_points">Good Points:</label>
+            <div id="good_points_container">
+                <textarea name="good_points[]" rows="2" placeholder="Enter good point"></textarea> <!-- Reduced rows -->
+            </div>
+
+            <button type="submit">Save Report</button>
+        </div>
+    </form>
+
+    <!-- Good Points Table -->
+    <div class="table-container">
+        <h5>Existing Good Points</h5>
+        {% if good_points %}
+            <table>
+                <tr>
+                    <th>Location</th>
+                    <th>Description</th>
+                </tr>
+                {% for point in good_points %}
+                    {% if point.audit_detail.id == audit_details.id %}
+                        <tr>
+                            <td>{{ point.campus }}</td>
+                            <td>{{ point.description }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No good points added yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Audit Findings Table -->
+    <div class="table-container">
+        <h5>Audit Findings</h5>
+        {% if audit_findings %}
+            <table>
+                <tr class="audit-findings">
+                    <th>Ref No.</th>
+                    <th>Clause No.</th>
+                    <th>Details</th>
+                    <th>Type</th>
+                </tr>
+                {% for finding in audit_findings %}
+                    <tr>
+                        <td>{{ finding.ref_no }}</td>
+                        <td>{{ finding.clause_no }}</td>
+                        <td>{{ finding.details }}</td>
+                        <td>{{ finding.finding_type }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No audit findings available.</p>
+        {% endif %}
+    </div>
+
+    <!-- Download Button -->
+    <div style="text-align: right;">
+        {% if audit_details %}
+            <a href="{% url 'audit_report_summary_pdf' audit_details.date_range %}" class="download-btn">Download PDF</a>
+        {% endif %}
+    </div>
 {% endblock %}

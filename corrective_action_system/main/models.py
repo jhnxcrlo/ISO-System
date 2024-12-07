@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -260,20 +261,63 @@ class Comment(models.Model):
         return self.parent is not None
 
 class AuditDetails(models.Model):
-    date_range = models.CharField(max_length=255, verbose_name="Audit Date Range")
-    location = models.CharField(max_length=255, verbose_name="Audit Location")
-    created_at = models.DateTimeField(auto_now_add=True)
+    date_range = models.CharField(
+        max_length=255,
+        verbose_name="Audit Date Range",
+        help_text="Specify the date range of the audit."
+    )
+    location = models.CharField(
+        max_length=255,
+        verbose_name="Audit Location",
+        help_text="Specify the location where the audit was conducted."
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Date Created",
+        help_text="The date and time when this audit detail was created."
+    )
+
+    class Meta:
+        verbose_name = "Audit Detail"
+        verbose_name_plural = "Audit Details"
+        ordering = ['-created_at']
 
     def __str__(self):
         return f"{self.date_range} | {self.location}"
 
 
 class GoodPoints(models.Model):
-    campus = models.CharField(max_length=255, verbose_name="Campus Name")
-    description = models.TextField(verbose_name="Description")
+    audit_detail = models.ForeignKey(
+        AuditDetails,
+        on_delete=models.CASCADE,
+        null=True,  # Allow null values for existing rows
+        blank=True,  # Allow forms to leave this field empty
+        related_name='good_points',  # Enable reverse relation from AuditDetails
+        verbose_name='Audit Detail',  # Human-readable name for admin
+        help_text="Link this good point to a specific audit detail."
+    )
+    campus = models.CharField(
+        max_length=255,
+        verbose_name='Campus',
+        help_text='Enter the campus associated with this good point.'
+    )
+    description = models.TextField(
+        verbose_name='Description',
+        help_text='Provide a detailed description of the good point.'
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Date Created',
+        help_text='The date and time when this entry was created.'
+    )
+
+    class Meta:
+        verbose_name = 'Good Point'
+        verbose_name_plural = 'Good Points'
+        ordering = ['-created_at']
 
     def __str__(self):
-        return self.campus
+        return f"Good Point: {self.campus} - {self.description[:50]}"
 
 
 class AuditFinding(models.Model):
@@ -296,6 +340,15 @@ class AuditFinding(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         verbose_name="Linked RFA"
+    )
+    audit_detail = models.ForeignKey(
+        AuditDetails,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="audit_findings",
+        verbose_name="Audit Detail",
+        help_text="Link this finding to an audit detail."
     )
 
     def __str__(self):
