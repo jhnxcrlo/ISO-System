@@ -1,3 +1,5 @@
+# decorators.py
+
 from django.core.exceptions import PermissionDenied
 
 def is_lead_or_internal_auditor(user):

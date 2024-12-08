@@ -1,23 +1,155 @@
+<!--2.3 Immediate Actions and Root Cause Recording;-->
+<!--2.4 Action Plan Approval and Tracking;-->
+<!--2.7 Evidence Submission;-->
+
+
+
 {% extends 'main/process owner/base.html' %}
 {% load custom_tags %}
 {% block title %}Non-Conformity Details{% endblock %}
 
 {% block content %}
+<style>
+    .btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+        position: relative;
+    overflow: hidden;
+}
 
+.btn-danger {
+    background-color: #A33331;
+    border-color: #A33331;
+}
+.btn-comment {
+  border: 2px solid #A33331; /* Border in #A33331 */
+  color: #A33331; /* Text color in #A33331 */
+  background-color: white; /* White background */
+  padding: 6px 15px; /* Adjust padding as needed */
+  font-size: 16px; /* Adjust font size as needed */
+  border-radius: 0 8px 8px 0; /* Rounded corners only on the right side */
+  margin-right: -8px; /* Creates a gap */
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Hover state */
+.btn-comment:hover {
+  background-color: #A33331; /* Background changes to #A33331 */
+  color: white; /* Text changes to white */
+  border-color: #A33331;
+}
+
+/* Focused state */
+.btn-comment:focus {
+  outline: none; /* Removes default outline */
+  box-shadow: 0 0 5px #A33331; /* Adds a glow in #A33331 */
+  border-color: #A33331;
+}
+
+/* Active state */
+.btn-comment:active {
+  background-color: #6F2524; /* Darker version of #A33331 */
+  color: white;
+  border-color: #6F2524;
+  transform: scale(0.98); /* Slightly shrinks button */
+}
+
+/* Disabled state */
+.btn-comment:disabled {
+  background-color: #f8f8f8; /* Light gray background */
+  color: #cccccc; /* Gray text */
+  border-color: #cccccc; /* Gray border */
+  cursor: not-allowed; /* Disabled cursor */
+  opacity: 0.7;
+}
+
+    /* Button style */
+.btn-view-rfa {
+    display: inline-flex; /* Align icon and text in a row */
+    align-items: center; /* Vertically center icon and text */
+    padding: 10px 20px; /* Add padding around the button */
+    border: 2px solid #A33331; /* Red border */
+    background-color: transparent; /* Transparent background */
+    color: #A33331; /* Red text */
+    text-decoration: none; /* Remove underline from link */
+    font-size: 16px; /* Adjust font size */
+    font-weight: bold; /* Bold text */
+    text-transform: uppercase; /* Optional: Uppercase text */
+    cursor: pointer; /* Pointer cursor for clickable element */
+    border-radius: 0; /* No rounded corners */
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease; /* Smooth hover and active transitions */
+}
+
+/* Icon styling */
+.btn-view-rfa i {
+    margin-right: 10px; /* Add spacing between icon and text */
+    font-size: 18px; /* Adjust icon size */
+}
+
+/* Hover state */
+.btn-view-rfa:hover {
+    background-color: #A33331; /* Background changes to #A33331 */
+  color: white; /* Text changes to white */
+  border-color: #A33331;
+}
+
+/* Active state */
+.btn-view-rfa:active {
+    background-color: darkred; /* Darker red background when active */
+    color: white; /* White text */
+    transform: scale(0.95); /* Slightly shrink for a pressed effect */
+    border-color: darkred; /* Darker red border */
+}
+
+    /* Base styles for the nav link */
+.nav-link-tab {
+    color: #A33331; /* Text color */
+    text-decoration: none; /* Remove underline */
+    padding: 8px 16px; /* Add some padding for better spacing */
+    font-size: 16px; /* Adjust font size */
+    border-radius: 4px;
+    font-weight: 500; /* Set a medium font weight */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+
+/* On hover, change color and add some other effects */
+.nav-link-tab:hover {
+    color: #A33331; /* White color on hover */
+    background-color: #f5f5f5; /* Background color on hover */
+    border-radius: 4px; /* Slight rounding of corners */
+    text-decoration: none; /* Remove underline on hover */
+}
+
+/* Active link style */
+.nav-link-tab.active {
+    font-weight: 700; /* Make the active link bold */
+    text-decoration: underline; /* Underline the active link */
+    color: #fff; /* White color on hover */
+    background-color: #A33331; /* Background color on hover */
+    border-radius: 4px; /* Slight rounding of corners */
+    text-decoration: none; /* Remove underline on hover */
+}
+
+</style>
 
     <div class="container mt-4">
         <h3>Non-Conformity Details</h3>
 
         <!-- Progress Bar -->
         <div class="progress my-3">
-            <div
-                    class="progress-bar progress-bar-striped progress-bar-animated {% if immediate_action and root_cause_analysis and root_cause_analysis.root_cause_completed %}bg-success{% else %}bg-warning{% endif %}"
-                    role="progressbar"
-                    style="width:
-                            {% if not immediate_action %}33%;
-                            {% elif not root_cause_analysis or not root_cause_analysis.root_cause_completed %}66%;
-                            {% else %}100%;
-                            {% endif %}">
+            <div class="progress-bar progress-bar-striped progress-bar-animated
+                {% if immediate_action and root_cause_analysis and root_cause_analysis.root_cause_completed %}bg-success
+                {% else %}bg-warning{% endif %}"
+                role="progressbar"
+                style="width:
+                    {% if not immediate_action %}33%;
+                    {% elif not root_cause_analysis or not root_cause_analysis.root_cause_completed %}66%;
+                    {% else %}100%;
+                    {% endif %}">
+
                 {% if not immediate_action %}
                     Immediate Action Pending
                 {% elif not root_cause_analysis or not root_cause_analysis.root_cause_completed %}
@@ -27,6 +159,7 @@
                 {% endif %}
             </div>
         </div>
+
 
         <!-- Display additional details -->
         {% if immediate_action and root_cause_analysis and root_cause_analysis.root_cause_completed %}
@@ -51,7 +184,7 @@
 
         <!-- Non-Conformity Details Card -->
         <div class="card mt-4">
-            <div class="card-body">
+            <div class="card-body m-4">
                 <div class="row">
                     <!-- Details Columns -->
                     <div class="col-md-6">
@@ -85,16 +218,25 @@
                 </div>
             </div>
         </div>
+        <div class="text-start mt-4 d-flex align-items-center">
+                    <i class="bi bi-list-check" style="font-size: 40px; margin-right: 10px;  "></i>
+                    <h4 class="m-0" style="font-weight:bold;">Standard Operating Procedure</h4>
+        </div>
+         <div class="text-start mt-1 mb-3">
+                    <a href="#" class="btn-view-rfa">
+                        <i class="bi bi-arrow-right"></i> View Request For Action Form
+                    </a>
+                </div>
 
-        <div class="card mt-4">
-            <div class="card-body">
+        <div class="card">
+            <div class="card-body m-4">
                 <!-- Tabs Navigation -->
                 <ul class="nav nav-tabs nav-justified mb-3" id="auditStepsTabs" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button
                                 aria-controls="immediate-action"
                                 aria-selected="true"
-                                class="nav-link active"
+                                class="nav-link-tab active"
                                 data-bs-target="#immediate-action"
                                 data-bs-toggle="tab"
                                 id="immediate-action-tab"
@@ -107,7 +249,7 @@
                         <button
                                 aria-controls="root-cause"
                                 aria-selected="false"
-                                class="nav-link"
+                                class="nav-link-tab"
                                 data-bs-target="#root-cause"
                                 data-bs-toggle="tab"
                                 id="root-cause-tab"
@@ -120,7 +262,7 @@
                         <button
                                 aria-controls="corrective-action"
                                 aria-selected="false"
-                                class="nav-link"
+                                class="nav-link-tab"
                                 data-bs-target="#corrective-action"
                                 data-bs-toggle="tab"
                                 id="corrective-action-tab"
@@ -144,7 +286,7 @@
                                     placeholder="Describe the action"
                                     required
                                     rows="4">{{ immediate_action.action_description|default_if_none:'' }}</textarea>
-                            <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#saveImmediateActionModal">
+                            <button type="button" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#saveImmediateActionModal">
                                 Save Immediate Action
                             </button>
 
@@ -203,7 +345,7 @@
                                 <div class="input-group">
                                     <input type="text" name="comment_content" class="form-control"
                                            placeholder="Write a comment..." required>
-                                    <button type="submit" class="btn btn-danger">Submit</button>
+                                    <button type="submit" class="btn-comment">Comment</button>
                                 </div>
                             </form>
                         </div>
@@ -279,7 +421,7 @@
                                 <small class="form-text text-muted">Upload supporting documents (PDF, Word, Excel,
                                     images, etc.).</small>
                             </div>
-                            <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#saveRootCauseModal">
+                            <button type="button" class="btn btn-danger mt-3 complete-step-btn w-20 mt-2" data-bs-toggle="modal" data-bs-target="#saveRootCauseModal">
                                 Save Root Cause Analysis
                             </button>
 
@@ -324,7 +466,7 @@
                                                 <input type="text" name="comment_content"
                                                        class="form-control form-control-sm"
                                                        placeholder="Reply to this comment..." required>
-                                                <button type="submit" class="btn btn-danger btn-sm">Reply</button>
+                                                <button type="submit" class="btn-comment">Reply</button>
                                             </div>
                                         </form>
                                     </li>
@@ -338,7 +480,7 @@
                                 <div class="input-group">
                                     <input type="text" name="comment_content" class="form-control"
                                            placeholder="Write a comment..." required>
-                                    <button type="submit" class="btn btn-danger">Submit</button>
+                                    <button type="submit" class=" btn-comment">Comment</button>
                                 </div>
                             </form>
                         </div>
@@ -421,7 +563,7 @@
                             <div class="d-flex justify-content-between mt-3">
                                 <button class="btn btn-secondary btn-sm" id="add-row-btn" type="button">+ Add Row
                                 </button>
-                                <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#saveCorrectiveActionModal">
+                                <button type="button" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#saveCorrectiveActionModal">
                                     Save Corrective Action Plan
                                 </button>
                             </div>

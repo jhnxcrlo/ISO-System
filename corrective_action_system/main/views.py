@@ -1,3 +1,5 @@
+# views.py
+
 from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMultiAlternatives, send_mail
 from django.template.loader import render_to_string, get_template
