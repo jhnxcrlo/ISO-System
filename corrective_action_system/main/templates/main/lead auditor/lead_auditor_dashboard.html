@@ -164,19 +164,14 @@
         </div>
     </div>
 </div>
-
-
-
     </div>
 </div>
-
-
     <script>
         // Get dynamic data from the Django context
         const majorNcCount = {{ major_nc_count|default:0 }};
         const minorNcCount = {{ minor_nc_count|default:0 }};
         const ofiCount = {{ ofi_count|default:0 }};
-        const goodPointsCount = {{ good_points_count|default:0 }};
+        const goodPointsCount = {{ good_points_count|default:2 }};
 
         // Setup chart data for Audit Summary (Major NC, Minor NC, OFI, Good Points)
         const ctx1 = document.getElementById('myChart').getContext('2d');

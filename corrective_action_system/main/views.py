@@ -3,7 +3,7 @@
 from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMultiAlternatives, send_mail
 from django.template.loader import render_to_string, get_template
-from django.urls import resolve
+from django.urls import resolve, reverse
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.shortcuts import render, redirect, get_object_or_404
@@ -28,16 +28,19 @@ from .models import (
     LoginEvent, UserProfile, ImmediateAction, RootCauseAnalysis,
     CorrectiveActionPlan, FollowUpAction, ActionVerification,
     CorrectiveActionPlanReview, CloseOut, Comment, NonConformity,
-    TemplateModel, Guideline, Announcement, AuditDetails, GoodPoints, AuditFinding
+    TemplateModel, Guideline, Announcement, AuditDetails, GoodPoints, AuditFinding, Evaluation
 )
 
 from .forms import (
     UserCreationForm, UserUpdateForm, RootCauseAnalysisForm,
     ImmediateActionForm, CorrectiveActionPlanForm, FollowUpActionForm,
     CorrectiveActionPlanReviewForm, CloseOutForm, ActionVerificationForm,
-    GuidelineForm, AnnouncementForm, CustomPasswordChangeForm, AuditDetailsForm, GoodPointsForm, AuditFindingForm
+    GuidelineForm, AnnouncementForm, CustomPasswordChangeForm, AuditDetailsForm, GoodPointsForm, AuditFindingForm,
+    EvaluationForm
 )
+
 s = URLSafeTimedSerializer('your-secret-key')
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -64,6 +67,7 @@ def login_view(request):
         else:
             return render(request, 'main/login.html', {'error': 'Invalid username or password'})
     return render(request, 'main/login.html')
+
 
 @login_required
 def lead_auditor_dashboard_view(request):
@@ -112,6 +116,7 @@ def lead_auditor_dashboard_view(request):
 
     return render(request, 'main/lead auditor/lead_auditor_dashboard.html', context)
 
+
 @login_required
 def internal_auditor_dashboard_view(request):
     # Get the total count of Non-Conformities
@@ -138,6 +143,7 @@ def internal_auditor_dashboard_view(request):
 
     return render(request, 'main/internal audit/internal_auditor_dashboard.html', context)
 
+
 @login_required
 def process_owner_dashboard_view(request):
     tasks = NonConformity.objects.filter(assigned_to=request.user, status='pending')
@@ -154,7 +160,9 @@ def process_owner_dashboard_view(request):
 
     return render(request, 'main/process owner/process_owner_dashboard.html', context)
 
+
 logger = logging.getLogger(__name__)
+
 
 @login_required
 def add_user(request):
@@ -178,6 +186,7 @@ def add_user(request):
             print("Form validation errors:", form.errors)  # Debugging
             messages.error(request, 'Failed to add user. Please check the form.')
     return redirect('lead_auditor_manage_user')
+
 
 @login_required
 def edit_user(request, user_id):
@@ -207,6 +216,7 @@ def edit_user(request, user_id):
     }
     return render(request, 'main/lead auditor/lead_auditor_manage_user.html', context)
 
+
 @login_required
 def delete_user_view(request, user_id):
     user = get_object_or_404(User, id=user_id)
@@ -230,6 +240,7 @@ def delete_user_view(request, user_id):
 
     # If it's not a POST request, return an error
     return HttpResponse('Invalid request method', status=405)
+
 
 @login_required
 def change_password(request):
@@ -268,6 +279,7 @@ def change_password(request):
 
     return render(request, 'main/lead auditor/change_password.html', {'form': form})
 
+
 def verify_email(request, token):
     try:
         email = s.loads(token, salt='email-confirm', max_age=3600)
@@ -285,9 +297,11 @@ def verify_email(request, token):
         messages.error(request, 'An unexpected error occurred.')
     return redirect('login')
 
+
 def role_allowed_to_manage_forms(user):
     """Check if user is Lead Auditor or Internal Auditor."""
     return hasattr(user, 'userprofile') and user.userprofile.role in ['Lead Auditor', 'Internal Auditor']
+
 
 @login_required
 @user_passes_test(role_allowed_to_manage_forms)
@@ -340,6 +354,7 @@ def upload_template(request):
     else:
         return redirect('process_owner_forms')
 
+
 @login_required
 def download_template(request, pk):
     """View for downloading templates."""
@@ -352,6 +367,7 @@ def download_template(request, pk):
         except FileNotFoundError:
             raise Http404("File not found.")
     return redirect('manage_forms')
+
 
 @login_required
 @user_passes_test(role_allowed_to_manage_forms)
@@ -403,11 +419,13 @@ def delete_template(request, pk):
         return redirect('internal_auditor_forms')
     return redirect('process_owner_forms')  # Default redirect
 
+
 @login_required
 def process_owner_forms_view(request):
     """View for Process Owner to view and download forms."""
     templates = TemplateModel.objects.all()
     return render(request, 'main/process owner/process_owner_forms.html', {'templates': templates})
+
 
 @login_required
 def internal_auditor_monitoring_log(request):
@@ -429,9 +447,11 @@ def internal_auditor_monitoring_log(request):
     }
     return render(request, 'main/internal audit/internal_auditor_monitoring_log.html', context)
 
+
 # Check if user is internal auditor
 def is_internal_auditor(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Internal Auditor'
+
 
 @login_required
 def guideline_management_view(request):
@@ -494,6 +514,7 @@ def guideline_management_view(request):
     }
 
     return render(request, template, context)
+
 
 def add_non_conformity(request):
     if not request.user.userprofile.role == 'Lead Auditor':
@@ -651,6 +672,7 @@ def combined_non_conformity_detail(request, nc_id):
     else:
         return render(request, 'main/internal audit/non_conformity_detail.html', context)
 
+
 @login_required
 def task_detail(request, task_id):
     # Fetch the task (Non-Conformity record)
@@ -718,6 +740,7 @@ def task_detail(request, task_id):
 
     return render(request, 'main/process owner/task_detail.html', context)
 
+
 @login_required
 def add_immediate_action(request, task_id):
     task = get_object_or_404(NonConformity, id=task_id)
@@ -772,6 +795,7 @@ def add_immediate_action(request, task_id):
 
     messages.error(request, "Invalid request.")
     return redirect('task_detail', task_id=task.id)
+
 
 # View for saving Root Cause Analysis
 @login_required
@@ -832,6 +856,7 @@ def add_root_cause_analysis(request, task_id):
     messages.error(request, "Invalid request.")
     return redirect('task_detail', task_id=task.id)
 
+
 @login_required
 def corrective_action_plan(request, task_id):
     task = get_object_or_404(NonConformity, id=task_id)
@@ -884,6 +909,8 @@ def corrective_action_plan(request, task_id):
         'non_conformity': task,
         'corrective_action_plans': corrective_action_plans,
     })
+
+
 @login_required
 def add_review(request, cap_id):
     corrective_action_plan = get_object_or_404(CorrectiveActionPlan, id=cap_id)
@@ -1005,50 +1032,95 @@ def add_follow_up(request, nc_id):
 
 from notifications.signals import notify
 
+
 @login_required
 def action_verification(request, cap_id):
     try:
-        # Ensure the CorrectiveActionPlan exists
+        # Fetch the Corrective Action Plan and associated Non-Conformity
         corrective_action_plan = get_object_or_404(CorrectiveActionPlan, id=cap_id)
-        non_conformity = corrective_action_plan.non_conformity  # Fetch associated Non-Conformity
+        non_conformity = corrective_action_plan.non_conformity
     except CorrectiveActionPlan.DoesNotExist:
         messages.error(request, f"No Corrective Action Plan found with ID: {cap_id}")
-        return redirect('non_conformity_list')  # Redirect to an appropriate list or dashboard
+        return redirect('non_conformity_list')
 
-    # Determine the current view name
+    # Determine if the current user is a lead auditor
     current_view_name = resolve(request.path).url_name
     is_lead_auditor = current_view_name == 'lead_auditor_action_verification'
 
-    # Fetch related verifications
+    # Fetch verifications related to the Corrective Action Plan
     verifications = ActionVerification.objects.filter(corrective_action_plan=corrective_action_plan).order_by('-date')
 
+    def generate_notification_url(view_name, args):
+        """
+        Generates and validates a notification URL.
+        Returns a valid URL or raises an exception for debugging.
+        """
+        try:
+            # Generate the URL
+            url = reverse(view_name, args=args)
+            # Ensure the URL resolves to an actual view
+            resolve(url)
+            return url
+        except (Http404, Exception) as e:
+            print(f"Error generating or resolving URL: {e}")  # Debugging
+            raise ValueError("Invalid URL or view does not exist")
+
     if request.method == 'POST':
+        # Handle form submissions
         verification_form = ActionVerificationForm(request.POST)
+        evaluation_form = EvaluationForm(request.POST)
+
         if verification_form.is_valid():
             verification = verification_form.save(commit=False)
             verification.corrective_action_plan = corrective_action_plan
             verification.save()
 
-            process_owner = non_conformity.assigned_to
-            if process_owner:
-                if verification.status == "effective":
-                    # If verification is effective, update NonConformity status to 'completed'
-                    non_conformity.status = 'completed'
-                    non_conformity.save()  # Save the updated status
+            # Handle effective verification
+            if verification.status == "effective":
+                process_owner = non_conformity.assigned_to
+                if process_owner:
+                    try:
+                        # Generate and validate the evaluation form URL
+                        url = reverse('evaluation_form', args=[verification.id])
+                        resolve(url)  # Ensure the URL resolves correctly
+                        print(f"Notification URL: {url}")  # Debugging
 
-                    # Create or update CloseOut record
-                    CloseOut.objects.update_or_create(
-                        non_conformity=non_conformity,
-                        defaults={
-                            'auditor_name': request.user.get_full_name(),
-                            'auditor_date': verification.date,
-                            'process_owner_name': process_owner.get_full_name(),
-                            'process_owner_date': verification.date,
-                        }
-                    )
-                    messages.success(request, "Corrective action verified as effective. Close Out record updated.")
+                        # Send the notification
+                        notify.send(
+                            sender=request.user,
+                            recipient=process_owner,
+                            verb="Action Effective",
+                            description=f"Corrective action plan for '{non_conformity.non_conformity}' has been marked as effective. Please proceed to evaluation.",
+                            target=verification
+                        )
+
+                        # Retrieve the notification instance
+                        notification = Notification.objects.filter(
+                            recipient=process_owner,
+                            verb="Action Effective",
+                            target_object_id=verification.id
+                        ).order_by('-timestamp').first()
+
+                        if notification:
+                            # Add the URL to the notification data field manually
+                            notification.data = {'url': url}
+                            notification.save()
+                            print(f"Notification saved with data: {notification.data}")
+                        else:
+                            print("Notification instance not found. Data was not added.")
+
+                    except Exception as e:
+                        print(f"Error generating or sending notification: {e}")
+                        messages.error(request, "Failed to send notification. Please try again.")
+
                 else:
-                    # Notify Process Owner about ineffective action
+                    messages.warning(request,
+                                     "Verification is effective, but no process owner is assigned to the non-conformity.")
+
+            # Handle not effective status
+            elif verification.status == "not effective":
+                process_owner = non_conformity.assigned_to
+                if process_owner:
                     notify.send(
                         sender=request.user,
                         recipient=process_owner,
@@ -1056,8 +1128,8 @@ def action_verification(request, cap_id):
                         description=f"Corrective action plan for '{non_conformity.non_conformity}' was deemed not effective.",
                         target=verification
                     )
-                    # Issue a new RFA if status is "not effective"
-                    new_rfa = NonConformity.objects.create(
+                    # Create a new RFA (Request for Action)
+                    NonConformity.objects.create(
                         non_conformity=f"New RFA for: {non_conformity.non_conformity}",
                         assignees=non_conformity.assignees,
                         originator_name=non_conformity.originator_name,
@@ -1074,30 +1146,42 @@ def action_verification(request, cap_id):
                         status='pending',
                         assigned_to=process_owner
                     )
-                    messages.warning(request,
-                                     f"Corrective action plan deemed not effective. New RFA issued: {new_rfa.non_conformity}")
+                    messages.warning(request, "Corrective action plan deemed not effective. A new RFA has been issued.")
 
-            # Redirect based on role
-            if is_lead_auditor:
-                return redirect('lead_auditor_non_conformity_detail', nc_id=non_conformity.id)
-            else:
-                return redirect('non_conformity_detail', nc_id=non_conformity.id)
+            # Redirect based on user role
+            return redirect(
+                'lead_auditor_non_conformity_detail' if is_lead_auditor else 'non_conformity_detail',
+                nc_id=non_conformity.id
+            )
+
     else:
+        # Handle GET request
         verification_form = ActionVerificationForm()
+        evaluation_form = EvaluationForm()
+
+        # Determine if evaluation form should be displayed
+        display_evaluation_form = False
+        if verifications.exists():
+            last_verification = verifications.first()
+            if last_verification.status == "effective" and non_conformity.assigned_to == request.user:
+                display_evaluation_form = True
 
     context = {
         'corrective_action_plan': corrective_action_plan,
         'non_conformity': non_conformity,
         'verifications': verifications,
         'verification_form': verification_form,
-        'is_lead_auditor': is_lead_auditor,  # Role-specific context if needed in templates
+        'evaluation_form': evaluation_form,
+        'is_lead_auditor': is_lead_auditor,
+        'display_evaluation_form': display_evaluation_form,
     }
 
-    # Render the appropriate template based on the role
-    if is_lead_auditor:
-        return render(request, 'main/lead auditor/non_conformity_detail.html', context)
-    else:
-        return render(request, 'main/internal audit/non_conformity_detail.html', context)
+    # Render the appropriate template
+    return render(
+        request,
+        'main/lead auditor/non_conformity_detail.html' if is_lead_auditor else 'main/non_conformity_detail.html',
+        context
+    )
 
 
 @login_required
@@ -1137,6 +1221,101 @@ def close_out_action(request, nc_id):
 
 
 @login_required
+def evaluation_form(request, verification_id):
+    # Fetch the verification and related non-conformity
+    verification = get_object_or_404(ActionVerification, id=verification_id)
+
+    # Check if an evaluation already exists for this verification
+    evaluation_instance = Evaluation.objects.filter(action_verification=verification, evaluator=request.user).first()
+
+    if request.method == 'POST':
+        form = EvaluationForm(request.POST, instance=evaluation_instance)  # Pass existing instance if available
+        if form.is_valid():
+            # Save the evaluation
+            evaluation = form.save(commit=False)
+            evaluation.action_verification = verification
+            evaluation.evaluator = request.user
+            evaluation.save()
+
+            messages.success(request, "Evaluation submitted successfully.")
+            return redirect('process_owner_dashboard')  # Redirect after successful submission
+    else:
+        form = EvaluationForm(instance=evaluation_instance)  # Populate the form with existing data if available
+
+    # Group fields by sections for the template
+    grouped_fields = {
+        'A': [
+            {'field_name': 'knowledge1',
+             'label': 'The internal auditor demonstrates understanding of ISO 9001:2015 requirements.',
+             'choices': form['knowledge1'].field.choices, 'value': form['knowledge1'].value()},
+            {'field_name': 'knowledge2', 'label': 'The internal auditor applies knowledge effectively during audits.',
+             'choices': form['knowledge2'].field.choices, 'value': form['knowledge2'].value()},
+            {'field_name': 'knowledge3', 'label': 'The internal auditor stays updated on changes to the standard.',
+             'choices': form['knowledge3'].field.choices, 'value': form['knowledge3'].value()},
+            {'field_name': 'knowledge4',
+             'label': 'The internal auditor demonstrates proficiency in ISO audit requirements.',
+             'choices': form['knowledge4'].field.choices, 'value': form['knowledge4'].value()},
+            {'field_name': 'knowledge5',
+             'label': 'The internal auditor ensures alignment with ISO standards in audit practices.',
+             'choices': form['knowledge5'].field.choices, 'value': form['knowledge5'].value()},
+        ],
+        'B': [
+            {'field_name': 'communication1', 'label': 'The internal auditor communicates effectively with auditees.',
+             'choices': form['communication1'].field.choices, 'value': form['communication1'].value()},
+            {'field_name': 'communication2',
+             'label': 'The internal auditor listens actively and asks relevant questions.',
+             'choices': form['communication2'].field.choices, 'value': form['communication2'].value()},
+            {'field_name': 'communication3', 'label': 'The internal auditor provides clear and constructive feedback.',
+             'choices': form['communication3'].field.choices, 'value': form['communication3'].value()},
+            {'field_name': 'communication4',
+             'label': 'The internal auditor demonstrates proficiency in written and verbal communication.',
+             'choices': form['communication4'].field.choices, 'value': form['communication4'].value()},
+            {'field_name': 'communication5',
+             'label': 'The internal auditor facilitates open and transparent communication during audits.',
+             'choices': form['communication5'].field.choices, 'value': form['communication5'].value()},
+        ],
+        'C': [
+            {'field_name': 'audit_execution1', 'label': 'The internal auditor follows the established audit process.',
+             'choices': form['audit_execution1'].field.choices, 'value': form['audit_execution1'].value()},
+            {'field_name': 'audit_execution2',
+             'label': 'The internal auditor demonstrates professionalism and objectivity.',
+             'choices': form['audit_execution2'].field.choices, 'value': form['audit_execution2'].value()},
+            {'field_name': 'audit_execution3',
+             'label': 'The internal auditor adapts to unexpected situations during audits.',
+             'choices': form['audit_execution3'].field.choices, 'value': form['audit_execution3'].value()},
+            {'field_name': 'audit_execution4',
+             'label': 'The internal auditor uses effective questioning techniques to gather information.',
+             'choices': form['audit_execution4'].field.choices, 'value': form['audit_execution4'].value()},
+            {'field_name': 'audit_execution5',
+             'label': 'The internal auditor demonstrates a keen attention to detail during the audit process.',
+             'choices': form['audit_execution5'].field.choices, 'value': form['audit_execution5'].value()},
+        ],
+        'E': [
+            {'field_name': 'continual_improvement1',
+             'label': 'The internal auditor actively seeks feedback and identifies areas for personal improvement.',
+             'choices': form['continual_improvement1'].field.choices, 'value': form['continual_improvement1'].value()},
+            {'field_name': 'continual_improvement2',
+             'label': 'The internal auditor contributes to the improvement of the university\'s quality management system.',
+             'choices': form['continual_improvement2'].field.choices, 'value': form['continual_improvement2'].value()},
+            {'field_name': 'continual_improvement3',
+             'label': 'The internal auditor encourages a culture of continuous improvement within the team.',
+             'choices': form['continual_improvement3'].field.choices, 'value': form['continual_improvement3'].value()},
+            {'field_name': 'continual_improvement4',
+             'label': 'The internal auditor demonstrates a proactive approach to professional development.',
+             'choices': form['continual_improvement4'].field.choices, 'value': form['continual_improvement4'].value()},
+            {'field_name': 'continual_improvement5',
+             'label': 'The internal auditor integrates lessons learned from previous audits into current practices.',
+             'choices': form['continual_improvement5'].field.choices, 'value': form['continual_improvement5'].value()},
+        ],
+    }
+
+    return render(request, 'main/process owner/evaluation.html', {
+        'evaluation_form': form,
+        'verification': verification,
+        'grouped_fields': grouped_fields,
+    })
+
+@login_required
 def complete_step(request, task_id):
     task = get_object_or_404(NonConformity, id=task_id)
 
@@ -1147,6 +1326,7 @@ def complete_step(request, task_id):
         messages.success(request, "Step marked as completed successfully.")
 
     return redirect('non_conformity_detail', nc_id=task_id)
+
 
 @login_required
 def preview_rfa(request, nc_id):
@@ -1226,7 +1406,6 @@ def generate_pdf(request, nc_id):
             'review_date': review.review_date if review else "N/A"
         })
 
-
     # Handle missing or null data in root_cause_analysis
     root_cause_data = {
         'cause_description': root_cause_analysis.cause_description if root_cause_analysis and root_cause_analysis.cause_description else "N/A",
@@ -1272,6 +1451,7 @@ def generate_pdf(request, nc_id):
 
     return response
 
+
 def notifications_view(request):
     if not request.user.is_authenticated:
         return redirect('login')  # Redirect to login if not authenticated
@@ -1280,6 +1460,7 @@ def notifications_view(request):
     notifications = request.user.notifications.all().order_by('-timestamp')
 
     return render(request, 'main/internal audit/notifications.html', {'notifications': notifications})
+
 
 def mark_all_notifications_read(request):
     if not request.user.is_authenticated:
@@ -1290,6 +1471,7 @@ def mark_all_notifications_read(request):
 
     return redirect('notifications')  # Redirect back to the notifications page
 
+
 def mark_notification_as_read(request, notification_id):
     if not request.user.is_authenticated:
         return redirect('login')  # Redirect to login if not authenticated
@@ -1299,6 +1481,7 @@ def mark_notification_as_read(request, notification_id):
     notification.mark_as_read()
 
     return redirect('notifications')  # Redirect back to the notifications page
+
 
 def internal_audit_view(request):
     # Fetch all non-conformities
@@ -1316,6 +1499,7 @@ def internal_audit_view(request):
         'postponed_count': postponed_count,
     }
     return render(request, 'main/internal audit/internal_auditor_monitoring_log.html', context)
+
 
 def is_lead_auditor(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Lead Auditor'
@@ -1357,6 +1541,7 @@ def lead_auditor_manage_user(request):
         'user_roles': user_roles,
     }
     return render(request, 'main/lead auditor/lead_auditor_manage_user.html', context)
+
 
 @login_required
 def user_profile_view(request):
@@ -1406,6 +1591,7 @@ def view_announcements(request):
     announcements = Announcement.objects.all()
     return render(request, 'main/lead auditor/announcements/view_announcement.html', {'announcements': announcements})
 
+
 # View for creating a new announcement
 # Create Announcement
 def create_announcement(request):
@@ -1418,6 +1604,7 @@ def create_announcement(request):
             return redirect('view_announcements')
     return redirect('view_announcements')  # Handle invalid cases
 
+
 # View for editing an existing announcement
 def update_announcement(request, id):
     announcement = get_object_or_404(Announcement, id=id)
@@ -1428,6 +1615,7 @@ def update_announcement(request, id):
             return redirect('view_announcements')
     return redirect('view_announcements')
 
+
 # Delete Announcement
 def delete_announcement(request, id):
     announcement = get_object_or_404(Announcement, id=id)
@@ -1435,6 +1623,7 @@ def delete_announcement(request, id):
         announcement.delete()
         return redirect('view_announcements')
     return redirect('view_announcements')
+
 
 def audit_report_summary_view(request, audit_details_id):
     # Fetch the specific AuditDetails instance
@@ -1470,6 +1659,7 @@ def audit_report_summary_view(request, audit_details_id):
     }
 
     return render(request, 'main/lead auditor/audit_report.html', context)
+
 
 def generate_audit_report_summary_pdf(request, date_range):
     # Fetch the audit details for the given date range
@@ -1512,6 +1702,7 @@ def generate_audit_report_summary_pdf(request, date_range):
         return HttpResponse('An error occurred while generating the PDF.', status=500)
 
     return response
+
 
 def save_audit_details(request):
     if request.method == 'POST':

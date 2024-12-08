@@ -8,6 +8,7 @@ from . import views
 from .views import change_password, add_review, preview_rfa, generate_pdf, audit_report_summary_view, \
     generate_audit_report_summary_pdf, user_profile_view, save_audit_details
 
+
 urlpatterns = [
     # Authentication
     path('login/', views.login_view, name='login'),
@@ -103,6 +104,7 @@ urlpatterns = [
     path('lead_auditor-report-summary/<int:audit_details_id>/',audit_report_summary_view, name='audit_report_summary',),
 
     path('audit-report-summary-pdf/<str:date_range>/', views.generate_audit_report_summary_pdf, name='audit_report_summary_pdf'),
+    path('evaluation-form/<int:verification_id>/', views.evaluation_form, name='evaluation_form')
 
 
 ]

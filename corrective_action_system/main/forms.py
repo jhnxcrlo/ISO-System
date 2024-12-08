@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
 from .models import TemplateModel, Guideline, Announcement, NonConformity, ImmediateAction, RootCauseAnalysis, \
     CorrectiveActionPlan, FollowUpAction, CorrectiveActionPlanReview, ActionVerification, CloseOut, UserProfile, \
-    GoodPoints, AuditFinding, AuditDetails
+    GoodPoints, AuditFinding, AuditDetails, Evaluation
 
 
 class UserCreationForm(forms.ModelForm):
@@ -203,3 +203,89 @@ class AuditFindingForm(forms.ModelForm):
     class Meta:
         model = AuditFinding
         fields = ['ref_no', 'clause_no', 'details', 'finding_type', 'linked_rfa']
+
+
+class EvaluationForm(forms.ModelForm):
+    class Meta:
+        model = Evaluation
+        fields = [
+            # Section A
+            'knowledge1', 'knowledge2', 'knowledge3', 'knowledge4', 'knowledge5',
+
+            # Section B
+            'communication1', 'communication2', 'communication3', 'communication4', 'communication5',
+
+            # Section C
+            'audit_execution1', 'audit_execution2', 'audit_execution3', 'audit_execution4', 'audit_execution5',
+
+            # Section E
+            'continual_improvement1', 'continual_improvement2', 'continual_improvement3',
+            'continual_improvement4', 'continual_improvement5',
+
+            # Feedback
+            'feedback',
+        ]
+
+        widgets = {
+            # Section A
+            'knowledge1': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'knowledge2': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'knowledge3': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'knowledge4': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'knowledge5': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+
+            # Section B
+            'communication1': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'communication2': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'communication3': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'communication4': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'communication5': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+
+            # Section C
+            'audit_execution1': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'audit_execution2': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'audit_execution3': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'audit_execution4': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'audit_execution5': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+
+            # Section E
+            'continual_improvement1': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'continual_improvement2': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'continual_improvement3': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'continual_improvement4': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'continual_improvement5': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+
+            # Feedback
+            'feedback': forms.Textarea(attrs={'rows': 4, 'cols': 40}),
+        }
+
+        labels = {
+            # Section A
+            'knowledge1': 'The internal auditor demonstrates understanding of ISO 9001:2015 requirements.',
+            'knowledge2': 'The internal auditor applies knowledge effectively during audits.',
+            'knowledge3': 'The internal auditor stays updated on changes to the standard.',
+            'knowledge4': 'The internal auditor demonstrates proficiency in ISO audit requirements.',
+            'knowledge5': 'The internal auditor ensures alignment with ISO standards in audit practices.',
+
+            # Section B
+            'communication1': 'The internal auditor communicates effectively with auditees.',
+            'communication2': 'The internal auditor listens actively and asks relevant questions.',
+            'communication3': 'The internal auditor provides clear and constructive feedback.',
+            'communication4': 'The internal auditor demonstrates proficiency in written and verbal communication.',
+            'communication5': 'The internal auditor facilitates open and transparent communication during audits.',
+
+            # Section C
+            'audit_execution1': 'The internal auditor follows the established audit process.',
+            'audit_execution2': 'The internal auditor demonstrates professionalism and objectivity.',
+            'audit_execution3': 'The internal auditor adapts to unexpected situations during audits.',
+            'audit_execution4': 'The internal auditor uses effective questioning techniques to gather information.',
+            'audit_execution5': 'The internal auditor demonstrates a keen attention to detail during the audit process.',
+
+            # Section E
+            'continual_improvement1': 'The internal auditor actively seeks feedback and identifies areas for personal improvement.',
+            'continual_improvement2': 'The internal auditor contributes to the improvement of the university\'s quality management system.',
+            'continual_improvement3': 'The internal auditor encourages a culture of continuous improvement within the team.',
+            'continual_improvement4': 'The internal auditor demonstrates a proactive approach to professional development.',
+            'continual_improvement5': 'The internal auditor integrates lessons learned from previous audits into current practices.',
+        }
+

@@ -92,29 +92,29 @@
         }
 
         /* Custom Style for Dropdown Notification Header */
-.dropdown-notification-header {
-    background-color: #f8f9fa; /* Dark background for the header */
-    color: #black; /* White text color */
-    padding: 10px 15px; /* Padding for spacing */
-    font-size: 2rem; /* Font size for the header */
-    font-weight: bolder; /* Bold font weight */
-    display: flex; /* Flexbox for alignment */
-    align-items: center; /* Vertically center the content */
-    justify-content: space-between; /* Space between title and links */
-    border-bottom: 1px solid #495057; /* Border for separation */
-}
+        .dropdown-notification-header {
+            background-color: #f8f9fa; /* Dark background for the header */
+            color: black; /* White text color */
+            padding: 10px 15px; /* Padding for spacing */
+            font-size: 2rem; /* Font size for the header */
+            font-weight: bolder; /* Bold font weight */
+            display: flex; /* Flexbox for alignment */
+            align-items: center; /* Vertically center the content */
+            justify-content: space-between; /* Space between title and links */
+            border-bottom: 1px solid #495057; /* Border for separation */
+        }
 
-.dropdown-notification-header a {
-    color: #ffffff; /* White color for links */
-    text-decoration: none; /* Remove underline from links */
-    font-size: 0.875rem; /* Smaller font for links */
-    margin-left: 10px; /* Spacing between links */
-}
+        .dropdown-notification-header a {
+            color: #ffffff; /* White color for links */
+            text-decoration: none; /* Remove underline from links */
+            font-size: 0.875rem; /* Smaller font for links */
+            margin-left: 10px; /* Spacing between links */
+        }
 
-.dropdown-notification-header a:hover {
-    color: #adb5bd; /* Muted color on hover */
-    text-decoration: underline; /* Add underline on hover */
-}
+        .dropdown-notification-header a:hover {
+            color: #adb5bd; /* Muted color on hover */
+            text-decoration: underline; /* Add underline on hover */
+        }
     </style>
 </head>
 <body>
@@ -174,35 +174,21 @@
                                 {% endif %}
                             </a>
 
-                            <!-- Notification dropdown -->
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarNotification"
                                 style="width: 400px; max-height: 500px; overflow-y: auto; overflow-wrap: break-word; white-space: normal;">
-<h2 class="dropdown-notification-header px-3 py-2 d-flex align-items-center" >
-                                                Notifications
-                                                <div class="ms-auto">
-                                                    <a href="#" class="text-decoration-none text-white me-3">All</a>
-                                                    <a href="#" class="text-decoration-none text-muted">Unread</a>
-                                                </div>
-                                            </h2>
+                                <h2 class="dropdown-notification-header px-3 py-2 d-flex align-items-center">
+                                    Notifications
+                                    <div class="ms-auto">
+                                        <a href="#" class="text-decoration-none text-white me-3">All</a>
+                                        <a href="#" class="text-decoration-none text-muted">Unread</a>
+                                    </div>
+                                </h2>
                                 {% with user.notifications.unread as unread_notifications %}
                                     {% if unread_notifications %}
                                         {% for notification in unread_notifications %}
-
                                             <li>
-                                                <!-- Dynamically resolve URL based on the target's methods -->
-                                                <a href="
-                                                    {% if notification.target %}
-                                                        {% if user.userprofile.role == 'Process Owner' %}
-                                                            {{ notification.target.get_task_url }}
-                                                        {% elif user.userprofile.role == 'Internal Auditor' %}
-                                                            {{ notification.target.get_non_conformity_url }}
-                                                        {% else %}
-                                                            #
-                                                        {% endif %}
-                                                    {% else %}
-                                                        #
-                                                    {% endif %}
-                                                " class="dropdown-item text-wrap">
+                                                <a href="{{ notification.data.url|default:'#' }}"
+                                                   class="dropdown-item text-wrap">
                                                     <strong>{{ notification.verb }}</strong>: {{ notification.description }}
                                                     <br>
                                                     <small class="text-muted">{{ notification.timestamp|timesince }}
@@ -226,6 +212,47 @@
                                     {% endif %}
                                 {% endwith %}
                             </ul>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarNotification"
+                                style="width: 400px; max-height: 500px; overflow-y: auto; overflow-wrap: break-word; white-space: normal;">
+                                <h2 class="dropdown-notification-header px-3 py-2 d-flex align-items-center">
+                                    Notifications
+                                    <div class="ms-auto">
+                                        <a href="#" class="text-decoration-none text-white me-3">All</a>
+                                        <a href="#" class="text-decoration-none text-muted">Unread</a>
+                                    </div>
+                                </h2>
+                                {% with user.notifications.unread as unread_notifications %}
+                                    {% if unread_notifications %}
+                                        {% for notification in unread_notifications %}
+                                            <li>
+                                                <a href="{{ notification.data.url|default:'#' }}"
+                                                   class="dropdown-item text-wrap"
+                                                   onclick="if (this.href === '#') { alert('Invalid URL!'); return false; }">
+                                                    <strong>{{ notification.verb }}</strong>: {{ notification.description }}
+                                                    <br>
+                                                    <small class="text-muted">{{ notification.timestamp|timesince }}
+                                                        ago</small>
+                                                </a>
+
+                                                <!-- Debugging Information -->
+                                                <div class="debug-info text-muted px-3">
+                                                    <strong>Debug Info:</strong>
+                                                    <ul>
+                                                        <li>Notification Data
+                                                            URL: {{ notification.data.url|default:'[Missing URL]' }}</li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    {% else %}
+                                        <li>
+                                            <p class="dropdown-item text-center text-muted">No new notifications</p>
+                                        </li>
+                                    {% endif %}
+                                {% endwith %}
+                            </ul>
+
+
                         </div>
 
 
@@ -276,62 +303,62 @@
                         <div class="profile-image-container mb-3 mx-auto">
                             <img id="profileImage"
                                  src="{% static 'main/gray.png' %}"
-                                 class="rounded-circle shadow"
+                                 class="shadow"
                                  style="width: 80px; height: 80px;"
-                                 alt="User Avatar">
+                                 alt="User Avatar"/>
                         </div>
 
                         <h5 class="mb-1" id="profileName">Loading...</h5>
-                        <p class="text-muted mb-4" id="profileRole">Loading...</p>
+                        <p class="text-muted small mb-2" id="profileRole">Loading...</p>
 
                         <!-- Editable Fields -->
                         <form id="profileForm">
-                            <div class="row g-2">
+                            <div class="row g-2 mt-4">
                                 <!-- First and Last Name -->
                                 <div class="col-6">
-                                    <label for="firstName" class="form-label small">First Name</label>
+                                    <label for="firstName" class="form-label small text-muted">First Name</label>
                                     <input type="text" class="form-control form-control-sm" id="firstName" value=""
                                            disabled>
                                 </div>
                                 <div class="col-6">
-                                    <label for="lastName" class="form-label small">Last Name</label>
+                                    <label for="lastName" class="form-label small text-muted">Last Name</label>
                                     <input type="text" class="form-control form-control-sm" id="lastName" value=""
                                            disabled>
                                 </div>
 
                                 <!-- Email and Phone -->
                                 <div class="col-6">
-                                    <label for="email" class="form-label small">Email</label>
+                                    <label for="email" class="form-label small text-muted">Email</label>
                                     <input type="email" class="form-control form-control-sm" id="email" value=""
                                            disabled>
                                 </div>
                                 <div class="col-6">
-                                    <label for="phone" class="form-label small">Phone</label>
+                                    <label for="phone" class="form-label small text-muted">Phone</label>
                                     <input type="text" class="form-control form-control-sm" id="phone" value=""
                                            disabled>
                                 </div>
 
                                 <!-- Position and Department -->
                                 <div class="col-6">
-                                    <label for="position" class="form-label small">Position</label>
+                                    <label for="position" class="form-label small text-muted">Position</label>
                                     <input type="text" class="form-control form-control-sm" id="position" value=""
                                            disabled>
                                 </div>
                                 <div class="col-6">
-                                    <label for="department" class="form-label small">Department</label>
+                                    <label for="department" class="form-label small text-muted">Department</label>
                                     <input type="text" class="form-control form-control-sm" id="department" value=""
                                            disabled>
                                 </div>
                             </div>
                         </form>
-
-                        <!-- Buttons -->
-                        <div class="mt-4 d-flex justify-content-center">
-                            <button type="button" id="editProfileBtn" class="btn btn-sm btn-secondary me-2">
-                                <i class="bi bi-pencil"></i> Edit
+                        <!-- Save and Edit Buttons -->
+                        <div class="d-flex justify-content-center mt-4">
+                            <button type="button" class="btn btn-sm btn-tertiary px-4 me-2" id="editProfileBtn"
+                                    style="border: 1px solid red;">
+                                <i class="bi bi-pencil me-1"></i> Edit Your Profile
                             </button>
-                            <button type="button" id="saveProfileBtn" class="btn btn-sm btn-danger d-none">
-                                <i class="bi bi-save"></i> Save
+                            <button type="button" class="btn btn-sm btn-danger px-4 d-none" id="saveProfileBtn">
+                                <i class="bi bi-save me-1"></i> Save
                             </button>
                         </div>
                     </div>
@@ -349,19 +376,6 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales-all.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 <script>
-    const chatButton = document.getElementById("chatButton");
-    const chatbox = document.getElementById("chatbox");
-    const closeChatbox = document.getElementById("closeChatbox");
-
-    chatButton.addEventListener("click", () => {
-        chatbox.style.display = "block";
-        chatButton.style.display = "none";
-    });
-
-    closeChatbox.addEventListener("click", () => {
-        chatbox.style.display = "none";
-        chatButton.style.display = "flex";
-    });
 
     // Sidebar Toggle
     const sidebar = document.getElementById('sidebar');
@@ -456,6 +470,12 @@
         editButton.addEventListener("click", enableEditing);
         saveButton.addEventListener("click", saveProfileData);
     });
+    document.addEventListener('click', function (event) {
+    if (event.target.matches('a.dropdown-item') && event.target.getAttribute('href') === '#') {
+        event.preventDefault();
+        alert('Invalid URL. Please check the notification configuration.');
+    }
+}, false);
 
 </script>
 </body>

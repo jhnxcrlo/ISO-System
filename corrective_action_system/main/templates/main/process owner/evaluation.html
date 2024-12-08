@@ -1,0 +1,274 @@
+{% extends "main/process owner/base.html" %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f5f5fb;
+        font-family: Arial, sans-serif;
+    }
+
+    .form-container {
+        max-width: 900px;
+        margin: 20px auto;
+        background: #ffffff;
+        padding: 20px 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-header h2 {
+        margin: 0;
+        font-size: 1.7rem;
+        color: #333;
+        text-align: center;
+    }
+
+    .form-header p {
+        font-size: 1.2rem;
+        margin: 10px 0;
+        color: #555;
+        text-align: center;
+    }
+
+    .instructions {
+        background-color: #f8f9fc;
+        padding: 15px;
+        border-left: 4px solid #673ab7;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        color: #333;
+    }
+
+    .instructions ul {
+        padding-left: 20px;
+        margin: 0;
+    }
+
+    .instructions li {
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+        font-style: italic;
+    }
+
+    .field-container {
+        margin-bottom: 20px;
+    }
+
+    .field-container label {
+        display: block;
+        font-size: 1rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .form-control {
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        width: 100%;
+        padding: 10px;
+        font-size: 0.95rem;
+        color: #333;
+        margin-top: 5px;
+    }
+
+    .form-control:focus {
+        border-color: #673ab7;
+        box-shadow: 0 0 0 0.2rem rgba(103, 58, 183, 0.25);
+        outline: none;
+    }
+
+    input[type="radio"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: #673ab7;
+        margin: 0 5px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th, td {
+        text-align: center;
+        border: 1px solid #ddd;
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+
+    th {
+        background-color: #f8f9fc;
+        font-weight: bold;
+    }
+
+    td {
+        color: #555;
+    }
+
+    .question-text {
+        text-align: left;
+        font-weight: 500;
+        padding-left: 5px;
+    }
+
+    .btn-submit {
+        background-color: #673ab7;
+        color: #ffffff;
+        border: none;
+        padding: 10px 15px;
+        font-size: 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .btn-submit:hover {
+        background-color: #5e35b1;
+    }
+
+    /* Improved layout for evaluation sections */
+    fieldset {
+        border: none;
+        margin-bottom: 20px;
+    }
+
+    legend {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <h2>Evaluation of Internal Auditor</h2>
+        <p>1st Sem of A.Y. 2024-2025</p>
+    </div>
+
+    <div class="instructions">
+        <p>Instruction: Evaluate the performance of the internal auditor using the criteria below. Provide comments
+            and rate each question using the scale provided:</p>
+        <ul>
+            <li><strong>5 – Excellent:</strong> Exceeds expectations consistently.</li>
+            <li><strong>4 – Above Average:</strong> Frequently exceeds expectations.</li>
+            <li><strong>3 – Average:</strong> Meets expectations but has room for improvement.</li>
+            <li><strong>2 – Below Average:</strong> Occasionally meets expectations but often requires improvement.</li>
+            <li><strong>1 – Poor:</strong> Rarely meets expectations and needs substantial improvement.</li>
+        </ul>
+    </div>
+
+    <form method="POST" action="{% url 'evaluation_form' verification.id %}">
+        {% csrf_token %}
+
+        <!-- Additional Fields -->
+        <div class="field-container">
+            <label for="evaluator_name">Name of Evaluator:</label>
+            <input type="text" id="evaluator_name" name="evaluator_name" class="form-control"
+                   placeholder="Enter evaluator's name">
+        </div>
+
+        <div class="field-container">
+            <label for="evaluator_position">Position of Evaluator:</label>
+            <div>
+                <input type="radio" id="process_owner" name="evaluator_position" value="Process Owner/Auditee">
+                <label for="process_owner">Process Owner/Auditee</label><br>
+                <input type="radio" id="co_auditor" name="evaluator_position" value="Co-Auditor">
+                <label for="co_auditor">Co-Auditor</label><br>
+                <input type="radio" id="lead_auditor" name="evaluator_position" value="Lead Auditor">
+                <label for="lead_auditor">Lead Auditor</label><br>
+                <input type="radio" id="iso_head" name="evaluator_position" value="ISO Head">
+                <label for="iso_head">ISO Head</label>
+            </div>
+        </div>
+
+        <div class="field-container">
+            <label for="internal_auditor_name">Name of Internal Auditor:</label>
+            <input type="text" id="internal_auditor_name" name="internal_auditor_name" class="form-control"
+                   placeholder="Enter internal auditor's name">
+        </div>
+
+        <div class="field-container">
+            <label for="date_of_audit">Date of Audit:</label>
+            <input type="date" id="date_of_audit" name="date_of_audit" class="form-control">
+        </div>
+
+        <div class="field-container">
+            <label for="place_of_audit">Place of Audit:</label>
+            <input type="text" id="place_of_audit" name="place_of_audit" class="form-control"
+                   placeholder="Enter place of audit">
+        </div>
+
+        <!-- Evaluation Table -->
+        <fieldset>
+            {% for section, fields in grouped_fields.items %}
+                <legend>
+                    {{ section }}:
+                    {% if section == 'A' %}Knowledge of ISO 9001:2015 Standards
+                    {% elif section == 'B' %}Communication Skills
+                    {% elif section == 'C' %}Audit Execution
+                    {% elif section == 'E' %}Continual Improvement
+                    {% endif %}
+                </legend>
+                <table>
+    <thead>
+        <tr>
+            <th class="question-text">Evaluation Criteria</th>
+            <th>5</th>
+            <th>4</th>
+            <th>3</th>
+            <th>2</th>
+            <th>1</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for question in fields %}
+            <tr>
+                <td class="question-text">{{ question.label }}</td>
+                <!-- Ensure exactly 5 columns are rendered -->
+                {% for value in "54321" %}
+                    <td>
+                        <input
+                            type="radio"
+                            id="{{ question.field_name }}_{{ value }}"
+                            name="{{ question.field_name }}"
+                            value="{{ value }}"
+                            {% if question.value|stringformat:"s" == value %}checked{% endif %}
+                        >
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+            {% endfor %}
+        </fieldset>
+
+        <!-- Feedback Section -->
+        <div class="field-container">
+            <label for="feedback">Additional Feedback:</label>
+            <textarea
+                    id="feedback"
+                    name="feedback"
+                    class="form-control"
+                    rows="4"
+                    placeholder="Provide your feedback here"
+            >{{ evaluation_form.feedback.value }}</textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit">Submit Evaluation</button>
+    </form>
+</div>
+
+{% endblock %}

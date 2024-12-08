@@ -6,7 +6,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 
-
 class UserProfile(models.Model):
     ROLE_CHOICES = (
         ('Admin', 'Admin'),
@@ -367,6 +366,66 @@ class AuditFinding(models.Model):
         )
 
 
+class Evaluation(models.Model):
+    ROLE_CHOICES = [
+        ('process_owner', 'Process Owner'),
+        ('lead_auditor', 'Lead Auditor'),
+    ]
+
+    action_verification = models.ForeignKey(
+        'ActionVerification',
+        on_delete=models.CASCADE,
+        related_name='evaluations'
+    )
+    evaluator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES
+    )
+
+    # Section A: Knowledge of ISO 9001:2015 Standards
+    knowledge1 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    knowledge2 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    knowledge3 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    knowledge4 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    knowledge5 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+
+    # Section B: Communication Skills
+    communication1 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    communication2 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    communication3 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    communication4 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    communication5 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+
+    # Section C: Audit Execution
+    audit_execution1 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    audit_execution2 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    audit_execution3 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    audit_execution4 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    audit_execution5 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+
+    # Section E: Continual Improvement
+    continual_improvement1 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    continual_improvement2 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    continual_improvement3 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    continual_improvement4 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+    continual_improvement5 = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
+
+    # Additional feedback
+    feedback = models.TextField(blank=True, null=True)
+
+    # Metadata
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Evaluation by {self.evaluator} ({self.role})"
+
+    class Meta:
+        verbose_name = "Evaluation"
+        verbose_name_plural = "Evaluations"
 
 
 

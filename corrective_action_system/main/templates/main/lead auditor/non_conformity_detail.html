@@ -102,7 +102,7 @@
 
 
                 <div class="text-start mt-1 mb-3">
-                    <a href="{% url 'preview_rfa' non_conformity.id %}" class="btn-view-rfa">
+                    <a href="{% url 'lead_auditor_preview_rfa' non_conformity.id %}" class="btn-view-rfa">
                         <i class="bi bi-arrow-right"></i> View Request For Action Form
                     </a>
                 </div>
@@ -575,7 +575,7 @@
                             <div class="mt-4">
                                 <button class="btn btn-danger complete-step-btn" id="complete-verification-step-btn"
                                         data-step="5">
-                                    Complete Step
+                                    Close Out
                                 </button>
                             </div>
                         {% endif %}
