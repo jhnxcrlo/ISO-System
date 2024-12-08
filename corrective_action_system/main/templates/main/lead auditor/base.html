@@ -26,71 +26,206 @@
             font-family: 'Arial', sans-serif;
         }
 
-        .account-info-card {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin: 20px 0;
-        }
+        /* Account Info Card Styling */
+.account-info-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px 0;
+}
 
-        .profile-image-container {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin: 0;
-            margin-bottom: 20px; /* Adds space below the image */
-            margin-left: 50px;
-        }
+/* Profile Image Container */
+.profile-image-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0;
+    margin-bottom: 20px;
+    margin-left: 50px;
+}
 
-        .profile-image-container img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
+.profile-image-container img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
 
-        .edit-icon {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 50%;
-            padding: 5px;
-            cursor: pointer;
-        }
+.edit-icon {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer;
+}
 
-        .form-control[disabled] {
-            background-color: #f8f9fa;
-        }
+/* Disabled Form Control Styling */
+.form-control[disabled] {
+    background-color: #f8f9fa;
+}
 
-        .form-label {
-            font-weight: 600;
-            font-size: 14px;
-            text-align: left;
+/* Form Label Styling */
+.form-label {
+    font-weight: 600;
+    font-size: 14px;
+    text-align: left;
+}
+
+/* Bio Textarea Styling */
+.bio-textarea {
+    height: 100px;
+}
+
+/* Input Group Height */
+.input-group .form-control,
+.input-group .input-group-text {
+    height: 40px;
+    line-height: 1.5;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 8px;
+}
+
+/* Custom Modal Width */
+.custom-modal-width {
+    max-width: 50%;
+}
+
+/* Notification Icon Styling */
+.notification-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-icon .fas.fa-bell {
+    font-size: 1.5rem;
+    color: white;
+    transition: color 0.3s ease;
+}
+
+/* Hover Effect for Notification Icon */
+.notification-icon:hover .fas.fa-bell {
+    color: #007bff;
+}
+
+/* Badge for Unread Notifications */
+.notification-icon .badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+    top: 0;
+    right: 0;
+}
+
+/* Notification Dropdown Styling */
+.dropdown-menu {
+    width: 400px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+/* Item Styling in Dropdown */
+.dropdown-item {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    color: #343a40;
+    text-decoration: none; /* Ensure no underline */
+    transition: background-color 0.3s ease;
+}
+
+/* Remove Underline for Anchor Tags */
+.dropdown-item a {
+    text-decoration: none; /* No underline for links */
+    color: inherit; /* Ensure text color is inherited */
+}
+
+/* Hover Effect on Dropdown Items */
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #007bff;
+}
+
+/* Icon Inside Dropdown Items (Remove icon) */
+.dropdown-item .me-3 {
+    display: none; /* Hide the icon */
+}
+
+/* Flex Grow for Notification Description */
+.dropdown-item .flex-grow-1 {
+    flex-grow: 1;
+    margin-left: 0.5rem;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+/* Notification Text Styling */
+.dropdown-item strong {
+    font-weight: bold;
+    color: #343a40;
+}
+
+.dropdown-item small {
+    color: #6c757d;
+}
+
+/* Divider Between Notifications */
+.dropdown-divider {
+    margin: 0;
+    border-top: 1px solid #e9ecef;
+}
+
+/* 'Mark All as Read' Styling */
+.dropdown-item.text-muted {
+    text-align: center;
+    color: #6c757d;
+    font-size: 0.875rem;
+    padding: 0.75rem 0;
+}
+
+/* No Notifications Message */
+.dropdown-item.text-muted {
+    text-align: center;
+    font-size: 1rem;
+    padding: 1rem 0;
+    color: #6c757d;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 767px) {
+    .dropdown-menu {
+        width: 300px;
+    }
+
+    .dropdown-item {
+        padding: 0.75rem;
+    }
+
+    .dropdown-item .me-3 {
+        font-size: 1.1rem;
+    }
+
+    /* Notification Text Wrapping on Smaller Screens */
+    .dropdown-item .flex-grow-1 {
+        word-wrap: break-word;
+        white-space: normal;
+        overflow-wrap: break-word;
+    }
+}
 
 
-        }
 
-        .bio-textarea {
-            height: 100px;
-        }
-
-        /* Adjust input group height */
-        .input-group .form-control,
-        .input-group .input-group-text {
-            height: 40px; /* New height */
-            line-height: 1.5;
-            padding: 10px 15px;
-            font-size: 16px;
-            border-radius: 8px;
-
-        }
-
-        .custom-modal-width {
-            max-width: 50%; /* Adjust width as needed */
-        }
     </style>
 </head>
 <body>
@@ -132,19 +267,6 @@
                         <i class="fas fa-book me-2"></i> Guidelines
                     </a>
                 </li>
-                <!-- Audit Report Link -->
-                <li class="nav-item">
-                    {% if audit_details %}
-                        <a class="nav-link {% if request.resolver_match.url_name == 'audit_report_summary' %}active{% endif %}"
-                           href="{% url 'audit_report_summary' audit_details.id %}">
-                            <i class="fas fa-clipboard-list me-2"></i> Audit Report
-                        </a>
-                    {% else %}
-                        <a class="nav-link disabled" href="#">
-                            <i class="fas fa-clipboard-list me-2"></i> Audit Report (Unavailable)
-                        </a>
-                    {% endif %}
-                </li>
 
                 <!-- Manage User Link -->
                 <li class="nav-item">
@@ -169,59 +291,66 @@
                     <div class="d-flex ms-auto align-items-center">
                         <!-- Notification Icon -->
                         <div class="notification-icon me-3 position-relative">
-                            <a href="#" class="nav-link hidden-arrow" id="navbarNotification" role="button"
-                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bell"></i>
-                                <!-- Badge for unread notifications -->
-                                {% if user.notifications.unread|length > 0 %}
-                                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
-                                        {{ user.notifications.unread|length }}
-                                    </span>
-                                {% endif %}
-                            </a>
+    <a href="#" class="nav-link hidden-arrow" id="navbarNotification" role="button"
+       data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-bell"></i>
+        <!-- Badge for unread notifications -->
+        {% if user.notifications.unread|length > 0 %}
+            <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+                {{ user.notifications.unread|length }}
+            </span>
+        {% endif %}
+    </a>
 
-                            <!-- Notification dropdown -->
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarNotification"
-                                style="width: 400px; max-height: 500px; overflow-y: auto;">
-                                {% with user.notifications.unread as unread_notifications %}
-                                    {% if unread_notifications %}
-                                        {% for notification in unread_notifications %}
-                                            <li>
-                                                <a href="{% if notification.target %}
-                                                            {% if user.userprofile.role == 'Process Owner' %}
-                                                                {{ notification.target.get_task_url }}
-                                                            {% elif user.userprofile.role == 'Lead Auditor' %}
-                                                                {{ notification.target.get_non_conformity_url }}
-                                                            {% elif user.userprofile.role == 'Internal Auditor' %}
-                                                                {{ notification.target.get_non_conformity_url }}
-                                                            {% else %}
-                                                                #
-                                                            {% endif %}
-                                                          {% else %}
-                                                              #
-                                                          {% endif %}" class="dropdown-item">
-                                                    <strong>{{ notification.verb }}</strong>: {{ notification.description }}
-                                                    <br>
-                                                    <small class="text-muted">{{ notification.timestamp|timesince }} ago</small>
-                                                </a>
-                                            </li>
-                                        {% endfor %}
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <a href="{% url 'mark_all_notifications_read' %}"
-                                               class="dropdown-item text-center text-muted">
-                                                Mark all as read
-                                            </a>
-                                        </li>
-                                    {% else %}
-                                        <li>
-                                            <p class="dropdown-item text-center text-muted">No new notifications</p>
-                                        </li>
-                                    {% endif %}
-                                {% endwith %}
-                            </ul>
-                        </div>
-                    
+    <!-- Notification dropdown -->
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarNotification"
+        style="width: 400px; max-height: 500px; overflow-y: auto; padding: 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        {% with user.notifications.unread as unread_notifications %}
+            {% if unread_notifications %}
+                {% for notification in unread_notifications %}
+                    <li class="dropdown-item py-2">
+                        <a href="{% if notification.target %}
+                            {% if user.userprofile.role == 'Process Owner' %}
+                                {% url 'non_conformity_detail' nc_id=notification.target.id %}
+                            {% elif user.userprofile.role == 'Lead Auditor' %}
+                                {% url 'lead_auditor_non_conformity_detail' nc_id=notification.target.id %}
+                            {% elif user.userprofile.role == 'Internal Auditor' %}
+                                {% url 'non_conformity_detail' nc_id=notification.target.id %}
+                            {% else %}
+                                #
+                            {% endif %}
+                        {% else %}
+                            #
+                        {% endif %}" class="d-flex align-items-center text-dark">
+                            <div class="me-3">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <strong>{{ notification.verb }}</strong>: {{ notification.description }}
+                                <br>
+                                <small class="text-muted">{{ notification.timestamp|timesince }} ago</small>
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <a href="{% url 'mark_all_notifications_read' %}" class="dropdown-item text-center text-muted">
+                        Mark all as read
+                    </a>
+                </li>
+            {% else %}
+                <li>
+                    <p class="dropdown-item text-center text-muted">No new notifications</p>
+                </li>
+            {% endif %}
+        {% endwith %}
+    </ul>
+</div>
+
+
                         <div class="notification-icon me-3">
                             <button id="createAnnouncementButton" class="btn btn-success">
                                 <i class="fas fa-bullhorn"></i>
@@ -231,7 +360,8 @@
                         <!-- User Profile Dropdown -->
                         <div class="dropdown">
                             <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" type="button">
-                                <img alt="User" class="rounded-circle me-1" src="{% static 'main/img2.png' %}" width="30">
+                                <img alt="User" class="rounded-circle me-1" src="{% static 'main/img2.png' %}"
+                                     width="30">
                                 <span>{{ user.last_name }} {{ user.first_name|slice:":1" }}. ({{ user.userprofile.role }})</span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
@@ -288,37 +418,44 @@
                                 <!-- First and Last Name -->
                                 <div class="col-6">
                                     <label for="firstName" class="form-label small text-muted">First Name</label>
-                                    <input type="text" class="form-control form-control-sm" id="firstName" value="" disabled>
+                                    <input type="text" class="form-control form-control-sm" id="firstName" value=""
+                                           disabled>
                                 </div>
                                 <div class="col-6">
                                     <label for="lastName" class="form-label small text-muted">Last Name</label>
-                                    <input type="text" class="form-control form-control-sm" id="lastName" value="" disabled>
+                                    <input type="text" class="form-control form-control-sm" id="lastName" value=""
+                                           disabled>
                                 </div>
 
                                 <!-- Email and Phone -->
                                 <div class="col-6">
                                     <label for="email" class="form-label small text-muted">Email</label>
-                                    <input type="email" class="form-control form-control-sm" id="email" value="" disabled>
+                                    <input type="email" class="form-control form-control-sm" id="email" value=""
+                                           disabled>
                                 </div>
                                 <div class="col-6">
                                     <label for="phone" class="form-label small text-muted">Phone</label>
-                                    <input type="text" class="form-control form-control-sm" id="phone" value="" disabled>
+                                    <input type="text" class="form-control form-control-sm" id="phone" value=""
+                                           disabled>
                                 </div>
 
                                 <!-- Position and Department -->
                                 <div class="col-6">
                                     <label for="position" class="form-label small text-muted">Position</label>
-                                    <input type="text" class="form-control form-control-sm" id="position" value="" disabled>
+                                    <input type="text" class="form-control form-control-sm" id="position" value=""
+                                           disabled>
                                 </div>
                                 <div class="col-6">
                                     <label for="department" class="form-label small text-muted">Department</label>
-                                    <input type="text" class="form-control form-control-sm" id="department" value="" disabled>
+                                    <input type="text" class="form-control form-control-sm" id="department" value=""
+                                           disabled>
                                 </div>
                             </div>
                         </form>
                         <!-- Save and Edit Buttons -->
                         <div class="d-flex justify-content-center mt-4">
-                            <button type="button" class="btn btn-sm btn-tertiary px-4 me-2" id="editProfileBtn" style="border: 1px solid red;">
+                            <button type="button" class="btn btn-sm btn-tertiary px-4 me-2" id="editProfileBtn"
+                                    style="border: 1px solid red;">
                                 <i class="bi bi-pencil me-1"></i> Edit Your Profile
                             </button>
                             <button type="button" class="btn btn-sm btn-danger px-4 d-none" id="saveProfileBtn">
@@ -341,197 +478,197 @@
 <!-- Sidebar Toggle -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-    // Sidebar Toggle Logic
-    const sidebar = document.getElementById("sidebar");
-    const sidebarToggle = document.getElementById("sidebarToggle");
-    const mainContent = document.querySelector(".main-content");
+        // Sidebar Toggle Logic
+        const sidebar = document.getElementById("sidebar");
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        const mainContent = document.querySelector(".main-content");
 
-    const handleSidebarToggle = () => {
-        const isCollapsed = sidebar.classList.toggle("sidebar-collapsed");
-        mainContent.classList.toggle("main-content-expanded");
-        localStorage.setItem("sidebarCollapsed", isCollapsed);
+        const handleSidebarToggle = () => {
+            const isCollapsed = sidebar.classList.toggle("sidebar-collapsed");
+            mainContent.classList.toggle("main-content-expanded");
+            localStorage.setItem("sidebarCollapsed", isCollapsed);
 
-        sidebarToggle.querySelector("i").classList.toggle("fa-arrow-left", !isCollapsed);
-        sidebarToggle.querySelector("i").classList.toggle("fa-arrow-right", isCollapsed);
-    };
+            sidebarToggle.querySelector("i").classList.toggle("fa-arrow-left", !isCollapsed);
+            sidebarToggle.querySelector("i").classList.toggle("fa-arrow-right", isCollapsed);
+        };
 
-    // Initialize Sidebar State
-    const initSidebarState = () => {
-        const sidebarCollapsed = localStorage.getItem("sidebarCollapsed") === "true";
-        sidebar.classList.toggle("sidebar-collapsed", sidebarCollapsed);
-        mainContent.classList.toggle("main-content-expanded", sidebarCollapsed);
+        // Initialize Sidebar State
+        const initSidebarState = () => {
+            const sidebarCollapsed = localStorage.getItem("sidebarCollapsed") === "true";
+            sidebar.classList.toggle("sidebar-collapsed", sidebarCollapsed);
+            mainContent.classList.toggle("main-content-expanded", sidebarCollapsed);
 
-        sidebarToggle.querySelector("i").classList.toggle("fa-arrow-left", !sidebarCollapsed);
-        sidebarToggle.querySelector("i").classList.toggle("fa-arrow-right", sidebarCollapsed);
-    };
+            sidebarToggle.querySelector("i").classList.toggle("fa-arrow-left", !sidebarCollapsed);
+            sidebarToggle.querySelector("i").classList.toggle("fa-arrow-right", sidebarCollapsed);
+        };
 
-    sidebarToggle.addEventListener("click", handleSidebarToggle);
-    initSidebarState();
+        sidebarToggle.addEventListener("click", handleSidebarToggle);
+        initSidebarState();
 
-    // Profile Modal Logic
-    const profileEndpoint = "{% url 'user_profile' %}"; // Adjust to your Django endpoint
-    const profileModal = document.getElementById("profileModal");
-    const editButton = document.getElementById("editProfileBtn");
-    const saveButton = document.getElementById("saveProfileBtn");
-    const formInputs = document.querySelectorAll("#profileForm input");
+        // Profile Modal Logic
+        const profileEndpoint = "{% url 'user_profile' %}"; // Adjust to your Django endpoint
+        const profileModal = document.getElementById("profileModal");
+        const editButton = document.getElementById("editProfileBtn");
+        const saveButton = document.getElementById("saveProfileBtn");
+        const formInputs = document.querySelectorAll("#profileForm input");
 
-    // CSRF Token Helper
-    const getCookie = (name) => {
-        const cookieValue = document.cookie
-            .split("; ")
-            .find((row) => row.startsWith(name))
-            ?.split("=")[1];
-        return decodeURIComponent(cookieValue);
-    };
+        // CSRF Token Helper
+        const getCookie = (name) => {
+            const cookieValue = document.cookie
+                .split("; ")
+                .find((row) => row.startsWith(name))
+                ?.split("=")[1];
+            return decodeURIComponent(cookieValue);
+        };
 
-    // Fetch and Populate Profile Data
-    const fetchProfileData = () => {
-        fetch(profileEndpoint)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Failed to fetch profile data");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                document.getElementById("profileName").textContent = `${data.first_name} ${data.last_name}`;
-                document.getElementById("profileRole").textContent = data.role;
-                document.getElementById("firstName").value = data.first_name;
-                document.getElementById("lastName").value = data.last_name;
-                document.getElementById("email").value = data.email;
-                document.getElementById("phone").value = data.phone_number;
-                document.getElementById("position").value = data.position;
-                document.getElementById("department").value = data.department;
-            })
-            .catch((error) => console.error("Error fetching profile data:", error));
-    };
+        // Fetch and Populate Profile Data
+        const fetchProfileData = () => {
+            fetch(profileEndpoint)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch profile data");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    document.getElementById("profileName").textContent = `${data.first_name} ${data.last_name}`;
+                    document.getElementById("profileRole").textContent = data.role;
+                    document.getElementById("firstName").value = data.first_name;
+                    document.getElementById("lastName").value = data.last_name;
+                    document.getElementById("email").value = data.email;
+                    document.getElementById("phone").value = data.phone_number;
+                    document.getElementById("position").value = data.position;
+                    document.getElementById("department").value = data.department;
+                })
+                .catch((error) => console.error("Error fetching profile data:", error));
+        };
 
-    // Enable Editing
-    const enableEditing = () => {
-        formInputs.forEach((input) => {
-            input.disabled = false;
-        });
-        editButton.classList.add("d-none");
-        saveButton.classList.remove("d-none");
-    };
+        // Enable Editing
+        const enableEditing = () => {
+            formInputs.forEach((input) => {
+                input.disabled = false;
+            });
+            editButton.classList.add("d-none");
+            saveButton.classList.remove("d-none");
+        };
 
-    // Save Profile Data
-    const saveProfileData = () => {
-        const formData = new FormData();
-        formInputs.forEach((input) => {
-            formData.append(input.id, input.value);
-        });
+        // Save Profile Data
+        const saveProfileData = () => {
+            const formData = new FormData();
+            formInputs.forEach((input) => {
+                formData.append(input.id, input.value);
+            });
 
-        fetch(profileEndpoint, {
-            method: "POST",
-            body: formData,
-            headers: {
-                "X-CSRFToken": getCookie("csrftoken"),
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Failed to save profile data");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                alert(data.message || "Profile updated successfully!");
-                formInputs.forEach((input) => {
-                    input.disabled = true;
-                });
-                saveButton.classList.add("d-none");
-                editButton.classList.remove("d-none");
-            })
-            .catch((error) => console.error("Error saving profile data:", error));
-    };
-
-    // Event Listeners
-    profileModal.addEventListener("show.bs.modal", fetchProfileData);
-    editButton.addEventListener("click", enableEditing);
-    saveButton.addEventListener("click", saveProfileData);
-    
-    // When the "Create Announcement" button is clicked, redirect to the create_announcement page
-    const createAnnouncementButton = document.getElementById("createAnnouncementButton");
-
-    if (createAnnouncementButton) {
-        createAnnouncementButton.addEventListener("click", function () {
-            window.location.href = "{% url 'view_announcements' %}"; // Redirect to the create announcement page
-        });
-    }
-
-    // Load existing announcements (if needed)
-    const loadAnnouncements = () => {
-        fetch("{% url 'view_announcements' %}")
-            .then(response => response.json())
-            .then(data => {
-                const announcementList = document.getElementById("announcementList");
-                announcementList.innerHTML = '';
-                if (data.announcements.length > 0) {
-                    data.announcements.forEach(announcement => {
-                        const li = document.createElement("li");
-                        li.classList.add("list-group-item");
-                        li.innerHTML = `
-                            <strong>${announcement.title}</strong><br>
-                            <p>${announcement.content}</p>
-                        `;
-                        announcementList.appendChild(li);
-                    });
-                } else {
-                    announcementList.innerHTML = `<li class="list-group-item text-muted">No announcements created yet.</li>`;
-                }
-            })
-            .catch(error => console.error("Error loading announcements:", error));
-    };
-
-    // Handle the form submission for creating announcements
-    const announcementForm = document.getElementById("announcementForm");
-    const announcementErrors = document.getElementById("announcementErrors");
-
-    if (announcementForm) {
-        announcementForm.addEventListener("submit", function (event) {
-            event.preventDefault();  // Prevent default form submission
-
-            const formData = new FormData(announcementForm);
-            fetch("{% url 'create_announcement' %}", {
+            fetch(profileEndpoint, {
                 method: "POST",
                 body: formData,
                 headers: {
-                    "X-CSRFToken": getCookie("csrftoken"),  // CSRF token for security
+                    "X-CSRFToken": getCookie("csrftoken"),
                 },
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Announcement created successfully!");
-                    loadAnnouncements();  // Update the announcements list
-                    announcementForm.reset();  // Reset the form fields
-                    announcementErrors.style.display = 'none';  // Hide error box
-                } else {
-                    alert("There was an error creating the announcement. Please try again.");
-                    announcementErrors.style.display = 'block';  // Show error box
-                    announcementErrors.innerHTML = '';  // Clear previous errors
-
-                    // Loop through errors and display them
-                    for (const [field, errors] of Object.entries(data.errors)) {
-                        const errorList = document.createElement('ul');
-                        errors.forEach(error => {
-                            const li = document.createElement('li');
-                            li.textContent = error;
-                            errorList.appendChild(li);
-                        });
-                        announcementErrors.appendChild(errorList);
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to save profile data");
                     }
-                }
-            })
-            .catch(error => {
-                console.error("Error creating announcement:", error);
-                alert("Error creating announcement. Please try again.");
-            });
-        });
-    }
+                    return response.json();
+                })
+                .then((data) => {
+                    alert(data.message || "Profile updated successfully!");
+                    formInputs.forEach((input) => {
+                        input.disabled = true;
+                    });
+                    saveButton.classList.add("d-none");
+                    editButton.classList.remove("d-none");
+                })
+                .catch((error) => console.error("Error saving profile data:", error));
+        };
 
-});
+        // Event Listeners
+        profileModal.addEventListener("show.bs.modal", fetchProfileData);
+        editButton.addEventListener("click", enableEditing);
+        saveButton.addEventListener("click", saveProfileData);
+
+        // When the "Create Announcement" button is clicked, redirect to the create_announcement page
+        const createAnnouncementButton = document.getElementById("createAnnouncementButton");
+
+        if (createAnnouncementButton) {
+            createAnnouncementButton.addEventListener("click", function () {
+                window.location.href = "{% url 'view_announcements' %}"; // Redirect to the create announcement page
+            });
+        }
+
+        // Load existing announcements (if needed)
+        const loadAnnouncements = () => {
+            fetch("{% url 'view_announcements' %}")
+                .then(response => response.json())
+                .then(data => {
+                    const announcementList = document.getElementById("announcementList");
+                    announcementList.innerHTML = '';
+                    if (data.announcements.length > 0) {
+                        data.announcements.forEach(announcement => {
+                            const li = document.createElement("li");
+                            li.classList.add("list-group-item");
+                            li.innerHTML = `
+                            <strong>${announcement.title}</strong><br>
+                            <p>${announcement.content}</p>
+                        `;
+                            announcementList.appendChild(li);
+                        });
+                    } else {
+                        announcementList.innerHTML = `<li class="list-group-item text-muted">No announcements created yet.</li>`;
+                    }
+                })
+                .catch(error => console.error("Error loading announcements:", error));
+        };
+
+        // Handle the form submission for creating announcements
+        const announcementForm = document.getElementById("announcementForm");
+        const announcementErrors = document.getElementById("announcementErrors");
+
+        if (announcementForm) {
+            announcementForm.addEventListener("submit", function (event) {
+                event.preventDefault();  // Prevent default form submission
+
+                const formData = new FormData(announcementForm);
+                fetch("{% url 'create_announcement' %}", {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        "X-CSRFToken": getCookie("csrftoken"),  // CSRF token for security
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("Announcement created successfully!");
+                            loadAnnouncements();  // Update the announcements list
+                            announcementForm.reset();  // Reset the form fields
+                            announcementErrors.style.display = 'none';  // Hide error box
+                        } else {
+                            alert("There was an error creating the announcement. Please try again.");
+                            announcementErrors.style.display = 'block';  // Show error box
+                            announcementErrors.innerHTML = '';  // Clear previous errors
+
+                            // Loop through errors and display them
+                            for (const [field, errors] of Object.entries(data.errors)) {
+                                const errorList = document.createElement('ul');
+                                errors.forEach(error => {
+                                    const li = document.createElement('li');
+                                    li.textContent = error;
+                                    errorList.appendChild(li);
+                                });
+                                announcementErrors.appendChild(errorList);
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error creating announcement:", error);
+                        alert("Error creating announcement. Please try again.");
+                    });
+            });
+        }
+
+    });
 
 </script>
 </body>

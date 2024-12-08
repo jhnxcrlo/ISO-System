@@ -4,6 +4,8 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
 
 class UserProfile(models.Model):
@@ -74,6 +76,15 @@ class Template(models.Model):
 
 
 class NonConformity(models.Model):
+    class StageChoices(models.TextChoices):
+        OPEN = 'open', 'Open'
+        PENDING = 'pending', 'Pending'
+        IN_PROGRESS = 'in_progress', 'In Progress'
+        CLOSED = 'closed', 'Closed'
+
+    # New nc_stage field to track non-conformity status
+    nc_stage = models.CharField(max_length=20, choices=StageChoices.choices, default=StageChoices.OPEN)
+
     non_conformity = models.CharField(max_length=255)
     assignees = models.CharField(max_length=255)
     originator_name = models.CharField(max_length=100)
@@ -114,6 +125,7 @@ class NonConformity(models.Model):
 
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='tasks')
 
+
     def __str__(self):
         return f"{self.non_conformity} - {self.originator_name}"
 
@@ -125,6 +137,25 @@ class NonConformity(models.Model):
         """Return the Internal Auditor-specific URL."""
         return reverse('non_conformity_detail', kwargs={'nc_id': self.pk})
 
+
+# Signals for automating the status update
+@receiver(post_save, sender=NonConformity)
+def update_nc_stage(sender, instance, created, **kwargs):
+    if created:
+        # When a new non-conformity is created, set status to OPEN
+        instance.nc_stage = NonConformity.StageChoices.OPEN
+        instance.save()
+
+    # Automate status change based on conditions
+    # If the non-conformity has a corrective action plan, set status to PENDING
+    if instance.status == 'in_progress' and instance.nc_stage == NonConformity.StageChoices.OPEN:
+        instance.nc_stage = NonConformity.StageChoices.PENDING
+        instance.save()
+
+    # If the non-conformity has been verified as effective, set status to CLOSED
+    if instance.status == 'completed' and instance.nc_stage == NonConformity.StageChoices.PENDING:
+        instance.nc_stage = NonConformity.StageChoices.CLOSED
+        instance.save()
 
 # Model for Immediate Action
 class ImmediateAction(models.Model):

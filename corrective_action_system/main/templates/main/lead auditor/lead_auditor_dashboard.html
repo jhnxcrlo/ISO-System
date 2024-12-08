@@ -4,168 +4,194 @@
 {% load custom_tags %}
 {% block title %}Lead auditor Dashboard{% endblock %}
 
-
 {% block content %}
+
+    <style>
+        .custom-accordion-button {
+            background-color: #ffffff; /* White background */
+            color: #000000; /* Dark text for contrast */
+            border: 1px solid #dddddd; /* Light gray border */
+        }
+
+        .custom-accordion-button:hover,
+        .custom-accordion-button:focus {
+            background-color: #f5f5f5; /* Slightly darker white on hover/focus */
+            color: #000000; /* Ensure text is visible */
+            box-shadow: 0 0 0 0.25rem rgba(13, 13, 14, 0.25); /* Subtle focus outline */
+        }
+
+        .custom-accordion-button:not(.collapsed) {
+            background-color: #e9ecef; /* Active accordion button */
+            color: #333333; /* Keep text readable */
+        }
+
+    </style>
     <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <div class="container dashboard-section py-3">
-    <div class="row g-2">
-        <!-- Non-Conformities -->
-        <div class="col-md-4 col-12">
-            <div class="dashboard-card d-flex align-items-center p-3">
-                <i class="bi bi-kanban-fill dashboard-icon projects-icon"></i>
-                <div class="dashboard-text ms-2 d-flex flex-column">
-                    <div class="d-flex align-items-center">
-                        <div class="stat-number">{{ total_non_conformities_count }}</div>
-                        <div class="stat-title ms-2">Non-Conformities</div>
-                    </div>
-                    <div class="stat-subtitle">Awaiting processing</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tasks -->
-        <div class="col-md-4 col-12">
-            <div class="dashboard-card d-flex align-items-center p-3">
-                <i class="bi bi-file-earmark-text-fill dashboard-icon invoices-icon"></i>
-                <div class="dashboard-text ms-2 d-flex flex-column">
-                    <div class="d-flex align-items-center">
-                        <div class="stat-number">{{ total_ofi_count }}</div>
-                        <div class="stat-title ms-2">OFI</div>
-                    </div>
-                    <div class="stat-subtitle">Soon to be cleared</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Members Card -->
-        <div class="col-md-4 col-12">
-            <div class="dashboard-card d-flex align-items-center p-3" data-bs-toggle="modal"
-                 data-bs-target="#membersModal" style="cursor: pointer; transition: transform 0.2s ease-in-out;">
-                <i class="bi bi-person-circle dashboard-icon members-icon"></i>
-                <div class="dashboard-text ms-2 d-flex flex-column">
-                    <div class="d-flex align-items-center">
-                        <div class="stat-number" id="membersCount">{{ total_members }}</div>
-                        <div class="stat-title ms-2">Members</div>
-                    </div>
-                    <div class="stat-subtitle d-flex align-items-center">
-                        Hard working
-                        <i class="bi bi-arrow-down-circle ms-2" style="font-size: 1.2rem;"></i>
+        <div class="row g-2">
+            <!-- Non-Conformities -->
+            <div class="col-md-4 col-12">
+                <div class="dashboard-card d-flex align-items-center p-3">
+                    <i class="bi bi-kanban-fill dashboard-icon projects-icon"></i>
+                    <div class="dashboard-text ms-2 d-flex flex-column">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-number">{{ total_non_conformities_count }}</div>
+                            <div class="stat-title ms-2">Non-Conformities</div>
+                        </div>
+                        <div class="stat-subtitle">Awaiting processing</div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Modal for displaying Internal Auditors and Process Owners -->
-        <div class="modal fade" id="membersModal" tabindex="-1" aria-labelledby="membersModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="membersModalLabel">Members</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <ul id="membersList" class="list-group">
-                            {% for member in members %}
-                                <li class="list-group-item">
-                                    <strong>{{ member.user.username }}</strong> - {{ member.role }} - {{ member.user.email }}
-                                </li>
-                            {% empty %}
-                                <li class="list-group-item text-muted">No members found.</li>
-                            {% endfor %}
-                        </ul>
+            <!-- Tasks -->
+            <div class="col-md-4 col-12">
+                <div class="dashboard-card d-flex align-items-center p-3">
+                    <i class="bi bi-file-earmark-text-fill dashboard-icon invoices-icon"></i>
+                    <div class="dashboard-text ms-2 d-flex flex-column">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-number">{{ total_ofi_count }}</div>
+                            <div class="stat-title ms-2">OFI</div>
+                        </div>
+                        <div class="stat-subtitle">Soon to be cleared</div>
                     </div>
                 </div>
             </div>
-        </div>
 
-    </div>
-</div>
-
-<!-- Audit Section -->
-<div class="container-fluid mt-3">
-    <div class="row">
-        <!-- Donut Chart and Audit Summary -->
-        <div class="col-md-6 col-12">
-            <div class="chart-container">
-                <div class="chart-info">
-                    <h4 class="report-title">
-                        <i class="fas fa-clipboard-list"></i> Audit Summary
-                    </h4>
-                    <p>Audit Findings</p>
-                    <ul>
-                        <!-- Major NC -->
-                        <li>
-                            <span style="background-color:#8E2524; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
-                            <span>Major NC</span> <span>{{ major_nc_count }}</span>
-                        </li>
-                        <!-- Minor NC -->
-                        <li>
-                            <span style="background-color:#F86D27; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
-                            <span>Minor NC</span> <span>{{ minor_nc_count }}</span>
-                        </li>
-                        <!-- OFI (Improvement) -->
-                        <li>
-                            <span style="background-color:#F1D000; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
-                            <span>OFI</span> <span>{{ ofi_count }}</span>
-                        </li>
-                        <!-- Good Points -->
-                        <li>
-                            <span style="background-color:#3BBF5D; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
-                            <span>Good Points</span> <span>{{ good_points_count }}</span>
-                        </li>
-                    </ul>
-                    <button class="btn btn-tertiary"
-                            onclick="window.location.href='{% url 'audit_report_summary' audit_details.id %}'">See Details...
-                    </button>
-
-                </div>
-                <div class="chart-canvas">
-                    <canvas id="myChart" width="400" height="200"></canvas>
-                </div>
-            </div>
-        </div>
-
-       <!-- ISO Clauses Table Section -->
-<div class="col-md-6 col-12">
-    <div class="report-container">
-        <h4 class="report-title"><i class="bi bi-file-earmark-check-fill"></i> ISO Clauses</h4>
-        <div class="report-content">
-            <div class="accordion" id="isoClauseAccordion">
-
-                <!-- Loop through ISO Clauses dynamically -->
-                {% for clause_number, clause_title in iso_clauses.items %}
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="heading{{ clause_number }}">
-                            <button class="accordion-button p-2" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapse{{ clause_number }}" aria-expanded="false"
-                                    aria-controls="collapse{{ clause_number }}">
-                                ISO Clause {{ clause_number }}: {{ clause_title }}
-                            </button>
-                        </h2>
-                        <div id="collapse{{ clause_number }}" class="accordion-collapse collapse"
-                             aria-labelledby="heading{{ clause_number }}" data-bs-parent="#isoClauseAccordion">
-                            <div class="accordion-body p-2">
-                                <!-- Filter Non-Conformities based on the Clause -->
-                                <ul class="list-unstyled mb-0">
-                                    {% for non_conformity in non_conformities %}
-                                        {% if non_conformity.iso_clause|slice:":1" == clause_number %}
-                                            <li class="small">{{ non_conformity.non_conformity }}</li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
+            <!-- Members Card -->
+            <div class="col-md-4 col-12">
+                <div class="dashboard-card d-flex align-items-center p-3" data-bs-toggle="modal"
+                     data-bs-target="#membersModal" style="cursor: pointer; transition: transform 0.2s ease-in-out;">
+                    <i class="bi bi-person-circle dashboard-icon members-icon"></i>
+                    <div class="dashboard-text ms-2 d-flex flex-column">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-number" id="membersCount">{{ total_members }}</div>
+                            <div class="stat-title ms-2">Members</div>
+                        </div>
+                        <div class="stat-subtitle d-flex align-items-center">
+                            Hard working
+                            <i class="bi bi-arrow-down-circle ms-2" style="font-size: 1.2rem;"></i>
                         </div>
                     </div>
-                {% endfor %}
-
+                </div>
             </div>
+
+            <!-- Modal for displaying Internal Auditors and Process Owners -->
+            <div class="modal fade" id="membersModal" tabindex="-1" aria-labelledby="membersModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="membersModalLabel">Members</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <ul id="membersList" class="list-group">
+                                {% for member in members %}
+                                    <li class="list-group-item">
+                                        <strong>{{ member.user.username }}</strong> - {{ member.role }}
+                                        - {{ member.user.email }}
+                                    </li>
+                                {% empty %}
+                                    <li class="list-group-item text-muted">No members found.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-</div>
+
+    <!-- Audit Section -->
+    <div class="container-fluid mt-3">
+        <div class="row">
+            <!-- Donut Chart and Audit Summary -->
+            <div class="col-md-6 col-12">
+                <div class="chart-container">
+                    <div class="chart-info">
+                        <h4 class="report-title">
+                            <i class="fas fa-clipboard-list"></i> Audit Summary
+                        </h4>
+                        <p>Audit Findings</p>
+                        <ul>
+                            <!-- Major NC -->
+                            <li>
+                                <span style="background-color:#8E2524; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
+                                <span>Major NC</span> <span>{{ major_nc_count }}</span>
+                            </li>
+                            <!-- Minor NC -->
+                            <li>
+                                <span style="background-color:#F86D27; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
+                                <span>Minor NC</span> <span>{{ minor_nc_count }}</span>
+                            </li>
+                            <!-- OFI (Improvement) -->
+                            <li>
+                                <span style="background-color:#F1D000; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
+                                <span>OFI</span> <span>{{ ofi_count }}</span>
+                            </li>
+                            <!-- Good Points -->
+                            <li>
+                                <span style="background-color:#3BBF5D; width: 15px; height: 15px; display:inline-block; margin-right:10px;"></span>
+                                <span>Good Points</span> <span>{{ good_points_count }}</span>
+                            </li>
+                        </ul>
+                        <button class="btn btn-tertiary"
+                                onclick="window.location.href='{% url 'audit_report_summary' audit_details.id %}'">See
+                            Details...
+                        </button>
+
+                    </div>
+                    <div class="chart-canvas">
+                        <canvas id="myChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ISO Clauses Table Section -->
+            <div class="col-md-6 col-12">
+                <div class="report-container">
+                    <h4 class="report-title"><i class="bi bi-file-earmark-check-fill"></i> ISO Clauses</h4>
+                    <div class="report-content">
+                        <div class="accordion" id="isoClauseAccordion">
+
+                            <!-- Loop through ISO Clauses dynamically -->
+                            {% for clause_number, clause_title in iso_clauses.items %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading{{ clause_number }}">
+                                        <button class="accordion-button p-2 custom-accordion-button" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#collapse{{ clause_number }}" aria-expanded="false"
+                                                aria-controls="collapse{{ clause_number }}">
+                                            ISO Clause {{ clause_number }}: {{ clause_title }}
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{ clause_number }}" class="accordion-collapse collapse"
+                                         aria-labelledby="heading{{ clause_number }}"
+                                         data-bs-parent="#isoClauseAccordion">
+                                        <div class="accordion-body p-2">
+                                            <!-- Filter Non-Conformities based on the Clause -->
+                                            <ul class="list-unstyled mb-0">
+                                                {% for non_conformity in non_conformities %}
+                                                    {% if non_conformity.iso_clause|slice:":1" == clause_number %}
+                                                        <li class="small">{{ non_conformity.non_conformity }}</li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
-</div>
     <script>
         // Get dynamic data from the Django context
         const majorNcCount = {{ major_nc_count|default:0 }};
@@ -215,16 +241,23 @@
                     const isoClause = clause.getAttribute('data-iso-clause');
                     const content = document.getElementById(`content-${isoClause}`);
                     const chevron = document.getElementById(`chevron-${isoClause}`);
+                    const isoColor = document.getElementById(`iso-clause-${isoClause}`);
 
                     // Toggle the display of the content
                     if (content.style.display === "none") {
                         content.style.display = "block";
                         chevron.classList.remove('bi-chevron-down');
                         chevron.classList.add('bi-chevron-up');
+
+                        // Change the color to indicate active state
+                        isoColor.style.color = "#008CBA"; // Active color, change as needed
                     } else {
                         content.style.display = "none";
                         chevron.classList.remove('bi-chevron-up');
                         chevron.classList.add('bi-chevron-down');
+
+                        // Revert color when not active
+                        isoColor.style.color = ""; // Revert to default color
                     }
                 });
             });

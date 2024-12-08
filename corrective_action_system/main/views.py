@@ -2,6 +2,7 @@
 
 from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMultiAlternatives, send_mail
+from django.db.models import Prefetch
 from django.template.loader import render_to_string, get_template
 from django.urls import resolve, reverse
 from django.utils import timezone
@@ -128,6 +129,18 @@ def internal_auditor_dashboard_view(request):
 
     process_owners_count = UserProfile.objects.filter(role='Process Owner').count()
 
+    non_conformities = NonConformity.objects.all()
+
+    iso_clauses = {
+        '4': "Context of the Organization",
+        '5': "Leadership",
+        '6': "Planning",
+        '7': "Support",
+        '8': "Operation",
+        '9': "Performance Evaluation",
+        '10': "Improvement",
+    }
+
     # Fetch only Process Owners for the modal list
     process_owners = UserProfile.objects.filter(role='Process Owner').select_related('user')
     # Prepare context
@@ -138,7 +151,9 @@ def internal_auditor_dashboard_view(request):
         "ofi_count": ofi_count,
         "good_points_count": good_points_count,
         "process_owners_count": process_owners_count,
-        "process_owners": process_owners
+        "process_owners": process_owners,
+        "iso_clauses": iso_clauses,
+        "non_conformities": non_conformities
     }
 
     return render(request, 'main/internal audit/internal_auditor_dashboard.html', context)
@@ -430,7 +445,9 @@ def process_owner_forms_view(request):
 @login_required
 def internal_auditor_monitoring_log(request):
     # Retrieve all non-conformities from the database
-    non_conformities = NonConformity.objects.all()
+    non_conformities = NonConformity.objects.prefetch_related(
+        Prefetch('corrective_action_plans__action_verifications')
+    ).all()
 
     # Count non-conformities based on status
     ongoing_count = non_conformities.filter(status='in_progress').count()
@@ -539,6 +556,8 @@ def add_non_conformity(request):
         # Get the assigned process owner
         assigned_to = User.objects.get(id=assigned_to_id)
 
+        status_bar = 'open'
+
         # Create the NonConformity instance
         non_conformity_instance = NonConformity.objects.create(
             non_conformity=non_conformity,
@@ -554,8 +573,12 @@ def add_non_conformity(request):
             category=category,
             start_date=start_date,
             assigned_to=assigned_to,
-            status='pending'
+            status='open'
         )
+
+        # Generate the URL for the non-conformity using its get_task_url method
+        url = non_conformity_instance.get_task_url()
+        print(f"Generated URL: {url}")  # Debugging
 
         # Send notification to the assigned Process Owner
         notify.send(
@@ -565,6 +588,21 @@ def add_non_conformity(request):
             description=f"You have been assigned a new Non-Conformity: {non_conformity_instance.non_conformity}.",
             target=non_conformity_instance  # Link to the created Non-Conformity
         )
+
+        # Retrieve the notification instance
+        notification = Notification.objects.filter(
+            recipient=assigned_to,
+            verb="New Task Assigned",
+            target_object_id=non_conformity_instance.id  # Use the NonConformity instance's ID
+        ).order_by('-timestamp').first()
+
+        if notification:
+            # Add the URL to the notification data field manually
+            notification.data = {'url': non_conformity_instance.get_task_url()}
+            notification.save()
+            print(f"Notification saved with data: {notification.data}")
+        else:
+            print("Notification instance not found. Data was not added.")
 
         # Add success message and redirect
         messages.success(request, 'Non-Conformity successfully created and Process Owner notified.')
@@ -741,9 +779,15 @@ def task_detail(request, task_id):
     return render(request, 'main/process owner/task_detail.html', context)
 
 
+from django.contrib.auth.decorators import login_required
+
 @login_required
 def add_immediate_action(request, task_id):
     task = get_object_or_404(NonConformity, id=task_id)
+
+    # Ensure the user is a Process Owner
+    if not request.user.userprofile.role == 'Process Owner':
+        return HttpResponseForbidden("You do not have permission to add an immediate action.")
 
     if request.method == 'POST':
         # Get or create the ImmediateAction instance
@@ -785,16 +829,18 @@ def add_immediate_action(request, task_id):
             notify.send(
                 request.user,  # sender
                 recipient=user_profile.user,  # recipient
-                verb='added an immediate action',  # action description
+                verb=f'An immediate action has been added for task: {task.non_conformity}. Please review it.',  # action description
                 target=task,  # target object (task)
                 action_object=immediate_action  # action object (immediate action)
             )
 
         messages.success(request, "Immediate Action saved successfully.")
-        return redirect('task_detail', task_id=task.id)
+        return redirect('task_detail', task_id=task.id)  # Ensure the redirect goes to task detail
 
+    # Handle invalid request
     messages.error(request, "Invalid request.")
-    return redirect('task_detail', task_id=task.id)
+    return redirect('task_detail', task_id=task.id)  # Redirect to task detail even if the request is invalid
+
 
 
 # View for saving Root Cause Analysis
@@ -831,30 +877,33 @@ def add_root_cause_analysis(request, task_id):
         lead_users = UserProfile.objects.filter(role='Lead Auditor')
         internal_auditors = UserProfile.objects.filter(role='Internal Auditor')
 
-        # Send email notifications (optional)
+        # Send email notifications
         for user_profile in lead_users.union(internal_auditors):
             send_mail(
                 'New Root Cause Analysis Created',
                 f'A root cause analysis has been created for task: {task.non_conformity}. Please review it.',
-                'from@example.com',  # Use your 'from' email
+                'from@example.com',  # Replace with the sender's email
                 [user_profile.user.email],
                 fail_silently=False,
             )
 
             # Create in-app notifications for the users
             notify.send(
-                request.user,  # sender
-                recipient=user_profile.user,  # recipient
-                verb='created a root cause analysis',  # action description
-                target=task,  # target object (task)
-                action_object=root_cause_analysis  # action object (root cause analysis)
+                request.user,  # sender (Process Owner)
+                recipient=user_profile.user,  # recipient (Lead or Internal Auditor)
+                verb=f'A root cause analysis has been created for task: {task.non_conformity}. Please review it.',  # action description
+                target=task,  # target object (NonConformity)
+                action_object=root_cause_analysis  # action object (RootCauseAnalysis)
             )
 
+        # Provide success message and redirect to task details
         messages.success(request, "Root Cause Analysis saved successfully.")
         return redirect('task_detail', task_id=task.id)
 
+    # If the request method is not POST
     messages.error(request, "Invalid request.")
     return redirect('task_detail', task_id=task.id)
+
 
 
 @login_required
@@ -895,7 +944,7 @@ def corrective_action_plan(request, task_id):
             notify.send(
                 request.user,  # sender
                 recipient=user_profile.user,  # recipient
-                verb='created a corrective action plan',  # action description
+                verb=f'A corrective action plan has been created for task: {task.non_conformity}. Please review it.',  # action description
                 target=task,  # target object (task)
                 action_object=corrective_action_plan  # action object (corrective action plan)
             )
@@ -1077,6 +1126,17 @@ def action_verification(request, cap_id):
 
             # Handle effective verification
             if verification.status == "effective":
+                CloseOut.objects.update_or_create(
+                    non_conformity=non_conformity,
+                    defaults={
+                        'auditor_name': request.user.get_full_name() or request.user.username,
+                        'auditor_date': verification.date,
+                        'process_owner_name': non_conformity.assigned_to.get_full_name() if non_conformity.assigned_to else "Unknown",
+                        'process_owner_date': verification.date,
+                    }
+                )
+                messages.success(request, "Corrective action verified as effective. Close Out record updated.")
+
                 process_owner = non_conformity.assigned_to
                 if process_owner:
                     try:
@@ -1379,7 +1439,6 @@ def preview_rfa(request, nc_id):
     else:
         return render(request, 'main/form/rfa_view.html', context)
 
-
 def generate_pdf(request, nc_id):
     # Fetch the NonConformity object by its ID
     non_conformity = get_object_or_404(NonConformity, id=nc_id)
@@ -1505,26 +1564,51 @@ def is_lead_auditor(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Lead Auditor'
 
 
+logger = logging.getLogger(__name__)
 @login_required
 @user_passes_test(is_lead_auditor)
 def lead_auditor_monitoring_log(request):
     """
     View for Lead Auditor Monitoring Log. Display all non-conformities and their status.
+    Automatically update status based on corrective action status.
     """
+    # Fetch all non-conformities
     non_conformities = NonConformity.objects.all()
 
-    # Compute counts for each tab dynamically
+    # Automate status updates based on corrective action plans and verifications
+    for nc in non_conformities:
+        if nc.status == 'open' and nc.corrective_action_plans.exists():
+            # Update to 'pending' if a corrective action plan exists
+            nc.status = 'pending'
+            nc.save()
+
+        elif nc.status == 'pending' and nc.corrective_action_plans.filter(action_verifications__status='effective').exists():
+            # Update to 'closed' if corrective action plan has been verified as effective
+            nc.status = 'closed'
+            nc.save()
+
+    # Compute counts for each status
     ongoing_count = non_conformities.filter(status='in_progress').count()
     finished_count = non_conformities.filter(status='completed').count()
     postponed_count = non_conformities.filter(status='postponed').count()
+    open_count = non_conformities.filter(status='open').count()
+    pending_count = non_conformities.filter(status='pending').count()  # Add pending count
+    closed_count = non_conformities.filter(status='closed').count()  # Add closed count
 
     context = {
         'non_conformities': non_conformities,
         'ongoing_count': ongoing_count,
         'finished_count': finished_count,
         'postponed_count': postponed_count,
+        'open_count': open_count,  # Add open count to context
+        'pending_count': pending_count,  # Add pending count to context
+        'closed_count': closed_count,  # Add closed count to context
     }
+
     return render(request, 'main/lead auditor/lead_auditor_monitoring_log.html', context)
+
+
+
 
 
 def lead_auditor_manage_user(request):

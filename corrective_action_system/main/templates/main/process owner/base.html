@@ -471,11 +471,18 @@
         saveButton.addEventListener("click", saveProfileData);
     });
     document.addEventListener('click', function (event) {
-    if (event.target.matches('a.dropdown-item') && event.target.getAttribute('href') === '#') {
-        event.preventDefault();
-        alert('Invalid URL. Please check the notification configuration.');
+    if (event.target.matches('a.dropdown-item')) {
+        const href = event.target.getAttribute('href');
+        if (href === '#') {
+            event.preventDefault();
+            alert('Invalid URL. Please check the notification configuration.');
+        } else {
+            // Proceed with the navigation if the href is valid
+            window.location.href = href;
+        }
     }
-}, false);
+});
+
 
 </script>
 </body>

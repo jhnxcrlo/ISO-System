@@ -26,7 +26,7 @@
     <!-- Bootstrap JavaScript (Including Popper.js) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
- <style>
+    <style>
         body {
             background-color: #f8f9fa;
             font-family: 'Arial', sans-serif;
@@ -44,7 +44,7 @@
             position: relative;
             width: 120px;
             height: 120px;
-            margin: 0 ;
+            margin: 0;
             margin-bottom: 20px; /* Adds space below the image */
             margin-left: 50px;
         }
@@ -91,9 +91,77 @@
             border-radius: 8px;
 
         }
+
         .custom-modal-width {
-    max-width: 50%; /* Adjust width as needed */
-  }
+            max-width: 50%; /* Adjust width as needed */
+        }
+
+        /* Style for the notification item */
+        .dropdown-menu {
+            width: 350px; /* Set a fixed width for the notification dropdown */
+            max-height: 500px; /* Set max height to limit dropdown height */
+            overflow-y: auto; /* Enable vertical scrolling if there are too many notifications */
+            padding: 0; /* Remove any unnecessary padding */
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 12px 15px;
+            font-size: 15px;
+            line-height: 1.5;
+            word-wrap: break-word; /* Ensure text breaks and wraps properly */
+            text-overflow: ellipsis; /* Add ellipsis if text is too long */
+        }
+
+        .notification-item {
+            overflow: hidden; /* Hide overflow text */
+            white-space: normal; /* Allow text to wrap within the item */
+            max-width: 100%; /* Ensure the text fits inside the box */
+        }
+
+        .notification-description {
+            display: block; /* Force description to be on a new line */
+            max-width: 100%;
+            word-wrap: break-word; /* Break long words */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Add ellipsis for long text */
+        }
+
+        .notification-item strong {
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .notification-item small {
+            color: #888; /* Light color for time */
+            font-size: 17px;
+        }
+
+        .notification-icon a {
+            font-size: 20px; /* Larger bell icon */
+        }
+
+       /* Optional: Style the badge */
+.badge {
+    position: relative;  /* Use relative positioning for normal flow */
+    display: inline-block;  /* Ensure it stays within its parent element */
+    padding: 0.5rem 1rem;  /* Optional: Add padding for better visual */
+    border-radius: 12px;  /* Optional: Make it look like a rounded pill */
+}
+
+/* If you want to position the badge in a specific place within the parent */
+td {
+    position: relative;  /* This makes the td the reference point for absolutely positioned children */
+}
+
+.badge-positioned {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transform: translate(50%, -50%);
+}
+
+
     </style>
 </head>
 <body>
@@ -149,67 +217,60 @@
         <!-- Main Content Area -->
         <div class="col-md-10 main-content">
             <!-- Top Navbar -->
-           <nav class="navbar navbar-expand-lg">
+            <nav class="navbar navbar-expand-lg">
                 <div class="container-fluid">
                     <div class="d-flex ms-auto align-items-center">
                         <div class="notification-icon me-3 position-relative">
-                            <!-- Notification icon -->
-                            <a href="#" class="nav-link hidden-arrow" id="navbarNotification" role="button"
-                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bell"></i>
-                                <!-- Badge for unread notifications -->
-                                {% if user.notifications.unread|length > 0 %}
-                                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+    <!-- Notification icon -->
+    <a href="#" class="nav-link hidden-arrow" id="navbarNotification" role="button"
+       data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-bell"></i>
+        <!-- Badge for unread notifications -->
+        {% if user.notifications.unread|length > 0 %}
+            <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
                 {{ user.notifications.unread|length }}
             </span>
-                                {% endif %}
-                            </a>
+        {% endif %}
+    </a>
 
-                            <!-- Notification dropdown -->
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarNotification"
-                                style="width: 400px; max-height: 500px; overflow-y: auto;">
-                                {% with user.notifications.unread as unread_notifications %}
-                                    {% if unread_notifications %}
-                                        {% for notification in unread_notifications %}
-                                            <li>
-                                                <!-- Dynamically resolve URL based on the target's methods -->
-                                                <a href="
-                            {% if notification.target %}
-                                {% if user.userprofile.role == 'Process Owner' %}
-                                    {{ notification.target.get_task_url }}
-                                {% elif user.userprofile.role == 'Internal Auditor' %}
-                                    {{ notification.target.get_non_conformity_url }}
+    <!-- Notification dropdown -->
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarNotification">
+        {% with user.notifications.unread as unread_notifications %}
+            {% if unread_notifications %}
+                {% for notification in unread_notifications %}
+                    <li>
+                        <a href="{% if notification.target %}
+                                    {% if user.userprofile.role == 'Process Owner' %}
+                                        {{ notification.target.get_task_url }}
+                                    {% elif user.userprofile.role == 'Internal Auditor' %}
+                                        {{ notification.target.get_non_conformity_url }}
+                                    {% else %}
+                                        #
+                                    {% endif %}
                                 {% else %}
                                     #
-                                {% endif %}
-                            {% else %}
-                                #
-                            {% endif %}
-                        " class="dropdown-item">
-                                                    <strong>{{ notification.verb }}</strong>: {{ notification.description }}
-                                                    <br>
-                                                    <small class="text-muted">{{ notification.timestamp|timesince }}
-                                                        ago</small>
-                                                </a>
-                                            </li>
-                                        {% endfor %}
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                        <li>
-                                            <a href="{% url 'mark_all_notifications_read' %}"
-                                               class="dropdown-item text-center text-muted">
-                                                Mark all as read
-                                            </a>
-                                        </li>
-                                    {% else %}
-                                        <li>
-                                            <p class="dropdown-item text-center text-muted">No new notifications</p>
-                                        </li>
-                                    {% endif %}
-                                {% endwith %}
-                            </ul>
-                        </div>
+                                {% endif %}" class="dropdown-item notification-item">
+                            <strong>{{ notification.verb|default:"No Verb Provided" }}</strong>
+                            <br>
+                            <small class="text-muted">{{ notification.timestamp|timesince }} ago</small>
+                        </a>
+                    </li>
+                {% endfor %}
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a href="{% url 'mark_all_notifications_read' %}" class="dropdown-item text-center text-muted">
+                        Mark all as read
+                    </a>
+                </li>
+            {% else %}
+                <li>
+                    <p class="dropdown-item text-center text-muted">No new notifications</p>
+                </li>
+            {% endif %}
+        {% endwith %}
+    </ul>
+</div>
+
 
 
                         <div class="dropdown">
@@ -272,38 +333,45 @@
                                 <!-- First and Last Name -->
                                 <div class="col-6">
                                     <label for="firstName" class="form-label small text-muted">First Name</label>
-                                    <input type="text" class="form-control form-control-sm" id="firstName" value="" disabled>
+                                    <input type="text" class="form-control form-control-sm" id="firstName" value=""
+                                           disabled>
                                 </div>
                                 <div class="col-6">
                                     <label for="lastName" class="form-label small text-muted">Last Name</label>
-                                    <input type="text" class="form-control form-control-sm" id="lastName" value="" disabled>
+                                    <input type="text" class="form-control form-control-sm" id="lastName" value=""
+                                           disabled>
                                 </div>
 
                                 <!-- Email and Phone -->
                                 <div class="col-6">
                                     <label for="email" class="form-label small text-muted">Email</label>
-                                    <input type="email" class="form-control form-control-sm" id="email" value="" disabled>
+                                    <input type="email" class="form-control form-control-sm" id="email" value=""
+                                           disabled>
                                 </div>
                                 <div class="col-6">
                                     <label for="phone" class="form-label small text-muted">Phone</label>
-                                    <input type="text" class="form-control form-control-sm" id="phone" value="" disabled>
+                                    <input type="text" class="form-control form-control-sm" id="phone" value=""
+                                           disabled>
                                 </div>
 
                                 <!-- Position and Department -->
                                 <div class="col-6">
                                     <label for="position" class="form-label small text-muted">Position</label>
-                                    <input type="text" class="form-control form-control-sm" id="position" value="" disabled>
+                                    <input type="text" class="form-control form-control-sm" id="position" value=""
+                                           disabled>
                                 </div>
                                 <div class="col-6">
                                     <label for="department" class="form-label small text-muted">Department</label>
-                                    <input type="text" class="form-control form-control-sm" id="department" value="" disabled>
+                                    <input type="text" class="form-control form-control-sm" id="department" value=""
+                                           disabled>
                                 </div>
                             </div>
                         </form>
 
                         <!-- Save and Edit Buttons -->
                         <div class="d-flex justify-content-center mt-4">
-                            <button type="button" class="btn btn-sm btn-tertiary px-4 me-2" id="editProfileBtn" style="border: 1px solid red;">
+                            <button type="button" class="btn btn-sm btn-tertiary px-4 me-2" id="editProfileBtn"
+                                    style="border: 1px solid red;">
                                 <i class="bi bi-pencil me-1"></i> Edit Your Profile
                             </button>
                             <button type="button" class="btn btn-sm btn-danger px-4 d-none" id="saveProfileBtn">
@@ -361,89 +429,89 @@
         sidebar.classList.add('no-transition');
     });
     document.addEventListener("DOMContentLoaded", function () {
-    const profileEndpoint = "{% url 'user_profile' %}"; // Combined URL for all user profiles
-    const profileModal = document.getElementById("profileModal");
-    const editButton = document.getElementById("editProfileBtn");
-    const saveButton = document.getElementById("saveProfileBtn");
-    const formInputs = document.querySelectorAll("#profileForm input");
+        const profileEndpoint = "{% url 'user_profile' %}"; // Combined URL for all user profiles
+        const profileModal = document.getElementById("profileModal");
+        const editButton = document.getElementById("editProfileBtn");
+        const saveButton = document.getElementById("saveProfileBtn");
+        const formInputs = document.querySelectorAll("#profileForm input");
 
-    // CSRF Token Helper
-    const getCookie = (name) => {
-        const cookieValue = document.cookie
-            .split("; ")
-            .find((row) => row.startsWith(name))
-            ?.split("=")[1];
-        return decodeURIComponent(cookieValue);
-    };
+        // CSRF Token Helper
+        const getCookie = (name) => {
+            const cookieValue = document.cookie
+                .split("; ")
+                .find((row) => row.startsWith(name))
+                ?.split("=")[1];
+            return decodeURIComponent(cookieValue);
+        };
 
-    // Fetch and Populate Profile Data
-    const fetchProfileData = () => {
-        fetch(profileEndpoint)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Failed to fetch profile data");
-                }
-                return response.json();
+        // Fetch and Populate Profile Data
+        const fetchProfileData = () => {
+            fetch(profileEndpoint)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch profile data");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    // Populate fields with fetched data
+                    document.getElementById("profileName").textContent = `${data.first_name} ${data.last_name}`;
+                    document.getElementById("profileRole").textContent = `@${data.role}`;
+                    document.getElementById("firstName").value = data.first_name;
+                    document.getElementById("lastName").value = data.last_name;
+                    document.getElementById("email").value = data.email;
+                    document.getElementById("phone").value = data.phone_number;
+                    document.getElementById("position").value = data.position;
+                    document.getElementById("department").value = data.department;
+                })
+                .catch((error) => console.error("Error fetching profile data:", error));
+        };
+
+        // Enable Editing
+        const enableEditing = () => {
+            formInputs.forEach((input) => {
+                input.disabled = false;
+            });
+            editButton.classList.add("d-none");
+            saveButton.classList.remove("d-none");
+        };
+
+        // Save Profile Data
+        const saveProfileData = () => {
+            const formData = new FormData();
+            formInputs.forEach((input) => {
+                formData.append(input.id, input.value);
+            });
+
+            fetch(profileEndpoint, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
             })
-            .then((data) => {
-                // Populate fields with fetched data
-                document.getElementById("profileName").textContent = `${data.first_name} ${data.last_name}`;
-                document.getElementById("profileRole").textContent = `@${data.role}`;
-                document.getElementById("firstName").value = data.first_name;
-                document.getElementById("lastName").value = data.last_name;
-                document.getElementById("email").value = data.email;
-                document.getElementById("phone").value = data.phone_number;
-                document.getElementById("position").value = data.position;
-                document.getElementById("department").value = data.department;
-            })
-            .catch((error) => console.error("Error fetching profile data:", error));
-    };
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to save profile data");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    alert(data.message || "Profile updated successfully!");
+                    formInputs.forEach((input) => {
+                        input.disabled = true;
+                    });
+                    saveButton.classList.add("d-none");
+                    editButton.classList.remove("d-none");
+                })
+                .catch((error) => console.error("Error saving profile data:", error));
+        };
 
-    // Enable Editing
-    const enableEditing = () => {
-        formInputs.forEach((input) => {
-            input.disabled = false;
-        });
-        editButton.classList.add("d-none");
-        saveButton.classList.remove("d-none");
-    };
-
-    // Save Profile Data
-    const saveProfileData = () => {
-        const formData = new FormData();
-        formInputs.forEach((input) => {
-            formData.append(input.id, input.value);
-        });
-
-        fetch(profileEndpoint, {
-            method: "POST",
-            body: formData,
-            headers: {
-                "X-CSRFToken": getCookie("csrftoken"),
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Failed to save profile data");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                alert(data.message || "Profile updated successfully!");
-                formInputs.forEach((input) => {
-                    input.disabled = true;
-                });
-                saveButton.classList.add("d-none");
-                editButton.classList.remove("d-none");
-            })
-            .catch((error) => console.error("Error saving profile data:", error));
-    };
-
-    // Event Listeners
-    profileModal.addEventListener("show.bs.modal", fetchProfileData);
-    editButton.addEventListener("click", enableEditing);
-    saveButton.addEventListener("click", saveProfileData);
-});
+        // Event Listeners
+        profileModal.addEventListener("show.bs.modal", fetchProfileData);
+        editButton.addEventListener("click", enableEditing);
+        saveButton.addEventListener("click", saveProfileData);
+    });
 
 </script>
 

@@ -3,6 +3,27 @@
 
 
 {% block content %}
+    
+       <style>
+        .custom-accordion-button {
+            background-color: #ffffff; /* White background */
+            color: #000000; /* Dark text for contrast */
+            border: 1px solid #dddddd; /* Light gray border */
+        }
+
+        .custom-accordion-button:hover,
+        .custom-accordion-button:focus {
+            background-color: #f5f5f5; /* Slightly darker white on hover/focus */
+            color: #000000; /* Ensure text is visible */
+            box-shadow: 0 0 0 0.25rem rgba(13, 13, 14, 0.25); /* Subtle focus outline */
+        }
+
+        .custom-accordion-button:not(.collapsed) {
+            background-color: #e9ecef; /* Active accordion button */
+            color: #333333; /* Keep text readable */
+        }
+
+    </style>
     <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -128,42 +149,42 @@
                 </div>
             </div>
 
-            <!-- ISO Audit Report Section -->
-            <div class="col-md-6 ">
+           <!-- ISO Clauses Table Section -->
+            <div class="col-md-6 col-12">
                 <div class="report-container">
-                    <h4 class="report-title"><i class="bi bi-file-earmark-check-fill"></i> ISO Audit Report</h4>
-                    <p class="report-subtitle">ISO 9001:2015 Corrective Management System</p>
+                    <h4 class="report-title"><i class="bi bi-file-earmark-check-fill"></i> ISO Clauses</h4>
                     <div class="report-content">
-                        <ul class="report-lines">
-                            <li>
-                                <span>Finding 1: Non-conformance in Quality Management</span>
-                                <i class="bi bi-chevron-down"></i>
-                                <div class="report-expand-content">
-                                    <p>Details:</p>
+                        <div class="accordion" id="isoClauseAccordion">
+
+                            <!-- Loop through ISO Clauses dynamically -->
+                            {% for clause_number, clause_title in iso_clauses.items %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading{{ clause_number }}">
+                                        <button class="accordion-button p-2 custom-accordion-button" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#collapse{{ clause_number }}" aria-expanded="false"
+                                                aria-controls="collapse{{ clause_number }}">
+                                            ISO Clause {{ clause_number }}: {{ clause_title }}
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{ clause_number }}" class="accordion-collapse collapse"
+                                         aria-labelledby="heading{{ clause_number }}"
+                                         data-bs-parent="#isoClauseAccordion">
+                                        <div class="accordion-body p-2">
+                                            <!-- Filter Non-Conformities based on the Clause -->
+                                            <ul class="list-unstyled mb-0">
+                                                {% for non_conformity in non_conformities %}
+                                                    {% if non_conformity.iso_clause|slice:":1" == clause_number %}
+                                                        <li class="small">{{ non_conformity.non_conformity }}</li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
-                            </li>
-                            <li>
-                                <span>Finding 2: Documentation Errors</span>
-                                <i class="bi bi-chevron-down"></i>
-                                <div class="report-expand-content">
-                                    <p>Details: </p>
-                                </div>
-                            </li>
-                            <li>
-                                <span>Finding 3: Non-compliance in Training</span>
-                                <i class="bi bi-chevron-down"></i>
-                                <div class="report-expand-content">
-                                    <p>Details: </p>
-                                </div>
-                            </li>
-                            <li>
-                                <span>Finding 4: Inconsistent Safety Protocols</span>
-                                <i class="bi bi-chevron-down"></i>
-                                <div class="report-expand-content">
-                                    <p>Details: </p>
-                                </div>
-                            </li>
-                        </ul>
+                            {% endfor %}
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -210,6 +231,34 @@
                 cutout: '70%' // Controls the inner radius of the donut
             }
         });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add event listeners to each ISO Clause
+            document.querySelectorAll('.clickable').forEach(function (clause) {
+                clause.addEventListener('click', function () {
+                    const isoClause = clause.getAttribute('data-iso-clause');
+                    const content = document.getElementById(`content-${isoClause}`);
+                    const chevron = document.getElementById(`chevron-${isoClause}`);
+                    const isoColor = document.getElementById(`iso-clause-${isoClause}`);
+
+                    // Toggle the display of the content
+                    if (content.style.display === "none") {
+                        content.style.display = "block";
+                        chevron.classList.remove('bi-chevron-down');
+                        chevron.classList.add('bi-chevron-up');
+
+                        // Change the color to indicate active state
+                        isoColor.style.color = "#008CBA"; // Active color, change as needed
+                    } else {
+                        content.style.display = "none";
+                        chevron.classList.remove('bi-chevron-up');
+                        chevron.classList.add('bi-chevron-down');
+
+                        // Revert color when not active
+                        isoColor.style.color = ""; // Revert to default color
+                    }
+                });
+                });
+            });
     </script>
 
     <!-- JavaScript Libraries -->
