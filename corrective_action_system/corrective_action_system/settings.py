@@ -77,7 +77,6 @@ REST_FRAMEWORK = {
     ],
 }
 
-
 import os
 # Database
 #

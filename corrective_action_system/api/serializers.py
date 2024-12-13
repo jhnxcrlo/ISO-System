@@ -9,10 +9,24 @@ class AnnouncementSerializer(serializers.ModelSerializer):
         model = Announcement
         fields = '__all__'
 
+
 class GuidelineSerializer(serializers.ModelSerializer):
     class Meta:
         model = Guideline
         fields = '__all__'
+
+    def validate_file(self, value):
+        # Validate file type
+        allowed_extensions = ['.pdf', '.docx', '.xlsx']
+        if not any(value.name.endswith(ext) for ext in allowed_extensions):
+            raise serializers.ValidationError("Only .pdf, .docx, and .xlsx files are allowed.")
+
+        # Validate file size (e.g., 5 MB max)
+        max_size = 5 * 1024 * 1024
+        if value.size > max_size:
+            raise serializers.ValidationError("File size must not exceed 5 MB.")
+
+        return value
 
 class TemplateModelSerializer(serializers.ModelSerializer):
     class Meta:
