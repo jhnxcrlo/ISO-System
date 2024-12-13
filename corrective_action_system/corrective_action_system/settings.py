@@ -61,13 +61,22 @@ TEMPLATES = [
 WSGI_APPLICATION = 'corrective_action_system.wsgi.application'
 
 REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',  # Support for JSON responses
+        'rest_framework_xml.renderers.XMLRenderer',  # Support for XML responses
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',  # Handle JSON input
+        'rest_framework_xml.parsers.XMLParser',  # Handle XML input
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.TokenAuthentication',  # Token-based authentication
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAuthenticated',  # Restrict access to authenticated users
     ],
 }
+
 
 import os
 # Database
