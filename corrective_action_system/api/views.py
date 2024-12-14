@@ -2,6 +2,7 @@ import logging
 from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.parsers import MultiPartParser, JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from main.models import Announcement, Guideline, TemplateModel
@@ -43,6 +44,7 @@ class GuidelineViewSet(viewsets.ModelViewSet):
     serializer_class = GuidelineSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, JSONParser]
 
     def create(self, request, *args, **kwargs):
         logger.info(f"Request data: {request.data}")

@@ -5,7 +5,7 @@ from fontTools.feaLib.ast import Comment
 
 from .models import UserProfile, TemplateModel, NonConformity, RootCauseAnalysis, ImmediateAction, CorrectiveActionPlan, \
     FollowUpAction, ActionVerification, CorrectiveActionPlanReview, CloseOut, Comment, AuditDetails, GoodPoints, \
-    AuditFinding, Announcement, Evaluation
+    AuditFinding, Announcement, Evaluation, Guideline
 
 
 @admin.register(UserProfile)
@@ -35,6 +35,7 @@ admin.site.register(AuditDetails)
 admin.site.register(GoodPoints)
 admin.site.register(AuditFinding)
 admin.site.register(Evaluation)
+admin.site.register(Guideline)
 
 
 

@@ -62,20 +62,22 @@ WSGI_APPLICATION = 'corrective_action_system.wsgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',  # Support for JSON responses
-        'rest_framework_xml.renderers.XMLRenderer',  # Support for XML responses
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework_xml.renderers.XMLRenderer',  # For XML support
     ],
     'DEFAULT_PARSER_CLASSES': [
-        'rest_framework.parsers.JSONParser',  # Handle JSON input
-        'rest_framework_xml.parsers.XMLParser',  # Handle XML input
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.MultiPartParser',  # For multipart form-data
+        'rest_framework_xml.parsers.XMLParser',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',  # Token-based authentication
+        'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # Restrict access to authenticated users
+        'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
 
 import os
 # Database
