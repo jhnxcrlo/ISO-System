@@ -1,10 +1,9 @@
 # models.py
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.urls import reverse
 
@@ -74,23 +73,20 @@ class Template(models.Model):
     template_file = models.FileField(upload_to='templates/')
     completed = models.BooleanField(default=False)  # New field to track completion
 
-
 class NonConformity(models.Model):
     class StageChoices(models.TextChoices):
         OPEN = 'open', 'Open'
         PENDING = 'pending', 'Pending'
-        IN_PROGRESS = 'in_progress', 'In Progress'
         CLOSED = 'closed', 'Closed'
 
-    # New nc_stage field to track non-conformity status
+    # Fields
     nc_stage = models.CharField(max_length=20, choices=StageChoices.choices, default=StageChoices.OPEN)
-
     non_conformity = models.CharField(max_length=255)
     assignees = models.CharField(max_length=255)
-    originator_name = models.CharField(max_length=100)
+    originator_name = models.CharField(max_length=100, blank=True)  # Auto-filled
     unit_department = models.CharField(max_length=100)
-    phone = models.CharField(max_length=20)
-    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True)  # Auto-filled
+    email = models.EmailField(blank=True)  # Auto-filled
 
     RFA_INTENT_CHOICES = [
         ('correct_nc', 'Correct NC'),
@@ -99,7 +95,7 @@ class NonConformity(models.Model):
     ]
     rfa_intent = models.CharField(max_length=20, choices=RFA_INTENT_CHOICES)
 
-    department = models.CharField(max_length=100)
+    department = models.CharField(max_length=100, blank=True)  # Auto-filled
 
     CATEGORY_CHOICES = [
         ('iqa_related', 'IQA-Related'),
@@ -118,13 +114,16 @@ class NonConformity(models.Model):
 
     TASK_CATEGORY_CHOICES = [('major', 'Major'), ('minor', 'Minor'), ('ofi', 'OFI')]
     category = models.CharField(max_length=20, choices=TASK_CATEGORY_CHOICES)
-    start_date = models.DateField()
 
-    STATUS_CHOICES = [('pending', 'Pending'), ('in_progress', 'In Progress'), ('completed', 'Completed')]
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    STATUS_CHOICES = [
+        ('open', 'Open'),
+        ('pending', 'Pending'),
+        ('closed', 'Closed')
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
+    start_date = models.DateField(auto_now_add=True)  # Automatically sets the date on creation
 
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='tasks')
-
 
     def __str__(self):
         return f"{self.non_conformity} - {self.originator_name}"
@@ -138,24 +137,87 @@ class NonConformity(models.Model):
         return reverse('non_conformity_detail', kwargs={'nc_id': self.pk})
 
 
-# Signals for automating the status update
-@receiver(post_save, sender=NonConformity)
-def update_nc_stage(sender, instance, created, **kwargs):
-    if created:
-        # When a new non-conformity is created, set status to OPEN
-        instance.nc_stage = NonConformity.StageChoices.OPEN
-        instance.save()
+def update_nc_status(sender, instance, created, **kwargs):
+    """
+    Automates NonConformity status based on Immediate Action, RCA, and Corrective Actions:
+    - Open → Pending: If related objects exist.
+    - Pending → Closed: If Corrective Action Plan is approved.
+    """
+    from .models import NonConformity, ActionVerification
 
-    # Automate status change based on conditions
-    # If the non-conformity has a corrective action plan, set status to PENDING
-    if instance.status == 'in_progress' and instance.nc_stage == NonConformity.StageChoices.OPEN:
-        instance.nc_stage = NonConformity.StageChoices.PENDING
-        instance.save()
+    # Determine the associated NonConformity
+    if isinstance(instance, NonConformity):
+        non_conformity = instance
 
-    # If the non-conformity has been verified as effective, set status to CLOSED
-    if instance.status == 'completed' and instance.nc_stage == NonConformity.StageChoices.PENDING:
-        instance.nc_stage = NonConformity.StageChoices.CLOSED
-        instance.save()
+    elif hasattr(instance, 'non_conformity'):
+        non_conformity = instance.non_conformity  # For ImmediateAction, RootCauseAnalysis, etc.
+
+    elif isinstance(instance, ActionVerification):
+        # Traverse to NonConformity via CorrectiveActionPlan
+        if instance.corrective_action_plan:
+            non_conformity = instance.corrective_action_plan.non_conformity
+        else:
+            return  # Skip if no link to CorrectiveActionPlan
+
+    else:
+        return  # Exit if no valid NonConformity association is found
+
+    # Open → Pending: Related records exist
+    if non_conformity.status == 'open':
+        if (hasattr(non_conformity, 'immediate_action') or
+            hasattr(non_conformity, 'root_cause_analysis') or
+            non_conformity.corrective_action_plans.exists()):
+            non_conformity.status = 'pending'
+            non_conformity.save()
+
+    # Pending → Closed: Corrective Action Plan is verified as 'effective'
+    if non_conformity.status == 'pending':
+        if non_conformity.corrective_action_plans.filter(
+            reviews__effectiveness='Accepted'
+        ).exists():
+            non_conformity.status = 'closed'
+            non_conformity.save()
+
+
+# Attach the signal to each related model using lazy references
+@receiver(post_save, sender='main.NonConformity')
+def update_nc_status_from_non_conformity(sender, instance, created, **kwargs):
+    update_nc_status(sender, instance, created, **kwargs)
+
+@receiver(post_save, sender='main.ImmediateAction')
+def update_nc_status_from_immediate_action(sender, instance, created, **kwargs):
+    update_nc_status(sender, instance, created, **kwargs)
+
+@receiver(post_save, sender='main.RootCauseAnalysis')
+def update_nc_status_from_rca(sender, instance, created, **kwargs):
+    update_nc_status(sender, instance, created, **kwargs)
+
+@receiver(post_save, sender='main.CorrectiveActionPlan')
+def update_nc_status_from_corrective_action_plan(sender, instance, created, **kwargs):
+    update_nc_status(sender, instance, created, **kwargs)
+
+@receiver(post_save, sender='main.ActionVerification')
+def update_nc_status_from_action_verification(sender, instance, created, **kwargs):
+    update_nc_status(sender, instance, created, **kwargs)
+
+
+# Signal to auto-populate email, phone, department, and originator_name
+@receiver(pre_save, sender=NonConformity)
+def auto_populate_user_fields(sender, instance, **kwargs):
+    """
+    Auto-fills email, phone, department, and originator_name fields from UserProfile.
+    """
+    if instance.assigned_to:
+        user_profile = instance.assigned_to.userprofile
+        if not instance.email:
+            instance.email = user_profile.user.email
+        if not instance.phone:
+            instance.phone = user_profile.phone_number
+        if not instance.department:
+            instance.department = user_profile.department
+
+    if not instance.originator_name and hasattr(instance, '_request_user'):
+        instance.originator_name = instance._request_user.get_full_name()
 
 # Model for Immediate Action
 class ImmediateAction(models.Model):

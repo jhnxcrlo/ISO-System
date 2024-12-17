@@ -161,24 +161,38 @@ def internal_auditor_dashboard_view(request):
 
 @login_required
 def process_owner_dashboard_view(request):
-    tasks = NonConformity.objects.filter(assigned_to=request.user, status='pending')
-    major_nc_count = NonConformity.objects.filter(category='major').count()
-    minor_nc_count = NonConformity.objects.filter(category='minor').count()
-    ofi_count = NonConformity.objects.filter(rfa_intent='improvement').count()
+    """
+    Dashboard view for Process Owners.
+    Displays ONLY tasks and counts for tasks assigned to the logged-in user.
+    """
+    # Filter tasks assigned to the logged-in user
+    user_tasks = NonConformity.objects.filter(assigned_to=request.user)
 
+    # Task counts by status for the assigned user
+    open_task_count = user_tasks.filter(status='open').count()
+    pending_task_count = user_tasks.filter(status='pending').count()
+    closed_task_count = user_tasks.filter(status='closed').count()
+
+    # Task counts by category for the assigned user
+    major_nc_count = user_tasks.filter(category='major').count()
+    minor_nc_count = user_tasks.filter(category='minor').count()
+    ofi_count = user_tasks.filter(category='ofi').count()
+
+    # Pass all filtered data to the template
     context = {
-        "tasks": tasks,
-        "major_nc_count": major_nc_count,
-        "minor_nc_count": minor_nc_count,
-        "ofi_count": ofi_count
+        "tasks": user_tasks,  # All tasks assigned to the logged-in user
+        "open_task_count": open_task_count,  # Open tasks count
+        "pending_task_count": pending_task_count,  # Pending tasks count
+        "closed_task_count": closed_task_count,  # Closed tasks count
+        "major_nc_count": major_nc_count,  # Major NC count
+        "minor_nc_count": minor_nc_count,  # Minor NC count
+        "ofi_count": ofi_count,  # OFI count
     }
 
     return render(request, 'main/process owner/process_owner_dashboard.html', context)
 
 
 logger = logging.getLogger(__name__)
-
-
 @login_required
 def add_user(request):
     if request.method == 'POST':
@@ -444,23 +458,23 @@ def process_owner_forms_view(request):
 
 @login_required
 def internal_auditor_monitoring_log(request):
-    # Retrieve all non-conformities from the database
+    # Retrieve all non-conformities with prefetching to optimize queries
     non_conformities = NonConformity.objects.prefetch_related(
         Prefetch('corrective_action_plans__action_verifications')
     ).all()
 
-    # Count non-conformities based on status
-    ongoing_count = non_conformities.filter(status='in_progress').count()
-    cancelled_count = non_conformities.filter(status='cancelled').count()
-    finished_count = non_conformities.filter(status='completed').count()
-    postponed_count = non_conformities.filter(status='postponed').count()
+    # Count non-conformities based on statuses
+    open_count = non_conformities.filter(status='open').count()
+    pending_count = non_conformities.filter(status='pending').count()
+    closed_count = non_conformities.filter(status='closed').count()
+    total_count = non_conformities.count()
 
     context = {
         'non_conformities': non_conformities,
-        'ongoing_count': ongoing_count,
-        'cancelled_count': cancelled_count,
-        'finished_count': finished_count,
-        'postponed_count': postponed_count,
+        'open_count': open_count,       # Count of 'Open' status
+        'pending_count': pending_count, # Count of 'Pending' status
+        'closed_count': closed_count,   # Count of 'Closed' status
+        'total_count': total_count,     # Total count of non-conformities
     }
     return render(request, 'main/internal audit/internal_auditor_monitoring_log.html', context)
 
@@ -533,47 +547,39 @@ def guideline_management_view(request):
     return render(request, template, context)
 
 
+@login_required
 def add_non_conformity(request):
-    if not request.user.userprofile.role == 'Lead Auditor':
+    # Restrict access to Lead Auditors only
+    if request.user.userprofile.role != 'Lead Auditor':
         return HttpResponseForbidden("You do not have permission to access this page.")
 
     if request.method == 'POST':
         # Get form data
         non_conformity = request.POST.get('non_conformity')
-        originator_name = request.POST.get('originator_name')
         unit_department = request.POST.get('unit_department')
-        phone = request.POST.get('phone')
-        email = request.POST.get('email')
         rfa_intent = request.POST.get('rfa_intent')
-        department = request.POST.get('department')
         non_conformance_category = request.POST.get('non_conformance_category')
         description_of_non_conformance = request.POST.get('description_of_non_conformance')
         iso_clause = request.POST.get('iso_clause')
         category = request.POST.get('category')
-        start_date = request.POST.get('start_date')
         assigned_to_id = request.POST.get('assigned_to')  # Process Owner ID from form
 
-        # Get the assigned process owner
+        # Get the assigned Process Owner
         assigned_to = User.objects.get(id=assigned_to_id)
-
-        status_bar = 'open'
 
         # Create the NonConformity instance
         non_conformity_instance = NonConformity.objects.create(
             non_conformity=non_conformity,
-            originator_name=originator_name,
+            assignees=assigned_to.username,
+            originator_name=request.user.get_full_name(),  # Auto-fill originator's name
             unit_department=unit_department,
-            phone=phone,
-            email=email,
             rfa_intent=rfa_intent,
-            department=department,
             non_conformance_category=non_conformance_category,
             description_of_non_conformance=description_of_non_conformance,
             iso_clause=iso_clause,
             category=category,
-            start_date=start_date,
             assigned_to=assigned_to,
-            status='open'
+            status='open'  # Default status
         )
 
         # Generate the URL for the non-conformity using its get_task_url method
@@ -617,7 +623,6 @@ def add_non_conformity(request):
     return render(request, 'main/lead auditor/add_non_conformity.html', {
         'process_owners': process_owners
     })
-
 
 @login_required
 def combined_non_conformity_detail(request, nc_id):
@@ -1565,6 +1570,7 @@ def is_lead_auditor(user):
 
 
 logger = logging.getLogger(__name__)
+
 @login_required
 @user_passes_test(is_lead_auditor)
 def lead_auditor_monitoring_log(request):

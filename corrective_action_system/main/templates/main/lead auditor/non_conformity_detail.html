@@ -66,7 +66,10 @@
 <div class="card mt-4">
     <div class="card-body">
         <div class="row">
-            <!-- Details Columns --><h4 class="text-red mb-4"><strong> {{ non_conformity.non_conformity }}</strong> </h4>
+            <!-- Title -->
+            <h4 class="text-red mb-4"><strong>{{ non_conformity.non_conformity }}</strong></h4>
+
+            <!-- Details Columns -->
             <div class="col-md-6">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"><strong>Originator Name:</strong> {{ non_conformity.originator_name }}</li>
@@ -75,11 +78,12 @@
                     <li class="list-group-item"><strong>Email:</strong> {{ non_conformity.email }}</li>
                     <li class="list-group-item"><strong>RFA Intent:</strong> {{ non_conformity.get_rfa_intent_display }}</li>
                     <li class="list-group-item"><strong>Department:</strong> {{ non_conformity.department }}</li>
-                    <li class="list-group-item"><strong>Non-Conformance Category:</strong> {{ non_conformity.get_non_conformance_category_display }}</li>
+                    
                 </ul>
             </div>
             <div class="col-md-6">
                 <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Non-Conformance Category:</strong> {{ non_conformity.get_non_conformance_category_display }}</li>
                     <li class="list-group-item"><strong>Description of Non-Conformance:</strong> {{ non_conformity.description_of_non_conformance }}</li>
                     <li class="list-group-item"><strong>ISO Clause:</strong> {{ non_conformity.iso_clause }}</li>
                     <li class="list-group-item"><strong>Category:</strong> {{ non_conformity.get_category_display }}</li>
@@ -90,6 +94,7 @@
         </div>
     </div>
 </div>
+
 
 
             <!-- Right Column: Step-by-Step Progress -->

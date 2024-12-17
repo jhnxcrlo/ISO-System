@@ -1,4 +1,5 @@
 # forms.py
+from datetime import timezone
 
 from django import forms
 from django.contrib.auth.models import User
@@ -100,19 +101,34 @@ class CustomPasswordChangeForm(PasswordChangeForm):
             user_profile.save()
         return user
 
-
 class NonConformityForm(forms.ModelForm):
     class Meta:
         model = NonConformity
         fields = [
-            'non_conformity', 'assignees', 'originator_name', 'unit_department', 'phone', 'email',
-            'rfa_intent', 'department', 'non_conformance_category', 'description_of_non_conformance',
-            'iso_clause', 'category', 'start_date', 'status', 'assigned_to'
-        ]
+            'non_conformity', 'assignees', 'unit_department',
+            'rfa_intent', 'non_conformance_category', 'description_of_non_conformance',
+            'iso_clause', 'category', 'status', 'assigned_to'
+        ]  # Removed originator_name, email, phone, department, and start_date
+
         widgets = {
-            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'start_date': forms.DateInput(attrs={'type': 'date'}),  # Optional for display if you still use it elsewhere
         }
 
+    def save(self, commit=True, *args, **kwargs):
+        """
+        Override save method to auto-fill fields before saving.
+        """
+        instance = super().save(commit=False, *args, **kwargs)
+
+        # Auto-populate fields
+        if not instance.start_date:
+            instance.start_date = timezone.now().date()  # Automatically set current date
+        if not instance.originator_name and self.initial.get('request_user'):
+            instance.originator_name = self.initial['request_user'].get_full_name()
+
+        if commit:
+            instance.save()
+        return instance
 
 # Form for Immediate Action
 class ImmediateActionForm(forms.ModelForm):

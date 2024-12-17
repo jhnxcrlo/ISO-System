@@ -41,7 +41,8 @@
     }
 </style>
 <div class="form-container">
-    <h2 class="m-4" ><strong>ADD NEW NON-CONFORMITY</strong></h2> <hr style="margin-bottom:10px;">
+    <h2 class="m-4"><strong>ADD NEW NON-CONFORMITY</strong></h2>
+    <hr style="margin-bottom:10px;">
 
     <form id="addNonConformityForm" method="POST" action="{% url 'add_non_conformity' %}">
         {% csrf_token %}
@@ -49,42 +50,23 @@
         <!-- Non-Conformity -->
         <div class="row m-4">
             <div class="col-md-12">
-                <label for="nonConformity" class="form-label">Non-Conformity</label>
+                <label for="nonConformity" class="form-label">Non-Conformity <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="nonConformity" name="non_conformity" required>
             </div>
         </div>
 
-        <!-- Originator's Information -->
+        <!-- Unit/Department -->
         <div class="row m-4">
             <div class="col-md-12">
-                <label for="originatorName" class="form-label">Originator’s Name/ID No.</label>
-                <input type="text" class="form-control" id="originatorName" name="originator_name" required>
-            </div>
-        </div>
-
-        <div class="row m-4">
-            <div class="col-md-12">
-                <label for="unitDepartment" class="form-label">Unit/Department</label>
+                <label for="unitDepartment" class="form-label">Unit/Department <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="unitDepartment" name="unit_department" required>
-            </div>
-        </div>
-
-        <!-- Phone and Email -->
-        <div class="row m-4">
-            <div class="col-md-6">
-                <label for="phone" class="form-label">Phone</label>
-                <input type="tel" class="form-control" id="phone" name="phone" required>
-            </div>
-            <div class="col-md-6">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
             </div>
         </div>
 
         <!-- RFA Intent -->
         <div class="row m-4">
             <div class="col-md-12">
-                <label class="form-label">This RFA is intended to:</label>
+                <label class="form-label">This RFA is intended to: <span class="text-danger">*</span></label>
                 <div class="position-relative">
                     <select class="form-control" id="rfaIntent" name="rfa_intent" required>
                         <option value="" disabled selected>Select RFA Intent</option>
@@ -92,44 +74,32 @@
                         <option value="prevent_nc">Prevent NC</option>
                         <option value="improvement">Improvement</option>
                     </select>
-                     <i class="bi bi-caret-down-fill position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;"></i>
                 </div>
-            </div>
-        </div>
-
-        <!-- Department -->
-        <div class="row m-4">
-            <div class="col-md-12">
-                <label for="department" class="form-label">Department (where NC exists)</label>
-                <input type="text" class="form-control" id="department" name="department" required>
             </div>
         </div>
 
         <!-- Non-Conformance Category -->
         <div class="row m-4">
             <div class="col-md-12">
-                <label for="nonConformanceCategory" class="form-label">Non-Conformance Category</label>
-                <div class="position-relative">
-                    <select class="form-control" id="nonConformanceCategory" name="non_conformance_category" required>
-                        <option value="" disabled selected>Select Description</option>
-                        <option value="iqa_related">IQA-Related</option>
-                        <option value="supplier_related">Supplier-Related</option>
-                        <option value="3rd_party_audit_related">3rd Party Audit Related</option>
-                        <option value="process_procedural">Process/Procedural-related</option>
-                        <option value="customer_satisfaction">Customer Satisfaction Related</option>
-                        <option value="kpi_quality_objective">Relates to KPI/Quality Objective Review</option>
-                        <option value="hrd_related">HRD-Related</option>
-                        <option value="others">Others</option>
-                    </select>
-                    <i class="bi bi-caret-down-fill position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;"></i>
-                </div>
+                <label for="nonConformanceCategory" class="form-label">Non-Conformance Category <span class="text-danger">*</span></label>
+                <select class="form-control" id="nonConformanceCategory" name="non_conformance_category" required>
+                    <option value="" disabled selected>Select Description</option>
+                    <option value="iqa_related">IQA-Related</option>
+                    <option value="supplier_related">Supplier-Related</option>
+                    <option value="3rd_party_audit_related">3rd Party Audit Related</option>
+                    <option value="process_procedural">Process/Procedural-related</option>
+                    <option value="customer_satisfaction">Customer Satisfaction Related</option>
+                    <option value="kpi_quality_objective">Relates to KPI/Quality Objective Review</option>
+                    <option value="hrd_related">HRD-Related</option>
+                    <option value="others">Others</option>
+                </select>
             </div>
         </div>
 
         <!-- Description of Non-Conformance -->
         <div class="row m-4">
             <div class="col-md-12">
-                <label for="description_of_non_conformance" class="form-label">Description of Non-Conformance</label>
+                <label for="description_of_non_conformance" class="form-label">Description of Non-Conformance <span class="text-danger">*</span></label>
                 <textarea id="description_of_non_conformance" name="description_of_non_conformance" class="form-control" required></textarea>
             </div>
         </div>
@@ -137,46 +107,30 @@
         <!-- ISO Clause -->
         <div class="row m-4">
             <div class="col-md-12">
-                <label for="isoClause" class="form-label">ISO Clause / Reference</label>
+                <label for="isoClause" class="form-label">ISO Clause / Reference <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="isoClause" name="iso_clause" required>
             </div>
         </div>
 
-        <!-- Category -->
+        <!-- Category and Assignees -->
         <div class="row m-4">
             <div class="col-md-6">
-                <label class="form-label">Category</label>
-                <div class="position-relative">
-                    <select class="form-control pe-5" id="category" name="category" required>
-                        <option value="" disabled selected>Select Category</option>
-                        <option value="major">Major</option>
-                        <option value="minor">Minor</option>
-                        <option value="others">OFI</option>
-                    </select>
-                    <i class="bi bi-caret-down-fill position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;"></i>
-                </div>
+                <label class="form-label">Category <span class="text-danger">*</span></label>
+                <select class="form-control" id="category" name="category" required>
+                    <option value="" disabled selected>Select Category</option>
+                    <option value="major">Major</option>
+                    <option value="minor">Minor</option>
+                    <option value="ofi">OFI</option>
+                </select>
             </div>
             <div class="col-md-6">
-                <label for="startDate" class="form-label">Date Issued</label>
-                <input type="date" class="form-control" id="startDate" name="start_date" required>
-            </div>
-        </div>
-
-
-        <!-- Process Owner Selection -->
-        <div class="row m-4">
-
-            <div class="col-md-6">
-                <label for="processOwner" class="form-label">Assignees</label>
-                <div class="position-relative">
-                    <select class="form-control" id="processOwner" name="assigned_to" required>
-                        <option value="" disabled selected>Select Process Owner</option>
-                        {% for user in process_owners %}
-                            <option value="{{ user.id }}">{{ user.username }}</option>
-                        {% endfor %}
-                    </select>
-                    <i class="bi bi-caret-down-fill position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;"></i>
-                </div>
+                <label for="processOwner" class="form-label">Assignees <span class="text-danger">*</span></label>
+                <select class="form-control" id="processOwner" name="assigned_to" required>
+                    <option value="" disabled selected>Select Process Owner</option>
+                    {% for user in process_owners %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
 
@@ -188,6 +142,8 @@
         </div>
     </form>
 </div>
+
+
 
 <script>
     // Adding a fallback validation message

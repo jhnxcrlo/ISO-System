@@ -202,7 +202,7 @@
                 {% for nc in non_conformities %}
                     <tr data-status="{{ nc.status }}" data-id="{{ nc.id }}">
                         <td>
-                            <a class="text-decoration-none text-dark fw-bold" href="{% url 'non_conformity_detail' nc.id %}">
+                            <a class="text-decoration-none text-dark fw-bold" href="{% url 'lead_auditor_non_conformity_detail' nc.id %}">
                                 {{ nc.non_conformity }}
                             </a>
                         </td>

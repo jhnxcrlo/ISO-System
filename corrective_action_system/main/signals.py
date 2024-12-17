@@ -3,7 +3,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from notifications.signals import notify
-from .models import NonConformity, UserProfile
+from .models import NonConformity, UserProfile, ImmediateAction
 
 @receiver(post_save, sender=NonConformity)
 def notify_process_owner(sender, instance, created, **kwargs):
