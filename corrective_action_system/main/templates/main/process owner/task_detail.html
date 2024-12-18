@@ -1,139 +1,135 @@
-<!--2.3 Immediate Actions and Root Cause Recording;-->
-<!--2.4 Action Plan Approval and Tracking;-->
-<!--2.7 Evidence Submission;-->
-
-
 
 {% extends 'main/process owner/base.html' %}
 {% load custom_tags %}
 {% block title %}Non-Conformity Details{% endblock %}
 
 {% block content %}
-<style>
-    .btn {
-    padding: 10px 20px;
-    font-size: 1rem;
-    border-radius: 5px;
-        position: relative;
-    overflow: hidden;
-}
+    <style>
+        .btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
 
-.btn-danger {
-    background-color: #A33331;
-    border-color: #A33331;
-}
-.btn-comment {
-  border: 2px solid #A33331; /* Border in #A33331 */
-  color: #A33331; /* Text color in #A33331 */
-  background-color: white; /* White background */
-  padding: 6px 15px; /* Adjust padding as needed */
-  font-size: 16px; /* Adjust font size as needed */
-  border-radius: 0 8px 8px 0; /* Rounded corners only on the right side */
-  margin-right: -8px; /* Creates a gap */
-  cursor: pointer;
-  text-align: center;
-  transition: all 0.3s ease-in-out;
-}
+        .btn-danger {
+            background-color: #A33331;
+            border-color: #A33331;
+        }
 
-/* Hover state */
-.btn-comment:hover {
-  background-color: #A33331; /* Background changes to #A33331 */
-  color: white; /* Text changes to white */
-  border-color: #A33331;
-}
+        .btn-comment {
+            border: 2px solid #A33331; /* Border in #A33331 */
+            color: #A33331; /* Text color in #A33331 */
+            background-color: white; /* White background */
+            padding: 6px 15px; /* Adjust padding as needed */
+            font-size: 16px; /* Adjust font size as needed */
+            border-radius: 0 8px 8px 0; /* Rounded corners only on the right side */
+            margin-right: -8px; /* Creates a gap */
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+        }
 
-/* Focused state */
-.btn-comment:focus {
-  outline: none; /* Removes default outline */
-  box-shadow: 0 0 5px #A33331; /* Adds a glow in #A33331 */
-  border-color: #A33331;
-}
+        /* Hover state */
+        .btn-comment:hover {
+            background-color: #A33331; /* Background changes to #A33331 */
+            color: white; /* Text changes to white */
+            border-color: #A33331;
+        }
 
-/* Active state */
-.btn-comment:active {
-  background-color: #6F2524; /* Darker version of #A33331 */
-  color: white;
-  border-color: #6F2524;
-  transform: scale(0.98); /* Slightly shrinks button */
-}
+        /* Focused state */
+        .btn-comment:focus {
+            outline: none; /* Removes default outline */
+            box-shadow: 0 0 5px #A33331; /* Adds a glow in #A33331 */
+            border-color: #A33331;
+        }
 
-/* Disabled state */
-.btn-comment:disabled {
-  background-color: #f8f8f8; /* Light gray background */
-  color: #cccccc; /* Gray text */
-  border-color: #cccccc; /* Gray border */
-  cursor: not-allowed; /* Disabled cursor */
-  opacity: 0.7;
-}
+        /* Active state */
+        .btn-comment:active {
+            background-color: #6F2524; /* Darker version of #A33331 */
+            color: white;
+            border-color: #6F2524;
+            transform: scale(0.98); /* Slightly shrinks button */
+        }
 
-    /* Button style */
-.btn-view-rfa {
-    display: inline-flex; /* Align icon and text in a row */
-    align-items: center; /* Vertically center icon and text */
-    padding: 10px 20px; /* Add padding around the button */
-    border: 2px solid #A33331; /* Red border */
-    background-color: transparent; /* Transparent background */
-    color: #A33331; /* Red text */
-    text-decoration: none; /* Remove underline from link */
-    font-size: 16px; /* Adjust font size */
-    font-weight: bold; /* Bold text */
-    text-transform: uppercase; /* Optional: Uppercase text */
-    cursor: pointer; /* Pointer cursor for clickable element */
-    border-radius: 0; /* No rounded corners */
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease; /* Smooth hover and active transitions */
-}
+        /* Disabled state */
+        .btn-comment:disabled {
+            background-color: #f8f8f8; /* Light gray background */
+            color: #cccccc; /* Gray text */
+            border-color: #cccccc; /* Gray border */
+            cursor: not-allowed; /* Disabled cursor */
+            opacity: 0.7;
+        }
 
-/* Icon styling */
-.btn-view-rfa i {
-    margin-right: 10px; /* Add spacing between icon and text */
-    font-size: 18px; /* Adjust icon size */
-}
+        /* Button style */
+        .btn-view-rfa {
+            display: inline-flex; /* Align icon and text in a row */
+            align-items: center; /* Vertically center icon and text */
+            padding: 10px 20px; /* Add padding around the button */
+            border: 2px solid #A33331; /* Red border */
+            background-color: transparent; /* Transparent background */
+            color: #A33331; /* Red text */
+            text-decoration: none; /* Remove underline from link */
+            font-size: 16px; /* Adjust font size */
+            font-weight: bold; /* Bold text */
+            text-transform: uppercase; /* Optional: Uppercase text */
+            cursor: pointer; /* Pointer cursor for clickable element */
+            border-radius: 0; /* No rounded corners */
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease; /* Smooth hover and active transitions */
+        }
 
-/* Hover state */
-.btn-view-rfa:hover {
-    background-color: #A33331; /* Background changes to #A33331 */
-  color: white; /* Text changes to white */
-  border-color: #A33331;
-}
+        /* Icon styling */
+        .btn-view-rfa i {
+            margin-right: 10px; /* Add spacing between icon and text */
+            font-size: 18px; /* Adjust icon size */
+        }
 
-/* Active state */
-.btn-view-rfa:active {
-    background-color: darkred; /* Darker red background when active */
-    color: white; /* White text */
-    transform: scale(0.95); /* Slightly shrink for a pressed effect */
-    border-color: darkred; /* Darker red border */
-}
+        /* Hover state */
+        .btn-view-rfa:hover {
+            background-color: #A33331; /* Background changes to #A33331 */
+            color: white; /* Text changes to white */
+            border-color: #A33331;
+        }
 
-    /* Base styles for the nav link */
-.nav-link-tab {
-    color: #A33331; /* Text color */
-    text-decoration: none; /* Remove underline */
-    padding: 8px 16px; /* Add some padding for better spacing */
-    font-size: 16px; /* Adjust font size */
-    border-radius: 4px;
-    font-weight: 500; /* Set a medium font weight */
-    transition: all 0.3s ease; /* Smooth transition for hover effects */
-}
+        /* Active state */
+        .btn-view-rfa:active {
+            background-color: darkred; /* Darker red background when active */
+            color: white; /* White text */
+            transform: scale(0.95); /* Slightly shrink for a pressed effect */
+            border-color: darkred; /* Darker red border */
+        }
 
-/* On hover, change color and add some other effects */
-.nav-link-tab:hover {
-    color: #A33331; /* White color on hover */
-    background-color: #f5f5f5; /* Background color on hover */
-    border-radius: 4px; /* Slight rounding of corners */
-    text-decoration: none; /* Remove underline on hover */
-}
+        /* Base styles for the nav link */
+        .nav-link-tab {
+            color: #A33331; /* Text color */
+            text-decoration: none; /* Remove underline */
+            padding: 8px 16px; /* Add some padding for better spacing */
+            font-size: 16px; /* Adjust font size */
+            border-radius: 4px;
+            font-weight: 500; /* Set a medium font weight */
+            transition: all 0.3s ease; /* Smooth transition for hover effects */
+        }
 
-/* Active link style */
-.nav-link-tab.active {
-    font-weight: 700; /* Make the active link bold */
-    text-decoration: underline; /* Underline the active link */
-    color: #fff; /* White color on hover */
-    background-color: #A33331; /* Background color on hover */
-    border-radius: 4px; /* Slight rounding of corners */
-    text-decoration: none; /* Remove underline on hover */
-}
+        /* On hover, change color and add some other effects */
+        .nav-link-tab:hover {
+            color: #A33331; /* White color on hover */
+            background-color: #f5f5f5; /* Background color on hover */
+            border-radius: 4px; /* Slight rounding of corners */
+            text-decoration: none; /* Remove underline on hover */
+        }
 
-</style>
+        /* Active link style */
+        .nav-link-tab.active {
+            font-weight: 700; /* Make the active link bold */
+            text-decoration: underline; /* Underline the active link */
+            color: #fff; /* White color on hover */
+            background-color: #A33331; /* Background color on hover */
+            border-radius: 4px; /* Slight rounding of corners */
+            text-decoration: none; /* Remove underline on hover */
+        }
+
+    </style>
 
     <div class="container mt-4">
         <h3>Non-Conformity Details</h3>
@@ -143,12 +139,12 @@
             <div class="progress-bar progress-bar-striped progress-bar-animated
                 {% if immediate_action and root_cause_analysis and root_cause_analysis.root_cause_completed %}bg-success
                 {% else %}bg-warning{% endif %}"
-                role="progressbar"
-                style="width:
-                    {% if not immediate_action %}33%;
-                    {% elif not root_cause_analysis or not root_cause_analysis.root_cause_completed %}66%;
-                    {% else %}100%;
-                    {% endif %}">
+                 role="progressbar"
+                 style="width:
+                         {% if not immediate_action %}33%;
+                         {% elif not root_cause_analysis or not root_cause_analysis.root_cause_completed %}66%;
+                         {% else %}100%;
+                         {% endif %}">
 
                 {% if not immediate_action %}
                     Immediate Action Pending
@@ -219,14 +215,14 @@
             </div>
         </div>
         <div class="text-start mt-4 d-flex align-items-center">
-                    <i class="bi bi-list-check" style="font-size: 40px; margin-right: 10px;  "></i>
-                    <h4 class="m-0" style="font-weight:bold;">Standard Operating Procedure</h4>
+            <i class="bi bi-list-check" style="font-size: 40px; margin-right: 10px;  "></i>
+            <h4 class="m-0" style="font-weight:bold;">Standard Operating Procedure</h4>
         </div>
-         <div class="text-start mt-1 mb-3">
-                    <a href="#" class="btn-view-rfa">
-                        <i class="bi bi-arrow-right"></i> View Request For Action Form
-                    </a>
-                </div>
+        <div class="text-start mt-1 mb-3">
+            <a href="{% url 'process_owner_preview_rfa' task.id %}" class="btn-view-rfa">
+                <i class="bi bi-arrow-right"></i> View Request For Action Form
+            </a>
+        </div>
 
         <div class="card">
             <div class="card-body m-4">
@@ -255,7 +251,7 @@
                                 id="root-cause-tab"
                                 role="tab"
                                 type="button">
-                           <strong> Step 2: Root Cause Analysis</strong>
+                            <strong> Step 2: Root Cause Analysis</strong>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -268,7 +264,7 @@
                                 id="corrective-action-tab"
                                 role="tab"
                                 type="button">
-                           <strong> Step 3: Corrective Action Plan</strong>
+                            <strong> Step 3: Corrective Action Plan</strong>
                         </button>
                     </li>
                 </ul>
@@ -286,7 +282,8 @@
                                     placeholder="Describe the action"
                                     required
                                     rows="4">{{ immediate_action.action_description|default_if_none:'' }}</textarea>
-                            <button type="button" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#saveImmediateActionModal">
+                            <button type="button" class="btn btn-danger mt-2" data-bs-toggle="modal"
+                                    data-bs-target="#saveImmediateActionModal">
                                 Save Immediate Action
                             </button>
 
@@ -368,29 +365,31 @@
                                         required
                                         rows="4">{{ root_cause_analysis.cause_description|default_if_none:'' }}</textarea>
                             </div>
-                              <!-- Date of Root Cause Analysis -->
+                            <!-- Date of Root Cause Analysis -->
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label" for="rcaDate"><strong>Date of Root Cause Analysis:</strong></label>
+                                    <label class="form-label" for="rcaDate"><strong>Date of Root Cause
+                                        Analysis:</strong></label>
                                     <input
-                                        class="form-control"
-                                        id="rcaDate"
-                                        name="rca_date"
-                                        required
-                                        type="date"
-                                        value="{{ root_cause_analysis.rca_date|date:'Y-m-d' }}">
+                                            class="form-control"
+                                            id="rcaDate"
+                                            name="rca_date"
+                                            required
+                                            type="date"
+                                            value="{{ root_cause_analysis.rca_date|date:'Y-m-d' }}">
                                 </div>
 
                                 <!-- Estimated Close Date -->
                                 <div class="col-md-6">
-                                    <label class="form-label" for="estimatedCloseDate"><strong>Estimated Close Date:</strong></label>
+                                    <label class="form-label" for="estimatedCloseDate"><strong>Estimated Close
+                                        Date:</strong></label>
                                     <input
-                                        class="form-control"
-                                        id="estimatedCloseDate"
-                                        name="estimated_close_date"
-                                        required
-                                        type="date"
-                                        value="{{ root_cause_analysis.estimated_close_date|date:'Y-m-d' }}">
+                                            class="form-control"
+                                            id="estimatedCloseDate"
+                                            name="estimated_close_date"
+                                            required
+                                            type="date"
+                                            value="{{ root_cause_analysis.estimated_close_date|date:'Y-m-d' }}">
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -421,12 +420,13 @@
                                 <small class="form-text text-muted">Upload supporting documents (PDF, Word, Excel,
                                     images, etc.).</small>
                             </div>
-                            <button type="button" class="btn btn-danger mt-3 complete-step-btn w-20 mt-2" data-bs-toggle="modal" data-bs-target="#saveRootCauseModal">
+                            <button type="button" class="btn btn-danger mt-3 complete-step-btn w-20 mt-2"
+                                    data-bs-toggle="modal" data-bs-target="#saveRootCauseModal">
                                 Save Root Cause Analysis
                             </button>
 
                         </form>
-                    
+
                         <!-- Root Cause Comments Section -->
                         <div class="comments-section mt-4">
                             <h6><strong>Comments:</strong></h6>
@@ -563,7 +563,8 @@
                             <div class="d-flex justify-content-between mt-3">
                                 <button class="btn btn-secondary btn-sm" id="add-row-btn" type="button">+ Add Row
                                 </button>
-                                <button type="button" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#saveCorrectiveActionModal">
+                                <button type="button" class="btn btn-danger mt-2" data-bs-toggle="modal"
+                                        data-bs-target="#saveCorrectiveActionModal">
                                     Save Corrective Action Plan
                                 </button>
                             </div>
@@ -633,80 +634,80 @@
             </div>
         </div>
     </div>
-<script>
-   document.addEventListener('DOMContentLoaded', function () {
-    const saveImmediateActionButton = document.getElementById('confirmSaveImmediateAction');
-    const saveRootCauseButton = document.getElementById('confirmSaveRootCause');
-    const saveCorrectiveActionButton = document.getElementById('confirmSaveCorrectiveAction');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const saveImmediateActionButton = document.getElementById('confirmSaveImmediateAction');
+            const saveRootCauseButton = document.getElementById('confirmSaveRootCause');
+            const saveCorrectiveActionButton = document.getElementById('confirmSaveCorrectiveAction');
 
-    // Save Immediate Action
-    if (saveImmediateActionButton) {
-        saveImmediateActionButton.addEventListener('click', function () {
-            // Target form inside the #immediate-action tab container
-            const form = document.querySelector('#immediate-action form');
-            if (form) {
-                form.submit();
-            } else {
-                console.log('Immediate Action Form not found! Check the selector.');
+            // Save Immediate Action
+            if (saveImmediateActionButton) {
+                saveImmediateActionButton.addEventListener('click', function () {
+                    // Target form inside the #immediate-action tab container
+                    const form = document.querySelector('#immediate-action form');
+                    if (form) {
+                        form.submit();
+                    } else {
+                        console.log('Immediate Action Form not found! Check the selector.');
+                    }
+                });
             }
-        });
-    }
 
-    // Save Root Cause Analysis
-    if (saveRootCauseButton) {
-        saveRootCauseButton.addEventListener('click', function () {
-            // Target form inside the #root-cause tab container
-            const form = document.querySelector('#root-cause form');
-            if (form) {
-                form.submit();
-            } else {
-                console.log('Root Cause Form not found! Check the selector.');
+            // Save Root Cause Analysis
+            if (saveRootCauseButton) {
+                saveRootCauseButton.addEventListener('click', function () {
+                    // Target form inside the #root-cause tab container
+                    const form = document.querySelector('#root-cause form');
+                    if (form) {
+                        form.submit();
+                    } else {
+                        console.log('Root Cause Form not found! Check the selector.');
+                    }
+                });
             }
-        });
-    }
 
-    // Save Corrective Action
-    if (saveCorrectiveActionButton) {
-        saveCorrectiveActionButton.addEventListener('click', function () {
-            // Target form inside the #corrective-action tab container
-            const form = document.querySelector('#corrective-action form');
-            if (form) {
-                form.submit();
-            } else {
-                console.log('Corrective Action Form not found! Check the selector.');
+            // Save Corrective Action
+            if (saveCorrectiveActionButton) {
+                saveCorrectiveActionButton.addEventListener('click', function () {
+                    // Target form inside the #corrective-action tab container
+                    const form = document.querySelector('#corrective-action form');
+                    if (form) {
+                        form.submit();
+                    } else {
+                        console.log('Corrective Action Form not found! Check the selector.');
+                    }
+                });
             }
-        });
-    }
 
-    // ============================ Comment Section Management ============================
-    function toggleVisibility(element, show = true) {
-        if (element) {
-            element.classList.toggle('d-none', !show);
-        }
-    }
+            // ============================ Comment Section Management ============================
+            function toggleVisibility(element, show = true) {
+                if (element) {
+                    element.classList.toggle('d-none', !show);
+                }
+            }
 
-    document.querySelectorAll('.reply-comment-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            const commentId = this.dataset.commentId;
-            const replyFormElement = document.getElementById(`reply-comment-form-${commentId}`);
-            toggleVisibility(replyFormElement, true);
-        });
-    });
+            document.querySelectorAll('.reply-comment-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const commentId = this.dataset.commentId;
+                    const replyFormElement = document.getElementById(`reply-comment-form-${commentId}`);
+                    toggleVisibility(replyFormElement, true);
+                });
+            });
 
-    document.querySelectorAll('.cancel-reply-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            const commentId = this.dataset.commentId;
-            const replyFormElement = document.getElementById(`reply-comment-form-${commentId}`);
-            toggleVisibility(replyFormElement, false);
-        });
-    });
+            document.querySelectorAll('.cancel-reply-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const commentId = this.dataset.commentId;
+                    const replyFormElement = document.getElementById(`reply-comment-form-${commentId}`);
+                    toggleVisibility(replyFormElement, false);
+                });
+            });
 
-    // ============================ Table Row Management ============================
-    const tableBody = document.getElementById('cap-table-body');
-    const addRowBtn = document.getElementById('add-row-btn');
+            // ============================ Table Row Management ============================
+            const tableBody = document.getElementById('cap-table-body');
+            const addRowBtn = document.getElementById('add-row-btn');
 
-    function createNewRow(rowIndex) {
-        return `
+            function createNewRow(rowIndex) {
+                return `
         <tr>
             <td>${rowIndex}</td>
             <td><input type="text" class="form-control" name="activity_${rowIndex}" placeholder="Enter activity" required></td>
@@ -721,32 +722,32 @@
             </td>
         </tr>
         `;
-    }
+            }
 
-    addRowBtn?.addEventListener('click', function () {
-        const rowCount = tableBody?.rows.length + 1 || 1;
-        const newRow = createNewRow(rowCount);
-        tableBody?.insertAdjacentHTML('beforeend', newRow);
-    });
-
-    tableBody?.addEventListener('click', function (event) {
-        const target = event.target.closest('.delete-row-btn');
-        if (target) {
-            const row = target.closest('tr');
-            row.remove();
-
-            // Re-index remaining rows
-            Array.from(tableBody.rows).forEach((row, index) => {
-                const newRowIndex = index + 1;
-                row.cells[0].innerText = newRowIndex;
-                row.querySelectorAll('input').forEach(input => {
-                    input.name = input.name.replace(/\d+$/, newRowIndex);
-                });
+            addRowBtn?.addEventListener('click', function () {
+                const rowCount = tableBody?.rows.length + 1 || 1;
+                const newRow = createNewRow(rowCount);
+                tableBody?.insertAdjacentHTML('beforeend', newRow);
             });
-        }
-    });
-});
-</script>
+
+            tableBody?.addEventListener('click', function (event) {
+                const target = event.target.closest('.delete-row-btn');
+                if (target) {
+                    const row = target.closest('tr');
+                    row.remove();
+
+                    // Re-index remaining rows
+                    Array.from(tableBody.rows).forEach((row, index) => {
+                        const newRowIndex = index + 1;
+                        row.cells[0].innerText = newRowIndex;
+                        row.querySelectorAll('input').forEach(input => {
+                            input.name = input.name.replace(/\d+$/, newRowIndex);
+                        });
+                    });
+                }
+            });
+        });
+    </script>
 
 
 

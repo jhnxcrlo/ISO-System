@@ -25,6 +25,7 @@ import logging
 from notifications.signals import notify
 from notifications.models import Notification
 
+from .decorators import is_process_owner
 from .models import (
     LoginEvent, UserProfile, ImmediateAction, RootCauseAnalysis,
     CorrectiveActionPlan, FollowUpAction, ActionVerification,
@@ -41,7 +42,6 @@ from .forms import (
 )
 
 s = URLSafeTimedSerializer('your-secret-key')
-
 
 def login_view(request):
     if request.method == 'POST':
@@ -1444,6 +1444,19 @@ def preview_rfa(request, nc_id):
     else:
         return render(request, 'main/form/rfa_view.html', context)
 
+@login_required
+def process_owner_preview_rfa(request, nc_id):
+    """
+    View for Process Owner to preview a Request for Action (RFA).
+    """
+    # Fetch the Non-Conformity object
+    non_conformity = get_object_or_404(NonConformity, id=nc_id, assigned_to=request.user)
+
+    context = {
+        'non_conformity': non_conformity,
+    }
+    return render(request, 'main/process owner/rfa_view.html', context)
+
 def generate_pdf(request, nc_id):
     # Fetch the NonConformity object by its ID
     non_conformity = get_object_or_404(NonConformity, id=nc_id)
@@ -1488,8 +1501,8 @@ def generate_pdf(request, nc_id):
         'follow_up_actions': follow_up_actions,
         'action_verifications': action_verifications,
         'close_out': close_out,
-        'left_logo_url': current_site + static('main/iso-sorsu-logo.png'),
-        'right_logo_url': current_site + static('main/bagong-pilipinas-logo.png'),
+        'left_logo_url': static('main/iso-sorsu-logo.png'),  # Path to left logo in static folder
+        'right_logo_url': static('main/bagong-pilipinas-logo.png'),  # Path to right logo in static folder
     }
 
     # Render the HTML template

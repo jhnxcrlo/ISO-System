@@ -104,7 +104,8 @@ urlpatterns = [
     path('lead_auditor-report-summary/<int:audit_details_id>/',audit_report_summary_view, name='audit_report_summary',),
 
     path('audit-report-summary-pdf/<str:date_range>/', views.generate_audit_report_summary_pdf, name='audit_report_summary_pdf'),
-    path('evaluation-form/<int:verification_id>/', views.evaluation_form, name='evaluation_form')
+    path('evaluation-form/<int:verification_id>/', views.evaluation_form, name='evaluation_form'),
+    path('process-owner/preview-rfa/<int:nc_id>/', views.process_owner_preview_rfa, name='process_owner_preview_rfa'),
 
 
 ]
